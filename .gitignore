@@ -5,5 +5,3 @@
 *.so
 .project
 *.DS_Store
-/man
-/NAMESPACE
