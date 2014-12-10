@@ -1,0 +1,27 @@
+Package: h5
+Type: Package
+Title: Interface to the HDF5 C++ API
+Version: 0.1
+Date: 2014-10-27
+Author: Mario Annau
+Maintainer: Mario Annau <mario.annau@gmail.com>
+Description: h5 is an R-package to provide a quite low--level interface to the
+    HDF5 C++ API. It therefore facilitates the way to handle HDF5 files and
+    create files, groups, datasetsets and attributes.
+License: GPL-3
+Imports:
+    Rcpp (>= 0.11.2),
+    methods
+LinkingTo: Rcpp
+Suggests:
+    testthat,
+    roxygen2
+Collate:
+    'CommonFG.R'
+    'H5Location.R'
+    'Dataset.R'
+    'H5File.R'
+    'H5Group.R'
+    'Helpers.R'
+    'RcppExports.R'
+    'h5-package.R'

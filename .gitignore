@@ -1,0 +1,9 @@
+/.settings
+/.project
+*.a
+*.o
+*.so
+.project
+*.DS_Store
+/man
+/NAMESPACE
