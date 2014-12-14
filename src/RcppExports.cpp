@@ -6,26 +6,6 @@
 
 using namespace Rcpp;
 
-// WriteAttribute
-bool WriteAttribute(XPtr<H5Object> loc, string attributename, SEXP mat, char datatype, NumericVector dimensions, int size);
-RcppExport SEXP h5_WriteAttribute(SEXP locSEXP, SEXP attributenameSEXP, SEXP matSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP sizeSEXP) {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<H5Object> >::type loc(locSEXP );
-        Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP );
-        Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP );
-        Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP );
-        Rcpp::traits::input_parameter< int >::type size(sizeSEXP );
-        bool __result = WriteAttribute(loc, attributename, mat, datatype, dimensions, size);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
 // CreateDataset
 XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char datatype, NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size);
 RcppExport SEXP h5_CreateDataset(SEXP fileSEXP, SEXP datasetnameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP chunksizeSEXP, SEXP maxshapeSEXP, SEXP compressionlevelSEXP, SEXP sizeSEXP) {

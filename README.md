@@ -1,4 +1,5 @@
 # h5
+[![Build Status](https://travis-ci.org/mannau/h5.svg?branch=master)](https://travis-ci.org/mannau/h5)
 
 **h5** is an R-package to provide a quite low--level interface to the HDF5 C++ API. It therefore facilitates the way to handle HDF5 files and create files, groups, datasetsets and attributes. 
 
