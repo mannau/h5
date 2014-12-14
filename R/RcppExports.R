@@ -5,6 +5,10 @@ CreateDataset <- function(file, datasetname, datatype, dimensions, chunksize, ma
     .Call('h5_CreateDataset', PACKAGE = 'h5', file, datasetname, datatype, dimensions, chunksize, maxshape, compressionlevel, size)
 }
 
+OpenDataset <- function(file, datasetname) {
+    .Call('h5_OpenDataset', PACKAGE = 'h5', file, datasetname)
+}
+
 WriteDataset <- function(dataset, mat, datatype) {
     .Call('h5_WriteDataset', PACKAGE = 'h5', dataset, mat, datatype)
 }
@@ -15,10 +19,6 @@ ReadDataset <- function(dataset, datatype) {
 
 CloseDataset <- function(dataset) {
     .Call('h5_CloseDataset', PACKAGE = 'h5', dataset)
-}
-
-OpenDataset <- function(file, datasetname) {
-    .Call('h5_OpenDataset', PACKAGE = 'h5', file, datasetname)
 }
 
 OpenFile <- function(filePath, mode) {
@@ -39,5 +39,9 @@ OpenGroup <- function(file, groupname) {
 
 CloseGroup <- function(group) {
     .Call('h5_CloseGroup', PACKAGE = 'h5', group)
+}
+
+ExistsGroup <- function(file, groupname) {
+    .Call('h5_ExistsGroup', PACKAGE = 'h5', file, groupname)
 }
 

@@ -17,6 +17,7 @@ bool file_exist (const std::string& name) {
 // [[Rcpp::export]]
 XPtr<H5File> OpenFile(string filePath, string mode) {
   try {
+    Exception::dontPrint();
     map<std::string, unsigned int> filemodes;
     filemodes["r"] = H5F_ACC_RDONLY;
     filemodes["r+"] = H5F_ACC_RDWR;
@@ -43,6 +44,7 @@ XPtr<H5File> OpenFile(string filePath, string mode) {
 
 // [[Rcpp::export]]
 bool CloseFile(XPtr<H5File> file) {
+  file->flush(H5F_SCOPE_LOCAL);
   file->close();
   return TRUE;
 }

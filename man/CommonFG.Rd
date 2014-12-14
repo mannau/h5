@@ -9,6 +9,8 @@
 \alias{createDataSet,CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY-method}
 \alias{createGroup}
 \alias{createGroup,CommonFG,character-method}
+\alias{existsGroup}
+\alias{existsGroup,CommonFG,character-method}
 \alias{openDataSet}
 \alias{openDataSet,CommonFG,character,character-method}
 \alias{openGroup}
@@ -22,6 +24,10 @@ createGroup(.Object, groupname)
 openGroup(.Object, groupname)
 
 \S4method{openGroup}{CommonFG,character}(.Object, groupname)
+
+existsGroup(.Object, groupname)
+
+\S4method{existsGroup}{CommonFG,character}(.Object, groupname)
 
 createDataSet(.Object, datasetname, data, type, dimensions,
   chunksize = ChunkSize(data), maxdimensions = rep(NA_integer_,

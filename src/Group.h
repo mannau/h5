@@ -7,4 +7,5 @@
 Rcpp::XPtr<H5::Group> CreateGroup(Rcpp::XPtr<H5::CommonFG> file, std::string groupname);
 Rcpp::XPtr<H5::Group> OpenGroup(Rcpp::XPtr<H5::CommonFG> file, std::string groupname);
 bool CloseGroup(Rcpp::XPtr<H5::Group> group);
+bool ExistsGroup(Rcpp::XPtr<H5::CommonFG> file, std::string groupname);
 #endif // __File_h__

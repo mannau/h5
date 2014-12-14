@@ -28,6 +28,22 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// OpenDataset
+XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname);
+RcppExport SEXP h5_OpenDataset(SEXP fileSEXP, SEXP datasetnameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
+        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
+        XPtr<DataSet> __result = OpenDataset(file, datasetname);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // WriteDataset
 bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype);
 RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP matSEXP, SEXP datatypeSEXP) {
@@ -70,22 +86,6 @@ BEGIN_RCPP
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
         bool __result = CloseDataset(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
-// OpenDataset
-XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname);
-RcppExport SEXP h5_OpenDataset(SEXP fileSEXP, SEXP datasetnameSEXP) {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
-        XPtr<DataSet> __result = OpenDataset(file, datasetname);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
@@ -164,6 +164,22 @@ BEGIN_RCPP
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<Group> >::type group(groupSEXP );
         bool __result = CloseGroup(group);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// ExistsGroup
+bool ExistsGroup(XPtr<CommonFG> file, string groupname);
+RcppExport SEXP h5_ExistsGroup(SEXP fileSEXP, SEXP groupnameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
+        Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP );
+        bool __result = ExistsGroup(file, groupname);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

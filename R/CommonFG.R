@@ -55,6 +55,21 @@ setMethod( "openGroup", signature(.Object="CommonFG", groupname = "character"),
 
 #' @rdname CommonFG
 #' @export
+setGeneric("existsGroup", function(.Object, groupname)
+			standardGeneric("existsGroup")
+)
+
+#' @rdname CommonFG
+#' @export
+setMethod( "existsGroup", signature(.Object="CommonFG", groupname = "character"), 
+		function(.Object, groupname) {
+			ExistsGroup(.Object@pointer, groupname)
+		})
+
+
+
+#' @rdname CommonFG
+#' @export
 setGeneric("createDataSet", function(
 				.Object, datasetname, data, type, dimensions, 
 				chunksize = ChunkSize(data), 
