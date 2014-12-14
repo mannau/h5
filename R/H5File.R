@@ -8,7 +8,7 @@
 #' @aliases H5File-class
 #' @include H5Location.R CommonFG.R
 #' @export
-setClass( "H5File", representation(filePath = "character", mode = "character"), 
+setClass( "H5File", representation(mode = "character"), 
 		contains = c("CommonFG", "H5Location"))
 
 #' @rdname H5File
@@ -18,18 +18,18 @@ setMethod("closeh5", signature(.Object="H5File"), function(.Object) {
 		})
 
 setMethod( "initialize", "H5File", 
-function(.Object, filePath, mode = "a") {
-	stopifnot(is.character(filePath))
+function(.Object, name, mode = "a") {
+	stopifnot(is.character(name))
 	stopifnot(is.character(mode))
-	stopifnot(length(filePath) == 1)
+	stopifnot(length(name) == 1)
 	stopifnot(length(mode) == 1)
 	
 	if (!mode %in% c("r", "r+", "w", "w-", "a")) {
 		stop(sprintf("Parameter mode must be either 'r', 'r+', 'w', 'w-' or 'a' - '%s' was given", mode))
 	}
 					
-	.Object@pointer <- OpenFile(filePath, mode)
-	.Object@filePath <- filePath
+	.Object@pointer <- OpenFile(name, mode)
+	.Object@name <- name
 	.Object@mode <- mode
 	.Object
 })

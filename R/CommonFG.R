@@ -23,7 +23,7 @@
 #' @rdname CommonFG
 #' @aliases CommonFG-class
 #' @export
-setClass( "CommonFG", representation( pointer = "externalptr" ) )
+setClass( "CommonFG", representation(pointer = "externalptr", name = "character") )
 
 #' @rdname CommonFG
 #' @export
@@ -36,7 +36,7 @@ setGeneric("createGroup", function(.Object, groupname)
 setMethod( "createGroup", signature(.Object="CommonFG", groupname = "character"), 
 		function(.Object, groupname) {
 			groupptr <- CreateGroup(.Object@pointer, groupname)
-			new("H5Group", groupptr)
+			new("H5Group", groupptr, groupname)
 		})
 
 #' @rdname CommonFG
@@ -50,7 +50,7 @@ setGeneric("openGroup", function(.Object, groupname)
 setMethod( "openGroup", signature(.Object="CommonFG", groupname = "character"), 
 		function(.Object, groupname) {
 			groupptr <- OpenGroup(.Object@pointer, groupname)
-			new("H5Group", groupptr)
+			new("H5Group", groupptr, groupname)
 		})
 
 #' @rdname CommonFG

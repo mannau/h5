@@ -6,8 +6,17 @@ using namespace std;
 
 // [[Rcpp::export]]
 XPtr<Group> CreateGroup(XPtr<CommonFG> file, string groupname) {
-  Group* group = new Group( file->createGroup(groupname.c_str()));
-  return XPtr<Group>(group);
+  try {
+    hid_t group_id = H5Gcreate(file->getLocId(), groupname.c_str(), 0, 0, 0);
+    if (group_id < 0) {
+      throw Exception("createGroup", "H5Gcreate failed");
+    }
+    Group* group = new Group(group_id);
+    return XPtr<Group>(group);
+  } catch (Exception& error) {
+     string msg = error.getDetailMsg() + " in " + error.getFuncName();
+     throw Rcpp::exception(msg.c_str());
+  }
 }
 
 // [[Rcpp::export]]
