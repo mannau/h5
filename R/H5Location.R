@@ -16,18 +16,18 @@
 setClass( "H5Location", representation( pointer = "externalptr" ) )
 
 
-#' @rdname H5Location
-#' @export
-setGeneric("createAttribute", function(.Object, attributename, data)
-			standardGeneric("createAttribute")
-)
+# @rdname H5Location
+# @export
+#setGeneric("createAttribute", function(.Object, attributename, data)
+#			standardGeneric("createAttribute")
+#)
 
-#' @rdname H5Location
-#' @export
-setMethod("createAttribute", signature(.Object="H5Location", attributename = "character", 
-				data = "ANY"), 
-		function(.Object, attributename, data) {
-			dspace <- GetDataSpace(data)
-			invisible(WriteAttribute(.Object@pointer, attributename, data, 
-							dspace$typechar, dspace$dim, dspace$size))
-		})
+# @rdname H5Location
+# @export
+#setMethod("createAttribute", signature(.Object="H5Location", attributename = "character", 
+#				data = "ANY"), 
+#		function(.Object, attributename, data) {
+#			dspace <- GetDataSpace(data)
+#			invisible(WriteAttribute(.Object@pointer, attributename, data, 
+#							dspace$typechar, dspace$dim, dspace$size))
+#		})

@@ -16,23 +16,28 @@ bool file_exist (const std::string& name) {
 
 // [[Rcpp::export]]
 XPtr<H5File> OpenFile(string filePath, string mode) {
-  map<std::string, unsigned int> filemodes;
-  filemodes["r"] = H5F_ACC_RDONLY;
-  filemodes["r+"] = H5F_ACC_RDWR;
-  filemodes["w"] = H5F_ACC_TRUNC;
-  filemodes["w-"] = H5F_ACC_EXCL;
-  if(file_exist(filePath)) {
-    filemodes["a"] = H5F_ACC_RDWR;
-  } else {
-    filemodes["a"] = H5F_ACC_EXCL;
-  }
+  try {
+    map<std::string, unsigned int> filemodes;
+    filemodes["r"] = H5F_ACC_RDONLY;
+    filemodes["r+"] = H5F_ACC_RDWR;
+    filemodes["w"] = H5F_ACC_TRUNC;
+    filemodes["w-"] = H5F_ACC_EXCL;
+    if(file_exist(filePath)) {
+      filemodes["a"] = H5F_ACC_RDWR;
+    } else {
+      filemodes["a"] = H5F_ACC_EXCL;
+    }
 
-  if (filemodes.find(mode) == filemodes.end()) {
-    throw Rcpp::exception("Given file mode not found");
-  }
+    if (filemodes.find(mode) == filemodes.end()) {
+      throw Rcpp::exception("Given file mode not found");
+    }
 
-  H5File *file = new H5File(filePath, filemodes[mode]);
-  return XPtr<H5File>(file);
+    H5File *file = new H5File(filePath, filemodes[mode]);
+    return XPtr<H5File>(file);
+} catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
+  }
 }
 
 

@@ -3,14 +3,7 @@
 \name{H5Location}
 \alias{H5Location}
 \alias{H5Location-class}
-\alias{createAttribute}
-\alias{createAttribute,H5Location,character-method}
 \title{The H5Location class}
-\usage{
-createAttribute(.Object, attributename, data)
-
-\S4method{createAttribute}{H5Location,character}(.Object, attributename, data)
-}
 \arguments{
 \item{.Object}{H5Location; S4 object of class \code{H5Location};}
 
