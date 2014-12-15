@@ -48,5 +48,48 @@ test_that("H5Group-createGroup",{
   closeh5(groupnested)
   
   closeh5(file)
-  file.remove(fname)
+  #file.remove(fname)
 })
+
+test_that("H5Group-openGroup",{
+  file <- new( "H5File", fname, "r")
+  # Fail for nested (non-existent) group name
+  f <- function() group1 <- openGroup(file, "/testgroup/test")
+  expect_that(f(), throws_error("H5Gopen failed"))
+  
+  group3 <- openGroup(file, "/testgroup3")
+  expect_that(group3, is_a("H5Group"))
+  expect_that(group3@name, is_identical_to("/testgroup3"))
+  closeh5(group3)
+  
+  groupnested <- openGroup(file, "/testgroup3/test")
+  expect_that(groupnested, is_a("H5Group"))
+  expect_that(groupnested@name, is_identical_to("/testgroup3/test"))
+  closeh5(groupnested)
+  
+  group3 <- openGroup(file, "/testgroup3")
+  grouprelative <- openGroup(group3, "test")
+  expect_that(grouprelative, is_a("H5Group"))
+  expect_that(grouprelative@name, is_identical_to("test"))
+  # TODO: should absolute path be displayed?
+  # eg. expect_that(grouprelative@name, is_identical_to("/testgroup3/test"))
+  closeh5(grouprelative)
+  
+  closeh5(file)
+  #file.remove(fname)
+})
+
+test_that("H5Group-existsGroup",{
+  file <- new( "H5File", fname, "r")
+  # Fail for nested (non-existent) group name
+  expect_that(existsGroup(file, "/testgroup/test"), is_false())     
+  expect_that(existsGroup(file, "/testgroup3"), is_true())
+  expect_that(existsGroup(file, "/testgroup3/test"), is_true())
+  
+  group3 <- openGroup(file, "/testgroup3")
+  expect_that(existsGroup(group3, "test"), is_true())
+  closeh5(group3)
+  closeh5(file)
+})
+
+
