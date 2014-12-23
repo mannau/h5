@@ -5,3 +5,5 @@
 *.so
 .project
 *.DS_Store
+*.Rcheck/
+*.tar.gz

@@ -1,1 +1,7 @@
 .travis.yml
+src/*.o
+src/*.so
+src/*.dll
+src/symbols.rds
+.settings
+h5.Rcheck
