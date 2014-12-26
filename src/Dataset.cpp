@@ -20,7 +20,7 @@ bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype) {
 
 /*
 // [[Rcpp::export]]
-bool AppendMatrix (XPtr<CommonFG> file, string dset, NumericMatrix mat) {
+bool AppendDataset (XPtr<CommonFG> file, string dset, NumericMatrix mat) {
   try {
     H5std_string dsetName(dset);
     DataSet dataset_existing = file->openDataSet(dsetName);
@@ -63,38 +63,6 @@ bool AppendMatrix (XPtr<CommonFG> file, string dset, NumericMatrix mat) {
   return TRUE;
 }
 */
-
-
-SEXP CreateDatastruct(const DataType &dtype, const hsize_t *dims, int ndim, char tchar) {
-  if(ndim == 1) {
-    switch(tchar) {
-      case 'd': return NumericVector(dims[0]);
-      case 'i': return IntegerVector(dims[0]);
-      case 'c': return CharacterVector(dims[0]);
-      default : return NumericVector(dims[0]);
-    }
-  } else if (ndim == 2) {
-    switch(tchar) {
-      case 'd': return NumericMatrix(dims[0], dims[1]);
-      case 'i': return IntegerMatrix(dims[0], dims[1]);
-      case 'c': return CharacterMatrix(dims[0], dims[1]);
-      default : return NumericMatrix(dims[0], dims[1]);
-    }
-  } else if (ndim > 2) {
-    throw new Rcpp::exception("Dim > 2 not implemented yet.");
-    /*case 'd': return NumericVector(dims);
-    case 'i': return IntegerMatrix(dims);
-    case 'c': return CharacterMatrix(dims);
-    default : return NumericMatrix(dims);*/
-  } else {
-      throw new Rcpp::exception("Number of dimensions less than 1.");
-  }
-
-
- //   } else if(datatype == 'c') {
-
-}
-
 
 // [[Rcpp::export]]
 SEXP ReadDataset(XPtr<DataSet> dataset, char datatype) {

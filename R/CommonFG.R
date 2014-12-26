@@ -78,6 +78,42 @@ setGeneric("createDataSet", function(
 			standardGeneric("createDataSet")
 )
 
+
+#' @rdname CommonFG
+#' @export
+setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "character", 
+				data = "missing", type = "character", dimensions = "integer", 
+				chunksize = "ANY", maxdimensions = "ANY", 
+				compression = "ANY", size = "ANY"), 
+		function(.Object, datasetname, type, dimensions, chunksize, maxdimensions, 
+				compression, size) {
+      
+      stopifnot(type %in% c("double", "integer", "logical", "character"))
+      typechar <- substr(type, 1, 1)	
+      
+      createDataset_internal(.Object@pointer, datasetname, typechar, dimensions,
+          chunksize, maxdimensions, compression, size) 
+})
+
+
+#' @rdname CommonFG
+#' @export
+setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "character", 
+				data = "ANY", type = "missing", dimensions = "missing", chunksize = "ANY",
+				maxdimensions = "ANY", compression = "ANY", size = "missing"), 
+		function(.Object, datasetname, data, chunksize, maxdimensions, compression) {
+			if(missing(data)) {
+        stop("Parameter data must be specified.")
+      }
+      stopifnot(length(maxdimensions) == length(GetDimensions(data)))
+      
+      dspace <- GetDataSpace(data)
+      dset <- createDataset_internal(.Object@pointer, datasetname, dspace$typechar, dspace$dim,
+          chunksize, maxdimensions, compression, dspace$size)
+			writeDataSet(dset, data)
+			dset
+		})
+
 checkChunksize <- function(chunksize) {
   if (!(is.numeric(chunksize) | is.integer(chunksize))) {
     stop("Parameter chunksize must be of type integer/numeric.")
@@ -98,56 +134,37 @@ checkMaxDimensions <- function(maxdimensions) {
   invisible(TRUE)
 }
 
+checkCompression <- function(compression) {
+  if (!(is.numeric(compression) | is.integer(compression))) {
+    stop("Parameter compression must be of type integer/numeric.")
+  } 
+  if (!length(compression) == 1) {
+    stop("Parameter compression must be of length one.")
+  } 
+  if (!((compression >= 0) & (compression <= 9))) {
+    stop("Parameter compression must lie between 0 and 9.")
+  }
+  invisible(TRUE)
+  
+}
 
-#' @rdname CommonFG
-#' @export
-setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "character", 
-				data = "missing", type = "character", dimensions = "integer", 
-				chunksize = "ANY", maxdimensions = "ANY", 
-				compression = "ANY", size = "ANY"), 
-		function(.Object, datasetname, type, dimensions, chunksize, maxdimensions, 
-				compression, size) {
-			
-      stopifnot(type %in% c("double", "integer", "logical", "character"))
-      checkChunksize(chunksize)
-      checkMaxDimensions(maxdimensions)
-      stopifnot(length(maxdimensions) == length(GetDimensions(data)))
-      chunksize <- ifelse(!is.na(maxdimensions) & (is.na(chunksize) | chunksize > maxdimensions), 
-          maxdimensions, chunksize)
-      
-			typechar <- substr(type, 1, 1)	
-			dsetptr <- CreateDataset(.Object@pointer, datasetname, typechar, dimensions, chunksize,
-					maxdimensions, compression, size)
-			new("DataSet", dsetptr, typechar)
-		})
+createDataset_internal <- function(loc, datasetname, typechar, dimensions, 
+    chunksize, maxdimensions, compression, size) {
+  checkChunksize(chunksize)
+  checkMaxDimensions(maxdimensions)
+  chunksize <- ifelse(!is.na(maxdimensions) & (is.na(chunksize) | chunksize > maxdimensions), 
+      maxdimensions, chunksize)
+  if (!all(is.na(maxdimensions) | maxdimensions >= dimensions)) {
+    stop("Parameter maxdimensions must be equal or exceed data dimension size.")
+  } 
+  checkCompression(compression)
+  
+  dsetptr <- CreateDataset(loc, datasetname, typechar, dimensions,
+      chunksize, maxdimensions, compression, size)
+  new("DataSet", dsetptr, typechar)
+}
 
 
-#' @rdname CommonFG
-#' @export
-setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "character", 
-				data = "ANY", type = "missing", dimensions = "missing", chunksize = "ANY",
-				maxdimensions = "ANY", compression = "ANY", size = "missing"), 
-		function(.Object, datasetname, data, chunksize, maxdimensions, compression) {
-			if(missing(data)) {
-        stop("Parameter data must be specified.")
-      }
-      checkChunksize(chunksize)
-      checkMaxDimensions(maxdimensions)
-      stopifnot(length(maxdimensions) == length(GetDimensions(data)))
-      chunksize <- ifelse(!is.na(maxdimensions) & (is.na(chunksize) | chunksize > maxdimensions), 
-          maxdimensions, chunksize)
-      
-      if (!all(is.na(maxdimensions) | maxdimensions >= GetDimensions(data))) {
-        stop("Parameter maxdimensions must be equal or exceed data dimension size.")
-      } 
-        
-      dspace <- GetDataSpace(data)
-			dsetptr <- CreateDataset(.Object@pointer, datasetname, dspace$typechar, dspace$dim,
-					chunksize, maxdimensions, compression, dspace$size)
-			dset <- new("DataSet", dsetptr, dspace$typechar)
-			writeDataSet(dset, data)
-			dset
-		})
 
 #' @rdname CommonFG
 #' @export
