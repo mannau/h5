@@ -1,6 +1,6 @@
-context("datatypes-Vector")
+context("DataSet-Vector")
 
-test_that("datatypes-Vector",{
+test_that("DataSet-Vector",{
 	
 	testmat_n <- rnorm(120)
 	testmat_i <- as.integer(runif(120)*10000)
@@ -9,6 +9,7 @@ test_that("datatypes-Vector",{
 	testmat_c <-rep(paste0(LETTERS[1:3], rev(LETTERS)[1:3]), 120/3)
 	testmat_c[1] <- paste0(testmat_c[1], testmat_c[1])
 	testmat_c[40] <- paste0(testmat_c[1], testmat_c[1])
+  
 	
 	fname <- "test.h5"
 	if(file.exists(fname)) file.remove(fname)

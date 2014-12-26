@@ -6,44 +6,6 @@
 
 using namespace Rcpp;
 
-// CreateDataset
-XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char datatype, NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size);
-RcppExport SEXP h5_CreateDataset(SEXP fileSEXP, SEXP datasetnameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP chunksizeSEXP, SEXP maxshapeSEXP, SEXP compressionlevelSEXP, SEXP sizeSEXP) {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
-        Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type chunksize(chunksizeSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type maxshape(maxshapeSEXP );
-        Rcpp::traits::input_parameter< int >::type compressionlevel(compressionlevelSEXP );
-        Rcpp::traits::input_parameter< int >::type size(sizeSEXP );
-        XPtr<DataSet> __result = CreateDataset(file, datasetname, datatype, dimensions, chunksize, maxshape, compressionlevel, size);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
-// OpenDataset
-XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname);
-RcppExport SEXP h5_OpenDataset(SEXP fileSEXP, SEXP datasetnameSEXP) {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
-        XPtr<DataSet> __result = OpenDataset(file, datasetname);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
 // WriteDataset
 bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype);
 RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP matSEXP, SEXP datatypeSEXP) {
@@ -86,6 +48,44 @@ BEGIN_RCPP
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
         bool __result = CloseDataset(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// CreateDataset
+XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char datatype, NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size);
+RcppExport SEXP h5_CreateDataset(SEXP fileSEXP, SEXP datasetnameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP chunksizeSEXP, SEXP maxshapeSEXP, SEXP compressionlevelSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
+        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
+        Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type chunksize(chunksizeSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type maxshape(maxshapeSEXP );
+        Rcpp::traits::input_parameter< int >::type compressionlevel(compressionlevelSEXP );
+        Rcpp::traits::input_parameter< int >::type size(sizeSEXP );
+        XPtr<DataSet> __result = CreateDataset(file, datasetname, datatype, dimensions, chunksize, maxshape, compressionlevel, size);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// OpenDataset
+XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname);
+RcppExport SEXP h5_OpenDataset(SEXP fileSEXP, SEXP datasetnameSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
+        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
+        XPtr<DataSet> __result = OpenDataset(file, datasetname);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

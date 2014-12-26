@@ -1,5 +1,8 @@
 .travis.yml
+travis-tool.sh
+Makefile
 src/*.o
+src/*.o-*
 src/*.so
 src/*.dll
 src/symbols.rds

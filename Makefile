@@ -7,18 +7,18 @@ PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
 #DATA_FILES := $(wildcard data/*.rda)
 R_FILES := $(wildcard R/*.R)
 TEST_FILES := $(wildcard tests/*.R) $(wildcard tests/testthat/*.R)
-ALL_SRC_FILES := $(wildcard src/*.cpp) src/Makevars
+ALL_SRC_FILES := $(wildcard src/*.cpp) $(wildcard src/*.h) src/Makevars
 SRC_FILES := $(filter-out src/RcppExports.cpp, $(ALL_SRC_FILES))
 HEADER_FILES := $(wildcard src/*.h)
 RCPPEXPORTS := src/RcppExports.cpp R/RcppExports.R
 ROXYGENFILES := $(wildcard man/*.Rd) NAMESPACE 
 PKG_FILES := DESCRIPTION $(ROXYGENFILES) $(R_FILES) $(SRC_FILES) \
-	$(HEADER_FILES) $(TEST_FILES)
-OBJECTS := $(wildcard src/*.o) $(wildcard src/*.dll) $(wildcard *.tar.gz)
+	$(HEADER_FILES) $(TEST_FILES) $(RCPPEXPORTS)
+OBJECTS := $(wildcard src/*.o) $(wildcard src/*.o-*) $(wildcard src/*.dll) $(wildcard src/*.so) $(wildcard src/*.rds)
 CHECKPATH := $(PKG_NAME).Rcheck
 CHECKLOG := `cat $(CHECKPATH)/00check.log`
 
-.PHONY: all build check manual install clean
+.PHONY: all build check manual install clean compileAttributes
 
 all: 
 	install
@@ -32,7 +32,10 @@ $(PKG_NAME)_$(PKG_VERSION).tar.gz: $(PKG_FILES)
 roxygen: $(R_FILES)
 	$(Rscript) 'library(roxygen2); roxygenize()'
 	
-$(RCPPEXPORTS): $(SRC_FILES)
+$(RCPPEXPORTS): compileAttributes
+	
+compileAttributes: $(SRC_FILES)
+	@echo $(SRC_FILES)
 	$(Rscript) 'library(Rcpp); Rcpp::compileAttributes()'
 	
 check: $(PKG_NAME)_$(PKG_VERSION).tar.gz 

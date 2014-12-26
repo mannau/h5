@@ -44,10 +44,18 @@ XPtr<H5File> OpenFile(string filePath, string mode) {
 
 // [[Rcpp::export]]
 bool CloseFile(XPtr<H5File> file) {
-  file->flush(H5F_SCOPE_LOCAL);
-  file->close();
-  return TRUE;
+  Function warning("warning");
+  try {
+    file->flush(H5F_SCOPE_LOCAL);
+  } catch (Exception& error) {
+    Function warning("warning");
+    warning(error.getDetailMsg());
+  }
+  try{
+    file->close();
+    return TRUE;
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
+  }
 }
-
-
-

@@ -12,14 +12,9 @@ bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype) {
     const void *buf = ConvertBuffer(mat, datatype, stsize);
     dataset->write(buf, GetDataType(datatype, stsize));
     return TRUE;
-  } catch(FileIException& error) {
-    throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSetIException& error) {
-      throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSpaceIException& error) {
-      throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(...) {
-    throw Rcpp::exception("c++ exception (unknown reason)");
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
   }
 }
 
@@ -159,14 +154,9 @@ SEXP ReadDataset(XPtr<DataSet> dataset, char datatype) {
     UNPROTECT(1);
     dataspace.close();
     return data;
-  } catch(FileIException& error) {
-    throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSetIException& error) {
-      throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSpaceIException& error) {
-      throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(Rcpp::exception& error) {
-    throw error;
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
   }
 }
 
@@ -175,17 +165,79 @@ bool CloseDataset(XPtr<DataSet> dataset) {
   try {
     dataset->close();
     return TRUE;
-  } catch(FileIException& error) {
-    throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSetIException& error) {
-      throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSpaceIException& error) {
-      throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(...) {
-    throw Rcpp::exception("c++ exception (unknown reason)");
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
   }
 }
 
+// [[Rcpp::export]]
+XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char datatype,
+    NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size) {
+  try {
+    //TODO: expect dimensions.length() == maxshape.length()
+    // Preprocess paramters
+    //hsize_t dims = ProcessDimensions(dimensions);
+    //hsize_t maxdims = ProcessMaxDimensions(maxshape);
+    int rank = dimensions.length();
+    hsize_t dims[rank];
+    for(int i = 0; i < rank; i++) {
+     dims[i] = dimensions[i];
+    }
+
+    // Set maximum dimensions
+    hsize_t maxdims[rank];
+    for(int i = 0; i < rank; i++) {
+      if (R_IsNA(maxshape[i])) {
+         maxdims[i] = H5S_UNLIMITED;
+      } else {
+        maxdims[i] = maxshape[i];
+      }
+    }
+
+    // Create the data space for the dataset.
+    DataSpace dataspace (dimensions.length(), dims, maxdims);
+    // Set chunksize
+    hsize_t chunk_dims[rank];
+    for(int i = 0; i < rank; i++) {
+      if (R_IsNA(chunksize[i])) {
+        chunk_dims[i] = CHUNKSIZE;
+      } else {
+        chunk_dims[i] = chunksize[i];
+      }
+    }
+    DSetCreatPropList prop;
+    prop.setDeflate(compressionlevel);
+    // TODO: set chunk dims appropriately
+    prop.setChunk(rank, chunk_dims);
+    DataSet dataset = file->createDataSet((H5std_string)datasetname,
+        GetDataType(datatype, size), dataspace, prop);
+
+    if (dataset.getId() == -1) {
+      dataset.close();
+      prop.close();
+      dataspace.close();
+      throw Rcpp::exception("Creation of DataSet failed. Maybe dataset with same name is already existing at location.");
+    }
+    prop.close();
+    dataspace.close();
+    return XPtr<DataSet>(new DataSet(dataset));
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
+  }
+}
+
+// [[Rcpp::export]]
+XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname) {
+  try {
+    DataSet *dataset = new DataSet(file->openDataSet((H5std_string)datasetname));
+    return XPtr<DataSet>(dataset);
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
+  }
+}
 
 
 
