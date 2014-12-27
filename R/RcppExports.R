@@ -5,8 +5,12 @@ WriteDataset <- function(dataset, mat, datatype) {
     .Call('h5_WriteDataset', PACKAGE = 'h5', dataset, mat, datatype)
 }
 
-ReadDataset <- function(dataset, datatype) {
-    .Call('h5_ReadDataset', PACKAGE = 'h5', dataset, datatype)
+GetDataSetType <- function(dataset) {
+    .Call('h5_GetDataSetType', PACKAGE = 'h5', dataset)
+}
+
+ReadDataset <- function(dataset) {
+    .Call('h5_ReadDataset', PACKAGE = 'h5', dataset)
 }
 
 CloseDataset <- function(dataset) {

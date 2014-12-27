@@ -65,7 +65,18 @@ bool AppendDataset (XPtr<CommonFG> file, string dset, NumericMatrix mat) {
 */
 
 // [[Rcpp::export]]
-SEXP ReadDataset(XPtr<DataSet> dataset, char datatype) {
+char GetDataSetType(XPtr<DataSet> dataset) {
+  try {
+    DataType dtype = dataset->getDataType();
+    return GetTypechar(dtype);
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
+  }
+}
+
+// [[Rcpp::export]]
+SEXP ReadDataset(XPtr<DataSet> dataset) {
   try {
     DataSpace dataspace = dataset->getSpace();
     int ndim = dataspace.getSimpleExtentNdims();

@@ -23,16 +23,30 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
-// ReadDataset
-SEXP ReadDataset(XPtr<DataSet> dataset, char datatype);
-RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP datatypeSEXP) {
+// GetDataSetType
+char GetDataSetType(XPtr<DataSet> dataset);
+RcppExport SEXP h5_GetDataSetType(SEXP datasetSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        SEXP __result = ReadDataset(dataset, datatype);
+        char __result = GetDataSetType(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// ReadDataset
+SEXP ReadDataset(XPtr<DataSet> dataset);
+RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        SEXP __result = ReadDataset(dataset);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

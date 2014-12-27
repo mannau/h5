@@ -174,13 +174,11 @@ setGeneric("openDataSet", function(.Object, datasetname, type)
 
 #' @rdname CommonFG
 #' @export
-setMethod("openDataSet", signature(.Object="CommonFG", datasetname = "character", type = "character"), 
+setMethod("openDataSet", signature(.Object="CommonFG", datasetname = "character"), 
 		function(.Object, datasetname, type) {
-			stopifnot(type %in% c("double", "integer", "logical", "character"))
-			typechar <- substr(type, 1, 1)	
 			dsetptr <- OpenDataset(.Object@pointer, datasetname)
-			dset <- new("DataSet", dsetptr, typechar)
-		})
+			dset <- new("DataSet", dsetptr, GetDataSetType(dsetptr))
+})
 
 #' @rdname CommonFG
 #' @export

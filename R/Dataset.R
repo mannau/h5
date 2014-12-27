@@ -36,7 +36,7 @@ setGeneric("readDataSet", function(.Object)
 #' @export
 setMethod("readDataSet", signature(.Object="DataSet"), 
 		function(.Object) {
-			ReadDataset(.Object@pointer, .Object@typechar)
+			ReadDataset(.Object@pointer)
 		})
 
 setMethod( "initialize", "DataSet",

@@ -1,4 +1,4 @@
-context("DataSet")
+context("DataSet-createDataset")
 
 fname <- "test.h5"
 
@@ -60,24 +60,22 @@ test_that("DataSet-createDataset-maxdimensions",{
 })  
 
 test_that("DataSet-createDataset-compression",{	
-      if(file.exists(fname)) file.remove(fname)
-      file <- new( "H5File", fname, "a")
-      
-      f <- function() dset_cp_type <- createDataSet(file, "cp_type_n", 1:10, compression = "test")
-      expect_that(f(), throws_error("Parameter compression must be of type integer"))
-      
-      f <- function() dset_cp_-1 <- createDataSet(file, "cp_-1", 1:10, compression = -1)
-      expect_that(f(), throws_error("Parameter compression must lie between 0 and 9"))
-      
-      f <- function() dset_cp_10 <- createDataSet(file, "cp_10", 1:10, compression = 10)
-      expect_that(f(), throws_error("Parameter compression must lie between 0 and 9"))
-      
-      for(i in 0:9) {
-        dset <- createDataSet(file, sprintf("cp_%d", i), 1:10, compression = i)
-        closeh5(dset)
-      }
-      
-      closeh5(file)
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname, "a")
+  
+  f <- function() dset_cp_type <- createDataSet(file, "cp_type_n", 1:10, compression = "test")
+  expect_that(f(), throws_error("Parameter compression must be of type integer"))
+  
+  f <- function() dset_cp_-1 <- createDataSet(file, "cp_-1", 1:10, compression = -1)
+  expect_that(f(), throws_error("Parameter compression must lie between 0 and 9"))
+  
+  f <- function() dset_cp_10 <- createDataSet(file, "cp_10", 1:10, compression = 10)
+  expect_that(f(), throws_error("Parameter compression must lie between 0 and 9"))
+  
+  for(i in 0:9) {
+    dset <- createDataSet(file, sprintf("cp_%d", i), 1:10, compression = i)
+    closeh5(dset)
+  }
+  
+  closeh5(file)
 })  
-
-
