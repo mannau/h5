@@ -23,7 +23,9 @@ XPtr<H5File> OpenFile(string filePath, string mode) {
     filemodes["r+"] = H5F_ACC_RDWR;
     filemodes["w"] = H5F_ACC_TRUNC;
     filemodes["w-"] = H5F_ACC_EXCL;
-    if(file_exist(filePath)) {
+
+    bool fileexists = file_exist(filePath);
+    if(fileexists) {
       filemodes["a"] = H5F_ACC_RDWR;
     } else {
       filemodes["a"] = H5F_ACC_EXCL;
@@ -33,7 +35,7 @@ XPtr<H5File> OpenFile(string filePath, string mode) {
       throw Rcpp::exception("Given file mode not found");
     }
 
-    H5File *file = new H5File(filePath, filemodes[mode]);
+    H5File *file = new H5File((H5std_string)filePath, filemodes[mode]);
     return XPtr<H5File>(file);
 } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();

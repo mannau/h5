@@ -4,6 +4,8 @@
 #' 
 #' @param .Object DataSet; S4 object of class \code{DataSet};
 #' @param data object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.
+#' @param offset numeric; Offset to be selected from Hyperslab.
+#' @param count numeric; Count to be selected from Hyperslab.
 #' @name DataSet 
 #' @rdname DataSet
 #' @aliases DataSet-class
@@ -28,15 +30,15 @@ setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY"),
 
 #' @rdname DataSet
 #' @export
-setGeneric("readDataSet", function(.Object)
+setGeneric("readDataSet", function(.Object, offset = NA, count = NA)
 			standardGeneric("readDataSet")
 )
 
 #' @rdname DataSet
 #' @export
-setMethod("readDataSet", signature(.Object="DataSet"), 
-		function(.Object) {
-			ReadDataset(.Object@pointer)
+setMethod("readDataSet", signature(.Object="DataSet", offset = "ANY", count = "ANY"), 
+		function(.Object, offset, count) {
+			ReadDataset(.Object@pointer, offset, count)
 		})
 
 setMethod( "initialize", "DataSet",

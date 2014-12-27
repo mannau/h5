@@ -187,17 +187,17 @@ test_that("datatypes-Array",{
   ### Check if written data equals input data
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
-  dset11 <- openDataSet(group, "testmat_n", "double")
+  dset11 <- openDataSet(group, "testmat_n")
   testmat_n_read <- readDataSet(dset11)
   closeh5(dset11)
   expect_that(testmat_n, is_identical_to(testmat_n_read))
   
-  dset13 <- openDataSet(group, "testmat_i", "integer")
+  dset13 <- openDataSet(group, "testmat_i")
   testmat_i_read <- readDataSet(dset13)
   closeh5(dset13)
   expect_that(testmat_i, is_identical_to(testmat_i_read))
   
-  dset14 <- openDataSet(group, "testmat_c", "character")
+  dset14 <- openDataSet(group, "testmat_c")
   testmat_c_read <- readDataSet(dset14)
   closeh5(dset14)
   expect_that(testmat_c, is_identical_to(testmat_c_read))

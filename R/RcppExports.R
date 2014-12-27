@@ -9,8 +9,8 @@ GetDataSetType <- function(dataset) {
     .Call('h5_GetDataSetType', PACKAGE = 'h5', dataset)
 }
 
-ReadDataset <- function(dataset) {
-    .Call('h5_ReadDataset', PACKAGE = 'h5', dataset)
+ReadDataset <- function(dataset, offset, count) {
+    .Call('h5_ReadDataset', PACKAGE = 'h5', dataset, offset, count)
 }
 
 CloseDataset <- function(dataset) {

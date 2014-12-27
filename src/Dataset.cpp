@@ -76,15 +76,24 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 }
 
 // [[Rcpp::export]]
-SEXP ReadDataset(XPtr<DataSet> dataset) {
+SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector count) {
   try {
     DataSpace dataspace = dataset->getSpace();
     int ndim = dataspace.getSimpleExtentNdims();
-    hsize_t dims[ndim];
-    dataspace.getSimpleExtentDims(dims, NULL);
-    IntegerVector arraydims(ndim);
-    for(int i = 0; i < ndim; i++) {
-      arraydims[i] = dims[i];
+    hsize_t dims_out[ndim];
+    dataspace.getSimpleExtentDims( dims_out, NULL);
+    DataSpace *memspace = new DataSpace(DataSpace::ALL);
+    if (!R_IsNA(count[0])) {
+      hsize_t count_t[count.length()];
+      std::copy(count.begin(), count.end(), count_t);
+
+      hsize_t offset_t[offset.length()];
+      std::copy(offset.begin(), offset.end(), offset_t);
+
+      dataspace.selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
+      memspace = new DataSpace(ndim, count_t);
+    } else {
+      count = NumericVector(dims_out, dims_out + sizeof dims_out / sizeof dims_out[0]);
     }
 
     DataType dtype = dataset->getDataType();
@@ -93,31 +102,31 @@ SEXP ReadDataset(XPtr<DataSet> dataset) {
     SEXP data;
     if (tchar == 'd') {
       if (ndim == 1) {
-        data = PROTECT(Rf_allocVector(REALSXP, dims[0]));
+        data = PROTECT(Rf_allocVector(REALSXP, count[0]));
       } else if (ndim == 2) {
-        data = PROTECT(Rf_allocMatrix(REALSXP, dims[0], dims[1]));
+        data = PROTECT(Rf_allocMatrix(REALSXP, count[0], count[1]));
       } else {//(ndim > 2)
-        data = PROTECT(Rf_allocArray(REALSXP, arraydims));
+        data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count));
       }
-      dataset->read(REAL(data), dtype, dataspace);
+      dataset->read(REAL(data), dtype, *memspace, dataspace);
     } else if (tchar == 'i') {
       if (ndim == 1) {
-        data = PROTECT(Rf_allocVector(INTSXP, dims[0]));
+        data = PROTECT(Rf_allocVector(INTSXP, count[0]));
       } else if (ndim == 2) {
-        data = PROTECT(Rf_allocMatrix(INTSXP, dims[0], dims[1]));
+        data = PROTECT(Rf_allocMatrix(INTSXP, count[0], count[1]));
       } else {//(ndim > 2)
-        data = PROTECT(Rf_allocArray(INTSXP, arraydims));
+        data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count));
       }
       dataset->read(INTEGER(data), dtype, dataspace);
     } else if (tchar == 'c') {
        size_t stsize = dtype.getSize();
         hsize_t n = dataspace.getSimpleExtentNpoints();
         if (ndim == 1) {
-         data = PROTECT(Rf_allocVector(STRSXP, dims[0]));
+         data = PROTECT(Rf_allocVector(STRSXP, count[0]));
         } else if (ndim == 2) {
-         data = PROTECT(Rf_allocMatrix(STRSXP, dims[0], dims[1]));
+         data = PROTECT(Rf_allocMatrix(STRSXP, count[0], count[1]));
         } else {//(ndim > 2)
-         data = PROTECT(Rf_allocArray(STRSXP, arraydims));
+         data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count));
         }
         char *strbuf = (char *)R_alloc(n, stsize);
         dataset->read(strbuf, dtype, dataspace);
@@ -131,6 +140,8 @@ SEXP ReadDataset(XPtr<DataSet> dataset) {
     }
 
     UNPROTECT(1);
+    memspace->close();
+    delete memspace;
     dataspace.close();
     return data;
   } catch(Exception& error) {

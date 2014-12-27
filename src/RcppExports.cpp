@@ -39,14 +39,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // ReadDataset
-SEXP ReadDataset(XPtr<DataSet> dataset);
-RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP) {
+SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector count);
+RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP offsetSEXP, SEXP countSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        SEXP __result = ReadDataset(dataset);
+        Rcpp::traits::input_parameter< NumericVector >::type offset(offsetSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
+        SEXP __result = ReadDataset(dataset, offset, count);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

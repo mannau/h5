@@ -15,9 +15,9 @@ writeDataSet(.Object, data)
 
 \S4method{writeDataSet}{DataSet}(.Object, data)
 
-readDataSet(.Object)
+readDataSet(.Object, offset = NA, count = NA)
 
-\S4method{readDataSet}{DataSet}(.Object)
+\S4method{readDataSet}{DataSet}(.Object, offset = NA, count = NA)
 
 \S4method{closeh5}{DataSet}(.Object)
 }
@@ -25,6 +25,10 @@ readDataSet(.Object)
 \item{.Object}{DataSet; S4 object of class \code{DataSet};}
 
 \item{data}{object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.}
+
+\item{offset}{numeric; Offset to be selected from Hyperslab.}
+
+\item{count}{numeric; Count to be selected from Hyperslab.}
 }
 \description{
 The DataSet class used to store data objects in HDF5 tree.
