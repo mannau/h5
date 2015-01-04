@@ -11,8 +11,13 @@
 #' @aliases DataSet-class
 #' @include H5Location.R
 #' @export
-setClass( "DataSet", representation( pointer = "externalptr", typechar = "character"), 
-		contains = "H5Location")
+setClass( "DataSet", representation( pointer = "externalptr", 
+                                     datatype = "character",
+                                     dim = "numeric", 
+                                     maxdim = "numeric", 
+                                     chunksize = "numeric",
+                                     compression = "character"), 
+  contains = "H5Location")
 
 
 #' @rdname DataSet
@@ -25,7 +30,7 @@ setGeneric("writeDataSet", function(.Object, data)
 #' @export
 setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY"), 
 		function(.Object, data) {
-			invisible(WriteDataset(.Object@pointer, data, .Object@typechar))
+			invisible(WriteDataset(.Object@pointer, data, .Object@datatype))
 		})
 
 #' @rdname DataSet
@@ -42,9 +47,18 @@ setMethod("readDataSet", signature(.Object="DataSet", offset = "ANY", count = "A
 		})
 
 setMethod( "initialize", "DataSet",
-		function(.Object, location, typechar) {
+		function(.Object, location, 
+                      datatype, 
+                      dim = GetDataSetDimensions(location), 
+                      maxdim = GetDataSetMaxDimensions(location), 
+                      chunksize = GetDataSetChunksize(location), 
+                      compression = GetDataSetCompression(location)) {
 			.Object@pointer = location
-			.Object@typechar = typechar
+			.Object@datatype = datatype
+      .Object@dim = dim      
+      .Object@maxdim = maxdim   
+      .Object@chunksize = chunksize
+      .Object@compression = compression
 			.Object
 		})
 

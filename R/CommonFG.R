@@ -161,6 +161,7 @@ createDataset_internal <- function(loc, datasetname, typechar, dimensions,
   
   dsetptr <- CreateDataset(loc, datasetname, typechar, dimensions,
       chunksize, maxdimensions, compression, size)
+  
   new("DataSet", dsetptr, typechar)
 }
 

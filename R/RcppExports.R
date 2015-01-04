@@ -25,6 +25,22 @@ OpenDataset <- function(file, datasetname) {
     .Call('h5_OpenDataset', PACKAGE = 'h5', file, datasetname)
 }
 
+GetDataSetDimensions <- function(dataset) {
+    .Call('h5_GetDataSetDimensions', PACKAGE = 'h5', dataset)
+}
+
+GetDataSetMaxDimensions <- function(dataset) {
+    .Call('h5_GetDataSetMaxDimensions', PACKAGE = 'h5', dataset)
+}
+
+GetDataSetChunksize <- function(dataset) {
+    .Call('h5_GetDataSetChunksize', PACKAGE = 'h5', dataset)
+}
+
+GetDataSetCompression <- function(dataset) {
+    .Call('h5_GetDataSetCompression', PACKAGE = 'h5', dataset)
+}
+
 OpenFile <- function(filePath, mode) {
     .Call('h5_OpenFile', PACKAGE = 'h5', filePath, mode)
 }

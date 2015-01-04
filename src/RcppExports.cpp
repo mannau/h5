@@ -108,6 +108,66 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// GetDataSetDimensions
+NumericVector GetDataSetDimensions(XPtr<DataSet> dataset);
+RcppExport SEXP h5_GetDataSetDimensions(SEXP datasetSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        NumericVector __result = GetDataSetDimensions(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// GetDataSetMaxDimensions
+NumericVector GetDataSetMaxDimensions(XPtr<DataSet> dataset);
+RcppExport SEXP h5_GetDataSetMaxDimensions(SEXP datasetSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        NumericVector __result = GetDataSetMaxDimensions(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// GetDataSetChunksize
+NumericVector GetDataSetChunksize(XPtr<DataSet> dataset);
+RcppExport SEXP h5_GetDataSetChunksize(SEXP datasetSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        NumericVector __result = GetDataSetChunksize(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// GetDataSetCompression
+CharacterVector GetDataSetCompression(XPtr<DataSet> dataset);
+RcppExport SEXP h5_GetDataSetCompression(SEXP datasetSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        CharacterVector __result = GetDataSetCompression(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // OpenFile
 XPtr<H5File> OpenFile(string filePath, string mode);
 RcppExport SEXP h5_OpenFile(SEXP filePathSEXP, SEXP modeSEXP) {

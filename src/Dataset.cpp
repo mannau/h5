@@ -79,9 +79,7 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector count) {
   try {
     DataSpace dataspace = dataset->getSpace();
-    int ndim = dataspace.getSimpleExtentNdims();
-    hsize_t dims_out[ndim];
-    dataspace.getSimpleExtentDims( dims_out, NULL);
+
     DataSpace *memspace = new DataSpace(DataSpace::ALL);
     if (!R_IsNA(count[0])) {
       hsize_t count_t[count.length()];
@@ -91,14 +89,15 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
       std::copy(offset.begin(), offset.end(), offset_t);
 
       dataspace.selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
-      memspace = new DataSpace(ndim, count_t);
+      memspace = new DataSpace(dataspace.getSimpleExtentNdims(), count_t);
     } else {
-      count = NumericVector(dims_out, dims_out + sizeof dims_out / sizeof dims_out[0]);
+      count = GetDataSetDimensions(dataset);
     }
 
     DataType dtype = dataset->getDataType();
     char tchar = GetTypechar(dtype);
 
+    int ndim = dataspace.getSimpleExtentNdims();
     SEXP data;
     if (tchar == 'd') {
       if (ndim == 1) {
@@ -229,5 +228,65 @@ XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname) {
   }
 }
 
+// [[Rcpp::export]]
+NumericVector GetDataSetDimensions(XPtr<DataSet> dataset) {
+  DataSpace dataspace = dataset->getSpace();
+  int ndim = dataspace.getSimpleExtentNdims();
+  hsize_t dims_out[ndim];
+  dataspace.getSimpleExtentDims( dims_out, NULL);
+  return NumericVector(dims_out, dims_out + sizeof dims_out / sizeof dims_out[0]);
+}
+
+// [[Rcpp::export]]
+NumericVector GetDataSetMaxDimensions(XPtr<DataSet> dataset) {
+  DataSpace dataspace = dataset->getSpace();
+  int ndim = dataspace.getSimpleExtentNdims();
+  hsize_t dims_out[ndim];
+  hsize_t maxdims_out[ndim];
+  dataspace.getSimpleExtentDims( dims_out, maxdims_out);
+  return NumericVector(maxdims_out, maxdims_out + sizeof maxdims_out / sizeof maxdims_out[0]);
+}
+
+// [[Rcpp::export]]
+NumericVector GetDataSetChunksize(XPtr<DataSet> dataset) {
+  DSetCreatPropList cparms = dataset->getCreatePlist();
+  DataSpace dataspace = dataset->getSpace();
+  int ndim = dataspace.getSimpleExtentNdims();
+  hsize_t chunk_dims[ndim];
+  int rank_chunk;
+  if( H5D_CHUNKED == cparms.getLayout()) {
+    rank_chunk = cparms.getChunk(ndim, chunk_dims);
+    return NumericVector(chunk_dims, chunk_dims + sizeof chunk_dims / sizeof chunk_dims[0]);
+  }
+  return NA_REAL;
+}
+
+// [[Rcpp::export]]
+CharacterVector GetDataSetCompression(XPtr<DataSet> dataset) {
+  DSetCreatPropList cparms = dataset->getCreatePlist();
+  int numfilt = cparms.getNfilters();
+  size_t nelmts={1}, namelen={1};
+  unsigned  flags, filter_info, cd_values[1];
+  char name[1];
+  H5Z_filter_t filter_type;
+
+  CharacterVector outvec(numfilt);
+
+  for (int i = 0; i < numfilt; i++) {
+      nelmts = 0;
+      filter_type = cparms.getFilter(i, flags, nelmts, cd_values, namelen, name , filter_info);
+      switch (filter_type) {
+        case H5Z_FILTER_DEFLATE:
+          outvec(i) = "H5Z_FILTER_DEFLATE";
+          break;
+        case H5Z_FILTER_SZIP:
+          outvec(i) = "H5Z_FILTER_SZIP";
+          break;
+        default:
+          outvec(i) = "UNKNOWN";
+        }
+  }
+  return outvec;
+}
 
 
