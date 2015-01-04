@@ -134,7 +134,7 @@ test_that("datatypes-Matrix",{
   ### Check if written data equals input data
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
-  dset11 <- openDataSet(group, "testmat_n", "double")
+  dset11 <- openDataSet(group, "testmat_n")
   testmat_n_read <- readDataSet(dset11)
   closeh5(dset11)
   expect_that(testmat_n, is_identical_to(testmat_n_read))

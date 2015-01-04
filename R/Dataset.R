@@ -43,7 +43,11 @@ setGeneric("readDataSet", function(.Object, offset = NA, count = NA)
 #' @export
 setMethod("readDataSet", signature(.Object="DataSet", offset = "ANY", count = "ANY"), 
 		function(.Object, offset, count) {
-			ReadDataset(.Object@pointer, offset, count)
+			dset <- ReadDataset(.Object@pointer, offset - 1, count)
+      if(is.matrix(dset)) {
+        return(t(dset))
+      }
+      dset   
 		})
 
 setMethod( "initialize", "DataSet",

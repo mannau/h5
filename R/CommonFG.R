@@ -110,7 +110,12 @@ setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "characte
       dspace <- GetDataSpace(data)
       dset <- createDataset_internal(.Object@pointer, datasetname, dspace$typechar, dspace$dim,
           chunksize, maxdimensions, compression, dspace$size)
-			writeDataSet(dset, data)
+			
+      if(is.matrix(data)) {
+        data <- t(data)
+      }
+      
+      writeDataSet(dset, data)
 			dset
 		})
 

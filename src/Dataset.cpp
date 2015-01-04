@@ -90,6 +90,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
 
       dataspace.selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
       memspace = new DataSpace(dataspace.getSimpleExtentNdims(), count_t);
+      //memspace->selectHyperslab( H5S_SELECT_SET, count_t, offset_out);
     } else {
       count = GetDataSetDimensions(dataset);
     }
@@ -103,7 +104,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(REALSXP, count[0]));
       } else if (ndim == 2) {
-        data = PROTECT(Rf_allocMatrix(REALSXP, count[0], count[1]));
+        data = PROTECT(Rf_allocMatrix(REALSXP, count[1], count[0]));
       } else {//(ndim > 2)
         data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count));
       }
@@ -112,23 +113,23 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(INTSXP, count[0]));
       } else if (ndim == 2) {
-        data = PROTECT(Rf_allocMatrix(INTSXP, count[0], count[1]));
+        data = PROTECT(Rf_allocMatrix(INTSXP, count[1], count[0]));
       } else {//(ndim > 2)
         data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count));
       }
-      dataset->read(INTEGER(data), dtype, dataspace);
+      dataset->read(INTEGER(data), dtype, *memspace, dataspace);
     } else if (tchar == 'c') {
        size_t stsize = dtype.getSize();
         hsize_t n = dataspace.getSimpleExtentNpoints();
         if (ndim == 1) {
          data = PROTECT(Rf_allocVector(STRSXP, count[0]));
         } else if (ndim == 2) {
-         data = PROTECT(Rf_allocMatrix(STRSXP, count[0], count[1]));
+         data = PROTECT(Rf_allocMatrix(STRSXP, count[1], count[0]));
         } else {//(ndim > 2)
          data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count));
         }
         char *strbuf = (char *)R_alloc(n, stsize);
-        dataset->read(strbuf, dtype, dataspace);
+        dataset->read(strbuf, dtype, *memspace, dataspace);
         for(int i = 0; i < n; i++) {
           SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
           strbuf += stsize;
