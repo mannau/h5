@@ -35,7 +35,9 @@ setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY"),
 
 #' @rdname DataSet
 #' @export
-setGeneric("readDataSet", function(.Object, offset = NA, count = NA)
+setGeneric("readDataSet", function(.Object, 
+        offset = rep(NA_integer_, length(.Object@dim)) , 
+        count = rep(NA_integer_, length(.Object@dim)))
 			standardGeneric("readDataSet")
 )
 
@@ -43,6 +45,47 @@ setGeneric("readDataSet", function(.Object, offset = NA, count = NA)
 #' @export
 setMethod("readDataSet", signature(.Object="DataSet", offset = "ANY", count = "ANY"), 
 		function(.Object, offset, count) {
+      
+      ### Type checking
+      if (!(is.numeric(offset) | is.integer(offset))) {
+        stop("Parameter offset must be of type integer/numeric.")
+      } 
+      if (!(is.numeric(count) | is.integer(count))) {
+        stop("Parameter count must be of type integer/numeric.")
+      } 
+      
+      ### Length checking
+      if (length(offset) != length(.Object@dim)) {
+        stop(sprintf("Parameter offset must have length of dataset dimensions (%d)", 
+                length(.Object@dim)))
+      }
+      if (length(count) != length(.Object@dim)) {
+        stop(sprintf("Parameter count must have length of dataset dimensions (%d)", 
+                length(.Object@dim)))
+      }
+      
+      ### Check minimum values
+      if (!all(offset > 0 | is.na(offset))) {
+        stop(sprintf("Elements of parameter offset must be greater than zero or NA", 
+                length(.Object@dim)))
+      }
+      
+      if (!all(count > 0 | is.na(count))) {
+        stop(sprintf("Elements of parameter count must be greater than zero or NA", 
+                length(.Object@dim)))
+      }
+      
+      ### Set NA values of offset to minimum values
+      offset[is.na(offset)] <- 1
+      
+      ### Set NA values of count to residual maximum values
+      count[is.na(count)] <- (.Object@dim - offset)[is.na(count)] + 1
+
+      ### Boundaries check
+      if (!all((offset + count - 1) <= .Object@dim)) {
+        stop("subscript out of bounds")
+      }
+
 			dset <- ReadDataset(.Object@pointer, offset - 1, count)
       if(is.matrix(dset)) {
         return(t(dset))

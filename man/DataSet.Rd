@@ -15,9 +15,11 @@ writeDataSet(.Object, data)
 
 \S4method{writeDataSet}{DataSet}(.Object, data)
 
-readDataSet(.Object, offset = NA, count = NA)
+readDataSet(.Object, offset = rep(NA_integer_, length(.Object@dim)),
+  count = rep(NA_integer_, length(.Object@dim)))
 
-\S4method{readDataSet}{DataSet}(.Object, offset = NA, count = NA)
+\S4method{readDataSet}{DataSet}(.Object, offset = rep(NA_integer_,
+  length(.Object@dim)), count = rep(NA_integer_, length(.Object@dim)))
 
 \S4method{closeh5}{DataSet}(.Object)
 }

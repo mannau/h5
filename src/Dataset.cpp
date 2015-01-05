@@ -79,9 +79,13 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector count) {
   try {
     DataSpace dataspace = dataset->getSpace();
-
     DataSpace *memspace = new DataSpace(DataSpace::ALL);
-    if (!R_IsNA(count[0])) {
+
+    bool minoffset = is_true(all(offset == 0.0));
+    bool maxcount = is_true(all(count == GetDataSetDimensions(dataset)));
+    bool hyperslab = !(minoffset && maxcount);
+    // if hyperslab is selected
+    if (hyperslab) {
       hsize_t count_t[count.length()];
       std::copy(count.begin(), count.end(), count_t);
 
@@ -91,8 +95,6 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
       dataspace.selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
       memspace = new DataSpace(dataspace.getSimpleExtentNdims(), count_t);
       //memspace->selectHyperslab( H5S_SELECT_SET, count_t, offset_out);
-    } else {
-      count = GetDataSetDimensions(dataset);
     }
 
     DataType dtype = dataset->getDataType();
