@@ -7,16 +7,33 @@
 using namespace Rcpp;
 
 // WriteDataset
-bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype);
-RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP matSEXP, SEXP datatypeSEXP) {
+bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype);
+RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP matSEXP, SEXP datatypeSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
         Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP );
         Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        bool __result = WriteDataset(dataset, mat, datatype);
+        bool __result = WriteDataset(dataset, dataspace, mat, datatype);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// ExtendDataset
+bool ExtendDataset(XPtr<DataSet> dset, NumericVector dimsnew);
+RcppExport SEXP h5_ExtendDataset(SEXP dsetSEXP, SEXP dimsnewSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dset(dsetSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type dimsnew(dimsnewSEXP );
+        bool __result = ExtendDataset(dset, dimsnew);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
@@ -38,9 +55,9 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
-// ReadDataset
-SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector count);
-RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP offsetSEXP, SEXP countSEXP) {
+// GetDataspace
+XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, NumericVector count);
+RcppExport SEXP h5_GetDataspace(SEXP datasetSEXP, SEXP offsetSEXP, SEXP countSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -48,7 +65,38 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
         Rcpp::traits::input_parameter< NumericVector >::type offset(offsetSEXP );
         Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
-        SEXP __result = ReadDataset(dataset, offset, count);
+        XPtr<DataSpace> __result = GetDataspace(dataset, offset, count);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// CloseDataspace
+bool CloseDataspace(XPtr<DataSpace> dataspace);
+RcppExport SEXP h5_CloseDataspace(SEXP dataspaceSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
+        bool __result = CloseDataspace(dataspace);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// ReadDataset
+SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace);
+RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP dataspaceSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
+        SEXP __result = ReadDataset(dataset, dataspace);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

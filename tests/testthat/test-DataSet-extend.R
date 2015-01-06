@@ -1,0 +1,105 @@
+context("DataSet-extend")
+
+fname <- "test.h5"
+
+test_that("DataSet-extend",{  
+  testmat_n <- matrix(as.integer(1:90), ncol = 9)
+  
+  # Test normal usecase with unlimited dset
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname, "a")
+  dset1 <- createDataSet(file, "testmat_1", testmat_n, maxdimensions = dim(testmat_n))
+  
+  dimtestmat_n <- dim(testmat_n)
+  dimtestmat_n_x1 <- dimtestmat_n_y1 <- dimtestmat_n
+  dimtestmat_n_x1[1] <- dimtestmat_n_x1[1] - 1
+  dimtestmat_n_y1[2] <- dimtestmat_n_y1[2] - 1
+  
+  f <- function() extendDataSet(dset1, dimtestmat_n_x1)
+  expect_that(f(), throws_error("Number of extendible dimensions must be greater or equal than DataSet dimensions"))
+  
+  f <- function() extendDataSet(dset1, dimtestmat_n_y1)
+  expect_that(f(), throws_error("Number of extendible dimensions must be greater or equal than DataSet dimensions"))
+  
+  dimtestmat_n_x1[1] <- dimtestmat_n[1] + 1
+  f <- function() extendDataSet(dset1, dimtestmat_n_x1)
+  expect_that(f(), throws_error("Number of extendible dimensions exceeds maximum dimensions of DataSet"))
+  
+  closeh5(dset1)
+  
+  testmat_n_2 <- dim(testmat_n) * 2
+  dset2 <- createDataSet(file, "testmat_2", testmat_n, maxdimensions = testmat_n_2)
+  dset2 <- extendDataSet(dset2, testmat_n_2)
+  expect_equal(dset2@dim, testmat_n_2)
+  
+  testmat <- rbind(cbind(testmat_n, 
+      matrix(rep(0, length(testmat_n)), nrow = nrow(testmat_n))), 
+      matrix(rep(0, dim(testmat_n)[1] * dim(testmat_n)[2] * 2), nrow = nrow(testmat_n)))
+  
+  expect_equal(readDataSet(dset2), testmat)
+
+  closeh5(dset2)
+  closeh5(file)
+})
+
+test_that("DataSet-extend-matrix-rbind",{  
+  testmat_n <- matrix(as.integer(1:90), ncol = 9)
+  
+  # Test normal usecase with unlimited dset
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname, "a")
+  dset1 <- createDataSet(file, "testmat_1", testmat_n)
+  
+  f <- function() rbind(dset1, matrix(1:8, ncol = 8))
+  expect_that(f(), throws_error("Data to append does not match dataset dimensions"))
+  
+  f <- function() rbind(dset1, matrix(LETTERS[1:9], ncol = 9))
+  expect_that(f(), throws_error("Data to append does not match type of DataSet"))
+
+  #dset1 <- rbind(dset1, testmat_n)
+  closeh5(dset1)
+  dset2 <- createDataSet(file, "testmat_2", testmat_n, maxdimensions = dim(testmat_n))
+  closeh5(dset2)
+  closeh5(file)
+
+  file <- new( "H5File", fname, "r")
+  dset1 <- openDataSet(file, "testmat_1")
+  testmat_n2 <- rbind(testmat_n, testmat_n)
+  expect_that(readDataSet(dset1), is_identical_to(testmat_n2))
+  dset1 <- rbind(dset1, rep(1, ncol(testmat_n)))
+  expect_that(readDataSet(dset1), is_identical_to(rbind(testmat_n2, 1)))
+  closeh5(dset1)
+  closeh5(file)
+})
+
+test_that("DataSet-extend-matrix-cbind",{  
+  testmat_n <- matrix(as.integer(1:90), nrow = 10)
+  
+  # Test normal usecase with unlimited dset
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname, "a")
+  dset1 <- createDataSet(file, "testmat_1", testmat_n)
+  
+  f <- function() cbind(dset1, matrix(1:9, nrow = 9))
+  expect_that(f(), throws_error("Data to append does not match dataset dimensions"))
+  
+  f <- function() cbind(dset1, matrix(LETTERS[1:10], nrow = 10))
+  expect_that(f(), throws_error("Data to append does not match type"))
+  
+  closeh5(dset1)
+  dset2 <- createDataSet(file, "testmat_2", testmat_n, maxdimensions = dim(testmat_n))
+  closeh5(dset2)
+  closeh5(file)
+  
+  file <- new( "H5File", fname, "r")
+  dset1 <- openDataSet(file, "testmat_1")
+  testmat_n2 <- cbind(testmat_n, testmat_n)
+  expect_that(readDataSet(dset1), is_identical_to(testmat_n2))
+  dset1 <- cbind(dset1, rep(1, nrow(testmat_n)))
+  expect_that(readDataSet(dset1), is_identical_to(cbind(testmat_n2, 1)))
+  closeh5(dset1)
+  closeh5(file)
+})
+
+
+

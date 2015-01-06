@@ -25,3 +25,4 @@ Collate:
     'Helpers.R'
     'RcppExports.R'
     'h5-package.R'
+    'zzz.R'

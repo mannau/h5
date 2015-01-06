@@ -14,10 +14,10 @@ library(devtools)
 install_github("mannau/h5")
 ```
 
-Please note that this version has been tested with the current hdf5 library 1.8.4 - you therefore need to install the most current hdf5 library including its C++ API for your platform.
+Please note that this version has been tested with the current hdf5 library 1.8.14 - you therefore need to install the most current hdf5 library including its C++ API for your platform.
 
 ### MacOSX
-With MacOSX and Homebrew (http://brew.sh) you can use the following command:
+With MacOSX and Homebrew (http://brew.sh) you can use the following command to install HDF5 library dependencies and headers:
 ```shell
 brew install hdf5 --enable-cxx
 ```

@@ -5,12 +5,39 @@ using namespace H5;
 using namespace Rcpp;
 using namespace std;
 
+hsize_t* GetSelectCount(const DataSpace dataspace) {
+  int ndim = dataspace.getSimpleExtentNdims();
+  hsize_t start_t[ndim];
+  hsize_t end_t[ndim];
+  dataspace.getSelectBounds(start_t, end_t);
+  hsize_t *count_t = new hsize_t[ndim];
+  for (int i = 0; i < ndim; i++) {
+    count_t[i] = end_t[i] - start_t[i] + 1;
+  }
+  return count_t;
+}
+
 // [[Rcpp::export]]
-bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype) {
+bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype) {
   try {
+    int ndim = dataspace->getSimpleExtentNdims();
+    // TODO: Refactor
+    hsize_t start_t[ndim];
+    hsize_t end_t[ndim];
+    dataspace->getSelectBounds(start_t, end_t);
+    hsize_t count_t[ndim];
+    for (int i = 0; i < ndim; i++) {
+     count_t[i] = end_t[i] - start_t[i] + 1;
+    }
+    // END TO-DO
+
+    NumericVector count(count_t, count_t + sizeof count_t / sizeof count_t[0]);
+    //DataSpace *memspace = new DataSpace(DataSpace::ALL);
+    DataSpace *memspace = new DataSpace(ndim, count_t);
+
     size_t stsize = dataset->getDataType().getSize();
     const void *buf = ConvertBuffer(mat, datatype, stsize);
-    dataset->write(buf, GetDataType(datatype, stsize));
+    dataset->write(buf, GetDataType(datatype, stsize), *memspace, *dataspace);
     return TRUE;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
@@ -18,51 +45,20 @@ bool WriteDataset(XPtr<DataSet> dataset, SEXP mat, char datatype) {
   }
 }
 
-/*
 // [[Rcpp::export]]
-bool AppendDataset (XPtr<CommonFG> file, string dset, NumericMatrix mat) {
+bool ExtendDataset(XPtr<DataSet> dset, NumericVector dimsnew) {
   try {
-    H5std_string dsetName(dset);
-    DataSet dataset_existing = file->openDataSet(dsetName);
-    DataSpace dataspace_existing = dataset_existing.getSpace();
-    int dim_existing = dataspace_existing.getSimpleExtentNdims();
-    hsize_t dims_existing[dim_existing];
-    dataspace_existing.getSimpleExtentDims(dims_existing);
+    hsize_t dimsnew_t[dimsnew.length()];
+    std::copy(dimsnew.begin(), dimsnew.end(), dimsnew_t);
 
-    hsize_t dims_new[dim_existing];
-    dims_new[0] = mat.nrow() + dims_existing[0];
-    dims_new[1] = dims_existing[1];
-
-    dataset_existing.extend(dims_new);
-
-    DataSpace *filespace = new DataSpace(dataset_existing.getSpace());
-    hsize_t offset[2];
-    offset[0] = dims_existing[0];
-    offset[1] = 0;
-    filespace->selectHyperslab(H5S_SELECT_SET, dims_new, offset);
-    DataSpace *memspace = new DataSpace(2, dims_new, NULL);
-
-    // Write data to the extended portion of the dataset.
-    dataset_existing.write(mat, PredType::NATIVE_DOUBLE, *memspace, *filespace);
-
-    // cleanup
-    delete filespace;
-    delete memspace;
-    //delete dataspace_existing;
-    //delete dataset_existing;
+    dset->extend(dimsnew_t);
     return TRUE;
-	} catch(FileIException& error) {
-		throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSetIException& error) {
-    	throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(DataSpaceIException& error) {
-    	throw Rcpp::exception(error.getDetailMsg().c_str());
-  } catch(...) {
-    throw Rcpp::exception("c++ exception (unknown reason)");
+  } catch(Exception& error) {
+       string msg = error.getDetailMsg() + " in " + error.getFuncName();
+       throw Rcpp::exception(msg.c_str());
   }
-  return TRUE;
+  return dset;
 }
-*/
 
 // [[Rcpp::export]]
 char GetDataSetType(XPtr<DataSet> dataset) {
@@ -76,31 +72,65 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 }
 
 // [[Rcpp::export]]
-SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector count) {
+XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, NumericVector count) {
   try {
-    DataSpace dataspace = dataset->getSpace();
-    DataSpace *memspace = new DataSpace(DataSpace::ALL);
-
+    DataSpace *dataspace = new DataSpace(dataset->getSpace());
     bool minoffset = is_true(all(offset == 0.0));
     bool maxcount = is_true(all(count == GetDataSetDimensions(dataset)));
     bool hyperslab = !(minoffset && maxcount);
+
     // if hyperslab is selected
     if (hyperslab) {
-      hsize_t count_t[count.length()];
-      std::copy(count.begin(), count.end(), count_t);
+     hsize_t count_t[count.length()];
+     std::copy(count.begin(), count.end(), count_t);
 
-      hsize_t offset_t[offset.length()];
-      std::copy(offset.begin(), offset.end(), offset_t);
+     hsize_t offset_t[offset.length()];
+     std::copy(offset.begin(), offset.end(), offset_t);
 
-      dataspace.selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
-      memspace = new DataSpace(dataspace.getSimpleExtentNdims(), count_t);
-      //memspace->selectHyperslab( H5S_SELECT_SET, count_t, offset_out);
+     dataspace->selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
     }
+    return XPtr<DataSpace>(dataspace);
+  } catch(Exception& error) {
+      string msg = error.getDetailMsg() + " in " + error.getFuncName();
+      throw Rcpp::exception(msg.c_str());
+  }
+}
+
+
+// [[Rcpp::export]]
+bool CloseDataspace(XPtr<DataSpace> dataspace) {
+  try {
+    dataspace->close();
+    return TRUE;
+  } catch(Exception& error) {
+    string msg = error.getDetailMsg() + " in " + error.getFuncName();
+    throw Rcpp::exception(msg.c_str());
+  }
+}
+
+// [[Rcpp::export]]
+SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace) {
+  try {
+    int ndim = dataspace->getSimpleExtentNdims();
+    // TODO: Refactor
+    hsize_t start_t[ndim];
+    hsize_t end_t[ndim];
+    dataspace->getSelectBounds(start_t, end_t);
+    hsize_t count_t[ndim];
+    for (int i = 0; i < ndim; i++) {
+      count_t[i] = end_t[i] - start_t[i] + 1;
+    }
+    // END TO-DO
+    NumericVector count(count_t, count_t + sizeof count_t / sizeof count_t[0]);
+    //DataSpace *memspace = new DataSpace(DataSpace::ALL);
+    DataSpace *memspace = new DataSpace(ndim, count_t);
 
     DataType dtype = dataset->getDataType();
     char tchar = GetTypechar(dtype);
 
-    int ndim = dataspace.getSimpleExtentNdims();
+    NumericVector count_rev = clone<NumericVector>(count);
+    std::reverse(count_rev.begin(), count_rev.end());
+
     SEXP data;
     if (tchar == 'd') {
       if (ndim == 1) {
@@ -108,30 +138,30 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
       } else if (ndim == 2) {
         data = PROTECT(Rf_allocMatrix(REALSXP, count[1], count[0]));
       } else {//(ndim > 2)
-        data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count));
+        data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count_rev));
       }
-      dataset->read(REAL(data), dtype, *memspace, dataspace);
+      dataset->read(REAL(data), dtype, *memspace, *dataspace);
     } else if (tchar == 'i') {
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(INTSXP, count[0]));
       } else if (ndim == 2) {
         data = PROTECT(Rf_allocMatrix(INTSXP, count[1], count[0]));
       } else {//(ndim > 2)
-        data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count));
+        data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
       }
-      dataset->read(INTEGER(data), dtype, *memspace, dataspace);
+      dataset->read(INTEGER(data), dtype, *memspace, *dataspace);
     } else if (tchar == 'c') {
        size_t stsize = dtype.getSize();
-        hsize_t n = dataspace.getSimpleExtentNpoints();
+        hsize_t n = dataspace->getSimpleExtentNpoints();
         if (ndim == 1) {
          data = PROTECT(Rf_allocVector(STRSXP, count[0]));
         } else if (ndim == 2) {
          data = PROTECT(Rf_allocMatrix(STRSXP, count[1], count[0]));
         } else {//(ndim > 2)
-         data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count));
+         data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count_rev));
         }
         char *strbuf = (char *)R_alloc(n, stsize);
-        dataset->read(strbuf, dtype, *memspace, dataspace);
+        dataset->read(strbuf, dtype, *memspace, *dataspace);
         for(int i = 0; i < n; i++) {
           SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
           strbuf += stsize;
@@ -144,7 +174,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, NumericVector offset, NumericVector coun
     UNPROTECT(1);
     memspace->close();
     delete memspace;
-    dataspace.close();
+    //dataspace.close();
     return data;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();

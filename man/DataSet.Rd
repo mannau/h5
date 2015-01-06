@@ -4,16 +4,28 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
+\alias{cbind2,DataSet,matrix-method}
+\alias{checkParamBoundaries}
+\alias{checkParamBoundaries,DataSet,numeric,numeric-method}
 \alias{closeh5,DataSet-method}
+\alias{extendDataSet}
+\alias{extendDataSet,DataSet,numeric-method}
+\alias{rbind2,DataSet,matrix-method}
 \alias{readDataSet}
 \alias{readDataSet,DataSet-method}
 \alias{writeDataSet}
 \alias{writeDataSet,DataSet-method}
 \title{The DataSet class}
 \usage{
-writeDataSet(.Object, data)
+checkParamBoundaries(.Object, offset, count)
 
-\S4method{writeDataSet}{DataSet}(.Object, data)
+\S4method{checkParamBoundaries}{DataSet,numeric,numeric}(.Object, offset, count)
+
+writeDataSet(.Object, data, offset = rep(NA_integer_, length(.Object@dim)),
+  count = rep(NA_integer_, length(.Object@dim)))
+
+\S4method{writeDataSet}{DataSet}(.Object, data, offset = rep(NA_integer_,
+  length(.Object@dim)), count = rep(NA_integer_, length(.Object@dim)))
 
 readDataSet(.Object, offset = rep(NA_integer_, length(.Object@dim)),
   count = rep(NA_integer_, length(.Object@dim)))
@@ -22,15 +34,25 @@ readDataSet(.Object, offset = rep(NA_integer_, length(.Object@dim)),
   length(.Object@dim)), count = rep(NA_integer_, length(.Object@dim)))
 
 \S4method{closeh5}{DataSet}(.Object)
+
+extendDataSet(.Object, dims)
+
+\S4method{extendDataSet}{DataSet,numeric}(.Object, dims)
+
+\S4method{rbind2}{DataSet,matrix}(x, y)
+
+\S4method{cbind2}{DataSet,matrix}(x, y)
 }
 \arguments{
-\item{.Object}{DataSet; S4 object of class \code{DataSet};}
-
-\item{data}{object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.}
+\item{.Object,x}{DataSet; S4 object of class \code{DataSet};}
 
 \item{offset}{numeric; Offset to be selected from Hyperslab.}
 
 \item{count}{numeric; Count to be selected from Hyperslab.}
+
+\item{data,y}{object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.}
+
+\item{dims}{numeric; Dimensions of DataSet.}
 }
 \description{
 The DataSet class used to store data objects in HDF5 tree.
