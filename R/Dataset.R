@@ -203,7 +203,7 @@ setMethod("rbind2", signature(x="DataSet", y = "matrix"),
       }
       
       dtype <- substr(typeof(y), 1, 1)
-      if(dset1@datatype != dtype) {
+      if(x@datatype != dtype) {
         stop("Data to append does not match type of DataSet.")
       }
       
@@ -228,7 +228,7 @@ setMethod("cbind2", signature(x="DataSet", y = "matrix"),
     }
     
     dtype <- substr(typeof(y), 1, 1)
-    if(dset1@datatype != dtype) {
+    if(x@datatype != dtype) {
       stop("Data to append does not match type of DataSet.")
     }
     

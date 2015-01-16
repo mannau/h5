@@ -247,6 +247,21 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// FlushFile
+bool FlushFile(XPtr<H5File> file);
+RcppExport SEXP h5_FlushFile(SEXP fileSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<H5File> >::type file(fileSEXP );
+        bool __result = FlushFile(file);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // CreateGroup
 XPtr<Group> CreateGroup(XPtr<CommonFG> file, string groupname);
 RcppExport SEXP h5_CreateGroup(SEXP fileSEXP, SEXP groupnameSEXP) {

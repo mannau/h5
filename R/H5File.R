@@ -33,3 +33,15 @@ function(.Object, name, mode = "a") {
 	.Object@mode <- mode
 	.Object
 })
+
+#' @rdname H5File
+#' @export
+setGeneric("flushh5", function(.Object)
+      standardGeneric("flushh5")
+)
+
+#' @rdname H5File
+#' @export
+setMethod("flushh5", signature(.Object="H5File"), function(.Object) {
+      invisible(FlushFile(.Object@pointer))
+    })

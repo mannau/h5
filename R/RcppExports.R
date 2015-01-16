@@ -61,6 +61,10 @@ CloseFile <- function(file) {
     .Call('h5_CloseFile', PACKAGE = 'h5', file)
 }
 
+FlushFile <- function(file) {
+    .Call('h5_FlushFile', PACKAGE = 'h5', file)
+}
+
 CreateGroup <- function(file, groupname) {
     .Call('h5_CreateGroup', PACKAGE = 'h5', file, groupname)
 }

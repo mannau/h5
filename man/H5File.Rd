@@ -5,9 +5,15 @@
 \alias{H5File}
 \alias{H5File-class}
 \alias{closeh5,H5File-method}
+\alias{flushh5}
+\alias{flushh5,H5File-method}
 \title{The H5File class}
 \usage{
 \S4method{closeh5}{H5File}(.Object)
+
+flushh5(.Object)
+
+\S4method{flushh5}{H5File}(.Object)
 }
 \arguments{
 \item{.Object}{H5File; S4 object of class \code{H5File};}

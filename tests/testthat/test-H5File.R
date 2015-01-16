@@ -116,5 +116,7 @@ test_that("H5File-FileMode-param-r+",{
   file.remove(fname) 
 })
 
+# TODO: include tests for flushh5
+
 
 

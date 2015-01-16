@@ -61,3 +61,15 @@ bool CloseFile(XPtr<H5File> file) {
     throw Rcpp::exception(msg.c_str());
   }
 }
+
+// [[Rcpp::export]]
+bool FlushFile(XPtr<H5File> file) {
+  try {
+    file->flush(H5F_SCOPE_LOCAL);
+  } catch (Exception& error) {
+    Function warning("warning");
+    warning(error.getDetailMsg());
+    return FALSE;
+  }
+  return TRUE;
+}
