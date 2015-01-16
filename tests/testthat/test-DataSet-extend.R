@@ -56,19 +56,22 @@ test_that("DataSet-extend-matrix-rbind",{
   f <- function() rbind(dset1, matrix(LETTERS[1:9], ncol = 9))
   expect_that(f(), throws_error("Data to append does not match type of DataSet"))
 
-  #dset1 <- rbind(dset1, testmat_n)
+  dset1 <- rbind(dset1, matrix(as.integer(rep(1, ncol(testmat_n))), nrow = 1))
+  
   closeh5(dset1)
-  dset2 <- createDataSet(file, "testmat_2", testmat_n, maxdimensions = dim(testmat_n))
+  dset2 <- createDataSet(file, "testmat_2", testmat_n, 
+      maxdimensions = c(dim(testmat_n)[1L] * 2, dim(testmat_n)[2L]))
+  dset2 <- rbind(dset2, testmat_n)
   closeh5(dset2)
   closeh5(file)
 
   file <- new( "H5File", fname, "r")
   dset1 <- openDataSet(file, "testmat_1")
-  testmat_n2 <- rbind(testmat_n, testmat_n)
-  expect_that(readDataSet(dset1), is_identical_to(testmat_n2))
-  dset1 <- rbind(dset1, rep(1, ncol(testmat_n)))
-  expect_that(readDataSet(dset1), is_identical_to(rbind(testmat_n2, 1)))
+  expect_that(readDataSet(dset1), is_identical_to(rbind(testmat_n, 1L)))
   closeh5(dset1)
+  dset2 <- openDataSet(file, "testmat_2")
+  expect_that(readDataSet(dset2), is_identical_to(rbind(testmat_n, testmat_n)))
+  closeh5(dset2)
   closeh5(file)
 })
 
@@ -86,18 +89,21 @@ test_that("DataSet-extend-matrix-cbind",{
   f <- function() cbind(dset1, matrix(LETTERS[1:10], nrow = 10))
   expect_that(f(), throws_error("Data to append does not match type"))
   
+  dset1 <- cbind(dset1, matrix(as.integer(rep(1, nrow(testmat_n))), ncol = 1))
   closeh5(dset1)
-  dset2 <- createDataSet(file, "testmat_2", testmat_n, maxdimensions = dim(testmat_n))
+  dset2 <- createDataSet(file, "testmat_2", testmat_n, 
+      maxdimensions = c(dim(testmat_n)[1L], dim(testmat_n)[2L] * 2))
+  dset2 <- cbind(dset2, testmat_n)
   closeh5(dset2)
   closeh5(file)
   
   file <- new( "H5File", fname, "r")
   dset1 <- openDataSet(file, "testmat_1")
-  testmat_n2 <- cbind(testmat_n, testmat_n)
-  expect_that(readDataSet(dset1), is_identical_to(testmat_n2))
-  dset1 <- cbind(dset1, rep(1, nrow(testmat_n)))
-  expect_that(readDataSet(dset1), is_identical_to(cbind(testmat_n2, 1)))
+  expect_that(readDataSet(dset1), is_identical_to(cbind(testmat_n, 1L)))
   closeh5(dset1)
+  dset2 <- openDataSet(file, "testmat_2")
+  expect_that(readDataSet(dset2), is_identical_to(cbind(testmat_n, testmat_n)))
+  closeh5(dset2)
   closeh5(file)
 })
 
