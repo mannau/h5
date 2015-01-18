@@ -19,6 +19,7 @@ Suggests:
 Collate:
     'CommonFG.R'
     'H5Location.R'
+    'Dataspace.R'
     'Dataset.R'
     'H5File.R'
     'H5Group.R'

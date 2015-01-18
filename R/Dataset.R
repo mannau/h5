@@ -8,11 +8,12 @@
 #' @param count numeric; Count to be selected from Hyperslab.
 #' @param dims numeric; Dimensions of DataSet.
 #' @param recursive logical; Argument passed to \code{\link{c}}.
+#' @param dspace DataSpace; Data space object used for data selection.
 #' @param ... additional arguments passed to \code{\link{c}}.
 #' @name DataSet 
 #' @rdname DataSet
 #' @aliases DataSet-class
-#' @include H5Location.R
+#' @include H5Location.R Dataspace.R
 #' @export
 setClass( "DataSet", representation( pointer = "externalptr", 
                                      datatype = "character",
@@ -76,67 +77,72 @@ setMethod("checkParamBoundaries", signature(.Object="DataSet",
       
       list(offset, count)
     })
-
+    
+#' @rdname DataSet
+#' @export
+setGeneric("selectDataSpace", function(.Object, 
+        offset = rep(NA_integer_, length(.Object@dim)), 
+        count = rep(NA_integer_, length(.Object@dim)))
+      standardGeneric("selectDataSpace")
+)
+    
+#' @rdname DataSet
+#' @export
+setMethod("selectDataSpace", signature(.Object = "DataSet", 
+        offset = "ANY", count = "ANY"), 
+  function(.Object, offset, count) {
+    out <- checkParamBoundaries(.Object, offset, count)
+    offset <- out[[1]]
+    count <- out[[2]]
+    dspace <- GetDataspace(.Object@pointer, offset - 1, count)
+    new("DataSpace", dspace)
+  })      
 
 #' @rdname DataSet
 #' @export
 setGeneric("writeDataSet", function(.Object, data, 
-        offset = rep(NA_integer_, length(.Object@dim)))
+        dspace = selectDataSpace(.Object, 
+            rep(NA_integer_, length(.Object@dim)), GetDimensions(data)))
 			standardGeneric("writeDataSet")
 )
 
 #' @rdname DataSet
 #' @export
-setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", 
-        offset = "ANY"), 
-		function(.Object, data, offset) {      
-      count <- GetDimensions(data)
-      
-      out <- checkParamBoundaries(.Object, offset, count)
-      offset <- out[[1]]
-      count <- out[[2]]
-      
-      #      if(is.matrix(data)) {
-      #        data <- t(data)
-      #      }
+setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", dspace = "ANY"), 
+		function(.Object, data, dspace) {      
+      stopifnot(inherits(dspace, "DataSpace"))
       if(is.array(data)) {
         data <- aperm(data, rev(1:length(dim(data))))
       }
-      
-      dspace <- GetDataspace(.Object@pointer, offset - 1, count)
-			res <- WriteDataset(.Object@pointer, dspace, data, .Object@datatype)
-      CloseDataspace(dspace)
+			res <- WriteDataset(.Object@pointer, dspace@pointer, data, .Object@datatype)
+      closeh5(dspace)
       invisible(res)
 		})
+
 
 #' @rdname DataSet
 #' @export
 setGeneric("readDataSet", function(.Object, 
-        offset = rep(NA_integer_, length(.Object@dim)) , 
-        count = rep(NA_integer_, length(.Object@dim)))
+        dspace = selectDataSpace(.Object, 
+          offset = rep(NA_integer_, length(.Object@dim)), 
+          count = rep(NA_integer_, length(.Object@dim))))
 			standardGeneric("readDataSet")
 )
 
-
 #' @rdname DataSet
 #' @export
-setMethod("readDataSet", signature(.Object="DataSet", offset = "ANY", count = "ANY"), 
-		function(.Object, offset, count) {
-      out <- checkParamBoundaries(.Object, offset, count)
-      offset <- out[[1]]
-      count <- out[[2]]
+setMethod("readDataSet", signature(.Object = "DataSet", dspace = "ANY"), 
+		function(.Object, dspace) {
+      stopifnot(inherits(dspace, "DataSpace"))
       
-      dspace <- GetDataspace(.Object@pointer, offset - 1, count)
-			dset <- ReadDataset(.Object@pointer, dspace)
-      CloseDataspace(dspace)
-      
+			dset <- ReadDataset(.Object@pointer, dspace@pointer)
       if(is.matrix(dset)) {
         return(t(dset))
       }
       if(is.array(dset)) {
         return(aperm(dset, rev(1:length(dim(dset)))))
       }
-      
+      closeh5(dspace)
       dset   
 		})
 
@@ -211,7 +217,8 @@ setMethod("rbind2", signature(x="DataSet", y = "matrix"),
       
       newdims <- c(nrowx + nrowy, ncolx)
       x <- extendDataSet(x, newdims)
-      writeDataSet(x, y, c(nrowx + 1, 1))
+      dspace <- selectDataSpace(x, offset = c(nrowx + 1, 1), count = GetDimensions(y))
+      writeDataSet(x, y, dspace)
       x
 })
 
@@ -236,7 +243,8 @@ setMethod("cbind2", signature(x="DataSet", y = "matrix"),
     
     newdims <- c(nrowx, ncolx + ncoly)
     x <- extendDataSet(x, newdims)
-    writeDataSet(x, y, c(1, ncolx + 1))
+    dspace <- selectDataSpace(x, offset = c(1, ncolx + 1), count = GetDimensions(y))
+    writeDataSet(x, y, dspace)
     x
   })
 
@@ -254,6 +262,8 @@ setMethod("c", "DataSet",
     olddim <- x@dim[1L]
     newdims <- c(x@dim[1L] + length(y))
     x <- extendDataSet(x, newdims)
-    writeDataSet(x, y, olddim + 1)
+    dspace <- selectDataSpace(x, offset = olddim + 1, count = GetDimensions(y))
+    writeDataSet(x, y, dspace)
     x
   })
+
