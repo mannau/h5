@@ -12,11 +12,12 @@
 #' @rdname DataSpace
 #' @aliases DataSpace-class
 #' @export
-setClass( "DataSpace", representation( pointer = "externalptr"))
+setClass( "DataSpace", representation( pointer = "externalptr", count = "numeric"))
 
 setMethod( "initialize", "DataSpace", 
-    function(.Object, pointer) { 
+    function(.Object, pointer, count) { 
       .Object@pointer <- pointer
+      .Object@count <- count
       .Object
     })
 

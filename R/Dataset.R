@@ -9,6 +9,7 @@
 #' @param dims numeric; Dimensions of DataSet.
 #' @param recursive logical; Argument passed to \code{\link{c}}.
 #' @param dspace DataSpace; Data space object used for data selection.
+#' @param elem matrix; Matrix specifying element selection coordinates. Columns specify rank, rows specify different points.
 #' @param ... additional arguments passed to \code{\link{c}}.
 #' @name DataSet 
 #' @rdname DataSet
@@ -82,21 +83,32 @@ setMethod("checkParamBoundaries", signature(.Object="DataSet",
 #' @export
 setGeneric("selectDataSpace", function(.Object, 
         offset = rep(NA_integer_, length(.Object@dim)), 
-        count = rep(NA_integer_, length(.Object@dim)))
+        count = rep(NA_integer_, length(.Object@dim)),
+        elem)
       standardGeneric("selectDataSpace")
 )
     
 #' @rdname DataSet
 #' @export
 setMethod("selectDataSpace", signature(.Object = "DataSet", 
-        offset = "ANY", count = "ANY"), 
+        offset = "ANY", count = "ANY", elem = "missing"), 
   function(.Object, offset, count) {
     out <- checkParamBoundaries(.Object, offset, count)
     offset <- out[[1]]
     count <- out[[2]]
     dspace <- GetDataspace(.Object@pointer, offset - 1, count)
-    new("DataSpace", dspace)
-  })      
+    new("DataSpace", dspace, count)
+  })
+
+#' @rdname DataSet
+#' @export
+setMethod("selectDataSpace", signature(.Object = "DataSet", 
+        offset = "missing", count = "missing", elem = "matrix"), 
+    function(.Object, elem) {
+      # TODO: check boundaries
+      dspace <- GetDataspaceElem(.Object@pointer, elem - 1)
+      new("DataSpace", dspace, count = nrow(elem))
+    })
 
 #' @rdname DataSet
 #' @export
@@ -135,7 +147,7 @@ setMethod("readDataSet", signature(.Object = "DataSet", dspace = "ANY"),
 		function(.Object, dspace) {
       stopifnot(inherits(dspace, "DataSpace"))
       
-			dset <- ReadDataset(.Object@pointer, dspace@pointer)
+			dset <- ReadDataset(.Object@pointer, dspace@pointer, dspace@count)
       if(is.matrix(dset)) {
         return(t(dset))
       }

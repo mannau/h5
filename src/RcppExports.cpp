@@ -55,48 +55,17 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
-// GetDataspace
-XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, NumericVector count);
-RcppExport SEXP h5_GetDataspace(SEXP datasetSEXP, SEXP offsetSEXP, SEXP countSEXP) {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type offset(offsetSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
-        XPtr<DataSpace> __result = GetDataspace(dataset, offset, count);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
-// CloseDataspace
-bool CloseDataspace(XPtr<DataSpace> dataspace);
-RcppExport SEXP h5_CloseDataspace(SEXP dataspaceSEXP) {
-BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
-        bool __result = CloseDataspace(dataspace);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
-END_RCPP
-}
 // ReadDataset
-SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace);
-RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP dataspaceSEXP) {
+SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector count);
+RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP countSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
         Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
-        SEXP __result = ReadDataset(dataset, dataspace);
+        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
+        SEXP __result = ReadDataset(dataset, dataspace, count);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
@@ -210,6 +179,54 @@ BEGIN_RCPP
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
         CharacterVector __result = GetDataSetCompression(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// GetDataspace
+XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, NumericVector count);
+RcppExport SEXP h5_GetDataspace(SEXP datasetSEXP, SEXP offsetSEXP, SEXP countSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type offset(offsetSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
+        XPtr<DataSpace> __result = GetDataspace(dataset, offset, count);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// GetDataspaceElem
+XPtr<DataSpace> GetDataspaceElem(XPtr<DataSet> dataset, NumericMatrix coords);
+RcppExport SEXP h5_GetDataspaceElem(SEXP datasetSEXP, SEXP coordsSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        Rcpp::traits::input_parameter< NumericMatrix >::type coords(coordsSEXP );
+        XPtr<DataSpace> __result = GetDataspaceElem(dataset, coords);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// CloseDataspace
+bool CloseDataspace(XPtr<DataSpace> dataspace);
+RcppExport SEXP h5_CloseDataspace(SEXP dataspaceSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
+        bool __result = CloseDataspace(dataspace);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

@@ -1,8 +1,8 @@
-context("DataSet-Hyperslab")
+context("DataSet-Select-Hyperslab")
 
 fname <- "test.h5"
 
-test_that("DataSet-Hyperslab-params",{  
+test_that("DataSet-Select-Hyperslab-params",{  
   testmat_n <- matrix(as.integer(1:90), ncol = 9)
   
   if(file.exists(fname)) file.remove(fname)
@@ -76,7 +76,7 @@ test_that("DataSet-Hyperslab-params",{
   
 })
 
-test_that("DataSet-Hyperslab-vector",{  
+test_that("DataSet-Select-Hyperslab-vector",{  
   testvec_n <- as.integer(1:90)
   
   fname <- "test.h5"
@@ -127,7 +127,7 @@ test_that("DataSet-Hyperslab-vector",{
 })
 
 
-test_that("DataSet-Hyperslab-matrix",{  
+test_that("DataSet-Select-Hyperslab-matrix",{  
   testmat_n <- matrix(as.integer(1:90), ncol = 9)
   
   fname <- "test.h5"
@@ -175,7 +175,7 @@ test_that("DataSet-Hyperslab-matrix",{
   closeh5(file)
 })
 
-test_that("DataSet-Hyperslab-array",{  
+test_that("DataSet-Select-Hyperslab-array",{  
   testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
   subarray <- array(as.integer(100:120), dim = c(2, 2, 5))
   

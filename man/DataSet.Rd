@@ -16,7 +16,8 @@
 \alias{readDataSet}
 \alias{readDataSet,DataSet-method}
 \alias{selectDataSpace}
-\alias{selectDataSpace,DataSet-method}
+\alias{selectDataSpace,DataSet,ANY,ANY,missing-method}
+\alias{selectDataSpace,DataSet,missing,missing,matrix-method}
 \alias{writeDataSet}
 \alias{writeDataSet,DataSet-method}
 \title{The DataSet class}
@@ -26,10 +27,11 @@ checkParamBoundaries(.Object, offset, count)
 \S4method{checkParamBoundaries}{DataSet,numeric,numeric}(.Object, offset, count)
 
 selectDataSpace(.Object, offset = rep(NA_integer_, length(.Object@dim)),
-  count = rep(NA_integer_, length(.Object@dim)))
+  count = rep(NA_integer_, length(.Object@dim)), elem)
 
-\S4method{selectDataSpace}{DataSet}(.Object, offset = rep(NA_integer_,
-  length(.Object@dim)), count = rep(NA_integer_, length(.Object@dim)))
+\S4method{selectDataSpace}{DataSet,ANY,ANY,missing}(.Object, offset, count)
+
+\S4method{selectDataSpace}{DataSet,missing,missing,matrix}(.Object, elem)
 
 writeDataSet(.Object, data, dspace = selectDataSpace(.Object, rep(NA_integer_,
   length(.Object@dim)), GetDimensions(data)))
@@ -66,6 +68,8 @@ extendDataSet(.Object, dims)
 \item{offset}{numeric; Offset to be selected from Hyperslab.}
 
 \item{count}{numeric; Count to be selected from Hyperslab.}
+
+\item{elem}{matrix; Matrix specifying element selection coordinates. Columns specify rank, rows specify different points.}
 
 \item{data,y}{object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.}
 

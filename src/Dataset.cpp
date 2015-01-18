@@ -1,10 +1,10 @@
 #include "Dataset.h"
-#define CHUNKSIZE 1e6
 
 using namespace H5;
 using namespace Rcpp;
 using namespace std;
 
+/*
 hsize_t* GetSelectCount(const DataSpace dataspace) {
   int ndim = dataspace.getSimpleExtentNdims();
   hsize_t start_t[ndim];
@@ -15,7 +15,7 @@ hsize_t* GetSelectCount(const DataSpace dataspace) {
     count_t[i] = end_t[i] - start_t[i] + 1;
   }
   return count_t;
-}
+}*/
 
 // [[Rcpp::export]]
 bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype) {
@@ -72,57 +72,13 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 }
 
 // [[Rcpp::export]]
-XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, NumericVector count) {
-  try {
-    DataSpace *dataspace = new DataSpace(dataset->getSpace());
-    bool minoffset = is_true(all(offset == 0.0));
-    bool maxcount = is_true(all(count == GetDataSetDimensions(dataset)));
-    bool hyperslab = !(minoffset && maxcount);
-
-    // if hyperslab is selected
-    if (hyperslab) {
-     hsize_t count_t[count.length()];
-     std::copy(count.begin(), count.end(), count_t);
-
-     hsize_t offset_t[offset.length()];
-     std::copy(offset.begin(), offset.end(), offset_t);
-
-     dataspace->selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
-    }
-    return XPtr<DataSpace>(dataspace);
-  } catch(Exception& error) {
-      string msg = error.getDetailMsg() + " in " + error.getFuncName();
-      throw Rcpp::exception(msg.c_str());
-  }
-}
-
-
-// [[Rcpp::export]]
-bool CloseDataspace(XPtr<DataSpace> dataspace) {
-  try {
-    dataspace->close();
-    return TRUE;
-  } catch(Exception& error) {
-    string msg = error.getDetailMsg() + " in " + error.getFuncName();
-    throw Rcpp::exception(msg.c_str());
-  }
-}
-
-// [[Rcpp::export]]
-SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace) {
+SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector count) {
   try {
     int ndim = dataspace->getSimpleExtentNdims();
-    // TODO: Refactor
-    hsize_t start_t[ndim];
-    hsize_t end_t[ndim];
-    dataspace->getSelectBounds(start_t, end_t);
-    hsize_t count_t[ndim];
-    for (int i = 0; i < ndim; i++) {
-      count_t[i] = end_t[i] - start_t[i] + 1;
-    }
-    // END TO-DO
-    NumericVector count(count_t, count_t + sizeof count_t / sizeof count_t[0]);
+
     //DataSpace *memspace = new DataSpace(DataSpace::ALL);
+    hsize_t count_t[count.length()];
+    std::copy(count.begin(), count.end(), count_t);
     DataSpace *memspace = new DataSpace(ndim, count_t);
 
     DataType dtype = dataset->getDataType();

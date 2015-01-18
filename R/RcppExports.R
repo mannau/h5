@@ -13,16 +13,8 @@ GetDataSetType <- function(dataset) {
     .Call('h5_GetDataSetType', PACKAGE = 'h5', dataset)
 }
 
-GetDataspace <- function(dataset, offset, count) {
-    .Call('h5_GetDataspace', PACKAGE = 'h5', dataset, offset, count)
-}
-
-CloseDataspace <- function(dataspace) {
-    .Call('h5_CloseDataspace', PACKAGE = 'h5', dataspace)
-}
-
-ReadDataset <- function(dataset, dataspace) {
-    .Call('h5_ReadDataset', PACKAGE = 'h5', dataset, dataspace)
+ReadDataset <- function(dataset, dataspace, count) {
+    .Call('h5_ReadDataset', PACKAGE = 'h5', dataset, dataspace, count)
 }
 
 CloseDataset <- function(dataset) {
@@ -51,6 +43,18 @@ GetDataSetChunksize <- function(dataset) {
 
 GetDataSetCompression <- function(dataset) {
     .Call('h5_GetDataSetCompression', PACKAGE = 'h5', dataset)
+}
+
+GetDataspace <- function(dataset, offset, count) {
+    .Call('h5_GetDataspace', PACKAGE = 'h5', dataset, offset, count)
+}
+
+GetDataspaceElem <- function(dataset, coords) {
+    .Call('h5_GetDataspaceElem', PACKAGE = 'h5', dataset, coords)
+}
+
+CloseDataspace <- function(dataspace) {
+    .Call('h5_CloseDataspace', PACKAGE = 'h5', dataspace)
 }
 
 OpenFile <- function(filePath, mode) {
