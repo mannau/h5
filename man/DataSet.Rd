@@ -21,11 +21,10 @@ checkParamBoundaries(.Object, offset, count)
 
 \S4method{checkParamBoundaries}{DataSet,numeric,numeric}(.Object, offset, count)
 
-writeDataSet(.Object, data, offset = rep(NA_integer_, length(.Object@dim)),
-  count = rep(NA_integer_, length(.Object@dim)))
+writeDataSet(.Object, data, offset = rep(NA_integer_, length(.Object@dim)))
 
 \S4method{writeDataSet}{DataSet}(.Object, data, offset = rep(NA_integer_,
-  length(.Object@dim)), count = rep(NA_integer_, length(.Object@dim)))
+  length(.Object@dim)))
 
 readDataSet(.Object, offset = rep(NA_integer_, length(.Object@dim)),
   count = rep(NA_integer_, length(.Object@dim)))

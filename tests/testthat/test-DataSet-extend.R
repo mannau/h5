@@ -21,6 +21,7 @@ test_that("DataSet-extend",{
   f <- function() extendDataSet(dset1, dimtestmat_n_y1)
   expect_that(f(), throws_error("Number of extendible dimensions must be greater or equal than DataSet dimensions"))
   
+ 
   dimtestmat_n_x1[1] <- dimtestmat_n[1] + 1
   f <- function() extendDataSet(dset1, dimtestmat_n_x1)
   expect_that(f(), throws_error("Number of extendible dimensions exceeds maximum dimensions of DataSet"))
@@ -57,8 +58,9 @@ test_that("DataSet-extend-matrix-rbind",{
   f <- function() rbind(dset1, matrix(LETTERS[1:9], ncol = 9))
   expect_that(f(), throws_error("Data to append does not match type of DataSet"))
 
-  dset1 <- rbind(dset1, matrix(as.integer(rep(1, ncol(testmat_n))), nrow = 1))
-  
+#  f <- function() rbind(dset1, matrix(integer(0), ncol = dset1@dim[2L]))
+#  expect_that(f(), throws_error("H5Sget_select_bounds failed in DataSpace::getSelectBounds"))
+  dset1 <- rbind(dset1, matrix(rep(1L, dset1@dim[2L]), ncol = dset1@dim[2L]))
   closeh5(dset1)
   dset2 <- createDataSet(file, "testmat_2", testmat_n, 
       maxdimensions = c(dim(testmat_n)[1L] * 2, dim(testmat_n)[2L]))
@@ -89,6 +91,9 @@ test_that("DataSet-extend-matrix-cbind",{
   
   f <- function() cbind(dset1, matrix(LETTERS[1:10], nrow = 10))
   expect_that(f(), throws_error("Data to append does not match type"))
+  
+  f <- function() cbind(dset1, matrix(integer(0), nrow = dset1@dim[1L]))
+  expect_that(f(), throws_error("Elements of parameter count must be greater than zero"))
   
   dset1 <- cbind(dset1, matrix(as.integer(rep(1, nrow(testmat_n))), ncol = 1))
   closeh5(dset1)

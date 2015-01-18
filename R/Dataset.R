@@ -79,16 +79,16 @@ setMethod("checkParamBoundaries", signature(.Object="DataSet",
 #' @rdname DataSet
 #' @export
 setGeneric("writeDataSet", function(.Object, data, 
-        offset = rep(NA_integer_, length(.Object@dim)) , 
-        count = rep(NA_integer_, length(.Object@dim)))
+        offset = rep(NA_integer_, length(.Object@dim)))
 			standardGeneric("writeDataSet")
 )
 
 #' @rdname DataSet
 #' @export
 setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", 
-        offset = "ANY", count = "ANY"), 
-		function(.Object, data, offset, count) {      
+        offset = "ANY"), 
+		function(.Object, data, offset) {      
+      count <- GetDimensions(data)
       
       out <- checkParamBoundaries(.Object, offset, count)
       offset <- out[[1]]

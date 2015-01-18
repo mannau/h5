@@ -85,6 +85,17 @@ test_that("DataSet-Hyperslab-vector",{
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
   closeh5(dset1)
+  
+  # Write hyperslab
+  dset2 <- createDataSet(group, "testvec_n2", testvec_n)
+  
+  subvec <- 1:3
+  f <- function() writeDataSet(dset2, subvec, offset = c(dset2@dim[1L] - 1))
+  expect_that(f(), throws_error("subscript out of bounds"))
+
+  writeDataSet(dset2, subvec, c(10))
+  closeh5(dset2)
+  
   closeh5(group)
   closeh5(file)
   
@@ -92,17 +103,24 @@ test_that("DataSet-Hyperslab-vector",{
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testvec_n")
   
-  # Read entire dataset
   testvec_n_read_all_vanilla <- readDataSet(dset1)
   expect_that(testvec_n_read_all_vanilla, is_identical_to(testvec_n))
   
   testvec_n_read_all <- readDataSet(dset1, c(1), length(testvec_n))
   expect_that(testvec_n_read_all, is_identical_to(testvec_n))
   
+  # Read entire dataset
+  dset2 <- openDataSet(group, "testvec_n2")
+  testvec_n2_read_all_vanilla <- readDataSet(dset2)
+  testvec_n2 <- testvec_n
+  testvec_n2[10:12] <- subvec
+  expect_that(testvec_n2_read_all_vanilla, is_identical_to(testvec_n2))
+
   # Read hyperslab
   testvec_n_read <- readDataSet(dset1, c(2), c(4))
   expect_that(testvec_n_read, is_identical_to(testvec_n[2:5]))
   
+  closeh5(dset2)
   closeh5(dset1)
   closeh5(group)
   closeh5(file)
@@ -118,6 +136,17 @@ test_that("DataSet-Hyperslab-matrix",{
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   closeh5(dset1)
+  dset2 <- createDataSet(group, "testmat_n2", testmat_n)
+  submat <- matrix(1L:9L, nrow = 3)
+  f <- function() writeDataSet(dset2, submat, offset = c(dset2@dim[1L] - 1, 3))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  f <- function() writeDataSet(dset2, submat, offset = c(3, dset2@dim[2L] - 1))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  writeDataSet(dset2, submat, offset = c(3, 3))
+  
+  closeh5(dset2)
   closeh5(group)
   closeh5(file)
   
@@ -132,6 +161,11 @@ test_that("DataSet-Hyperslab-matrix",{
   testmat_n_read_all <- readDataSet(dset1, c(1, 1), dim(testmat_n))
   expect_that(testmat_n_read_all, is_identical_to(testmat_n))
   
+  dset2 <- openDataSet(group, "testmat_n2")
+  testmat_n2 <- testmat_n
+  testmat_n2[3:5, 3:5] <- submat
+  expect_that(readDataSet(dset2), is_identical_to(testmat_n2))
+  
   # Read hyperslab
   testmat_n_read <- readDataSet(dset1, c(1, 2), c(3, 4))
   expect_that(testmat_n_read, is_identical_to(testmat_n[1:3, 2:5]))
@@ -143,12 +177,21 @@ test_that("DataSet-Hyperslab-matrix",{
 
 test_that("DataSet-Hyperslab-array",{  
   testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
+  subarray <- array(as.integer(100:120), dim = c(2, 2, 5))
   
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
+  
+  dset2 <- createDataSet(group, "testmat_n2", testmat_n)
+  f <- function() writeDataSet(dset2, subarray, offset = c(dset2@dim[1L], 1, 1))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  writeDataSet(dset2, subarray, offset = c(2, 2, 3))
+  
+  closeh5(dset2)
   closeh5(dset1)
   closeh5(group)
   closeh5(file)
@@ -168,6 +211,12 @@ test_that("DataSet-Hyperslab-array",{
   dimtestmat <- dim(testmat_n)
   expect_that(testmat_n_read_all, is_identical_to(testmat_n[2:dimtestmat[1], 2:dimtestmat[2], 2:dimtestmat[3]]))
   
+  dset2 <- openDataSet(group, "testmat_n2")
+  testmat_n2_read_all <- readDataSet(dset2)
+  testmat_n2 <- testmat_n
+  testmat_n2[2:3, 2:3, 3:7] <- subarray
+  expect_that(testmat_n2_read_all, is_identical_to(testmat_n2))
+ 
   # Read hyperslab
   testmat_n_read <- readDataSet(dset1, c(1, 1, 1), c(NA, NA, 3))
   expect_that(testmat_n_read, is_identical_to(testmat_n[,,1:3]))
@@ -178,6 +227,7 @@ test_that("DataSet-Hyperslab-array",{
   testmat_n_read <- readDataSet(dset1, c(2, 3, 4))
   expect_that(testmat_n_read, is_identical_to(testmat_n[2:3,3,4:10, drop = FALSE]))
   
+  closeh5(dset2)
   closeh5(dset1)
   closeh5(group)
   closeh5(file)
