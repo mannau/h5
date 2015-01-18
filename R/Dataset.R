@@ -7,6 +7,8 @@
 #' @param offset numeric; Offset to be selected from Hyperslab.
 #' @param count numeric; Count to be selected from Hyperslab.
 #' @param dims numeric; Dimensions of DataSet.
+#' @param recursive logical; Argument passed to \code{\link{c}}.
+#' @param ... additional arguments passed to \code{\link{c}}.
 #' @name DataSet 
 #' @rdname DataSet
 #' @aliases DataSet-class
@@ -235,5 +237,23 @@ setMethod("cbind2", signature(x="DataSet", y = "matrix"),
     newdims <- c(nrowx, ncolx + ncoly)
     x <- extendDataSet(x, newdims)
     writeDataSet(x, y, c(1, ncolx + 1))
+    x
+  })
+
+#' @rdname DataSet
+#' @export
+setMethod("c", "DataSet", 
+    function(x, ..., recursive=FALSE) {
+      
+    y <- do.call(c, list(..., recursive = recursive))
+    
+    dtype <- substr(typeof(y), 1, 1)
+    if(x@datatype != dtype) {
+      stop("Data to append does not match type of DataSet.")
+    }
+    olddim <- x@dim[1L]
+    newdims <- c(x@dim[1L] + length(y))
+    x <- extendDataSet(x, newdims)
+    writeDataSet(x, y, olddim + 1)
     x
   })

@@ -4,6 +4,7 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
+\alias{c,DataSet-method}
 \alias{cbind2,DataSet,matrix-method}
 \alias{checkParamBoundaries}
 \alias{checkParamBoundaries,DataSet,numeric,numeric-method}
@@ -41,6 +42,8 @@ extendDataSet(.Object, dims)
 \S4method{rbind2}{DataSet,matrix}(x, y)
 
 \S4method{cbind2}{DataSet,matrix}(x, y)
+
+\S4method{c}{DataSet}(x, ..., recursive = FALSE)
 }
 \arguments{
 \item{.Object,x}{DataSet; S4 object of class \code{DataSet};}
