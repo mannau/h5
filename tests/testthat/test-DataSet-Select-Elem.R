@@ -145,63 +145,58 @@ test_that("DataSet-Select-Elem-matrix",{
   closeh5(file)
 })
 
-#test_that("DataSet-Select-Elem-array",{  
-#  testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
-#  subarray <- array(as.integer(100:120), dim = c(2, 2, 5))
-#  
-#  fname <- "test.h5"
-#  if(file.exists(fname)) file.remove(fname)
-#  file <- new( "H5File", fname, "a")
-#  group <- createGroup(file, "/testgroup")
-#  dset1 <- createDataSet(group, "testmat_n", testmat_n)
-#  
-#  dset2 <- createDataSet(group, "testmat_n2", testmat_n)
-#  f <- function() writeDataSet(dset2, subarray, selectDataSpace(dset2, offset = c(dset2@dim[1L], 1, 1), count = dim(subarray)))
-#  expect_that(f(), throws_error("subscript out of bounds"))
-#  
-#  writeDataSet(dset2, subarray, selectDataSpace(dset2, offset = c(2, 2, 3), count = dim(subarray)))
-#  
-#  closeh5(dset2)
-#  closeh5(dset1)
-#  closeh5(group)
-#  closeh5(file)
-#  
-#  file <- new( "H5File", fname, "r")
-#  group <- openGroup(file, "/testgroup")
-#  dset1 <- openDataSet(group, "testmat_n")
-#  
-#  # Read entire dataset
-#  testmat_n_read_all_vanilla <- readDataSet(dset1)
-#  expect_that(testmat_n_read_all_vanilla, is_identical_to(testmat_n))
-#  
-#  testmat_n_read_all <- readDataSet(dset1, selectDataSpace(dset1, c(1, 1, 1), dim(testmat_n)))
-#  expect_that(testmat_n_read_all, is_identical_to(testmat_n))
-#  
-#  testmat_n_read_all <- readDataSet(dset1, selectDataSpace(dset1, offset = c(2, 2, 2)))
-#  dimtestmat <- dim(testmat_n)
-#  expect_that(testmat_n_read_all, is_identical_to(testmat_n[2:dimtestmat[1], 2:dimtestmat[2], 2:dimtestmat[3]]))
-#  
-#  dset2 <- openDataSet(group, "testmat_n2")
-#  testmat_n2_read_all <- readDataSet(dset2)
-#  testmat_n2 <- testmat_n
-#  testmat_n2[2:3, 2:3, 3:7] <- subarray
-#  expect_that(testmat_n2_read_all, is_identical_to(testmat_n2))
-# 
-#  # Read Elem
-#  testmat_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(1, 1, 1), c(NA, NA, 3)))
-#  expect_that(testmat_n_read, is_identical_to(testmat_n[,,1:3]))
-#  
-#  testmat_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(2, 2, 4)))
-#  expect_that(testmat_n_read, is_identical_to(testmat_n[2:3,2:3,4:10]))
-#  
-#  testmat_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(2, 3, 4)))
-#  expect_that(testmat_n_read, is_identical_to(testmat_n[2:3,3,4:10, drop = FALSE]))
-#  
-#  closeh5(dset2)
-#  closeh5(dset1)
-#  closeh5(group)
-#  closeh5(file)
-#})
+test_that("DataSet-Select-Elem-array",{  
+  testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
+  subarray <- array(as.integer(-100:-120), dim = c(2, 2, 5))
+  
+  fname <- "test.h5"
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname, "a")
+  group <- createGroup(file, "/testgroup")
+  dset1 <- createDataSet(group, "testmat_n", testmat_n)
+  closeh5(dset1)
+  dset2 <- createDataSet(group, "testmat_n2", testmat_n)
+  
+  f <- function() selectDataSpace(dset2, elem = matrix(c(3, 4, 3, 3, 10, 10), nrow = 2))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  f <- function() selectDataSpace(dset2, elem = matrix(c(3, 3, 3, 4, 10, 10), nrow = 2))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  f <- function() selectDataSpace(dset2, elem = matrix(c(3, 3, 3, 3, 10, 11), nrow = 2))
+  expect_that(f(), throws_error("subscript out of bounds"))
+
+  writeDataSet(dset2, subarray, selectDataSpace(dset2, 
+          elem = cbind(rep(2:3, each = 2*5), rep(2:3, each = 5), rep(3:7, 4))))
+  
+  closeh5(dset2)
+  closeh5(group)
+  closeh5(file)
+
+  file <- new( "H5File", fname, "r")
+  group <- openGroup(file, "/testgroup")
+  dset1 <- openDataSet(group, "testmat_n")
+  
+  # Read entire dataset
+  testmat_n_read_all <- readDataSet(dset1, selectDataSpace(dset1, 
+          elem = cbind(rep(1:3), rep(1:3, each = 3), rep(1:10, each = 9))))
+
+  expect_that(testmat_n_read_all, is_identical_to(as.vector(testmat_n)))
+  
+  testmat_n_read_2 <- readDataSet(dset1, selectDataSpace(dset1, elem = rbind(c(1, 2, 3), c(2, 3, 10))))
+  expect_that(testmat_n_read_2, is_identical_to(c(testmat_n[1, 2, 3], testmat_n[2, 3, 10])))
+  
+  dset2 <- openDataSet(group, "testmat_n2")
+  testmat_n2_read_all <- readDataSet(dset2)
+  testmat_n2 <- testmat_n
+  testmat_n2[2:3, 2:3, 3:7] <- subarray
+  expect_that(testmat_n2_read_all, is_identical_to(testmat_n2))
+ 
+  closeh5(dset2)
+  closeh5(dset1)
+  closeh5(group)
+  closeh5(file)
+})
 
 
 
