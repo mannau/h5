@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // WriteDataset
-bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype);
-RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP matSEXP, SEXP datatypeSEXP) {
+bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype, NumericVector count);
+RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP matSEXP, SEXP datatypeSEXP, SEXP countSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -17,7 +17,8 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
         Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP );
         Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        bool __result = WriteDataset(dataset, dataspace, mat, datatype);
+        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
+        bool __result = WriteDataset(dataset, dataspace, mat, datatype, count);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

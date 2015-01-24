@@ -38,7 +38,7 @@ XPtr<DataSpace> GetDataspaceElem(XPtr<DataSet> dataset, NumericMatrix coords) {
     hsize_t coords_t[coords.length()];
     std::copy(coords.begin(), coords.end(), coords_t);
 
-    dataspace->selectElements(H5S_SELECT_SET, coords.length(), coords_t);
+    dataspace->selectElements(H5S_SELECT_SET, coords.ncol(), coords_t);
     return XPtr<DataSpace>(dataspace);
   } catch(Exception& error) {
       string msg = error.getDetailMsg() + " in " + error.getFuncName();

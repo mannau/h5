@@ -30,13 +30,6 @@ test_that("DataSet-Select-Hyperslab-params",{
   expect_that(testmat_n_na_count, 
       is_identical_to(testmat_n[1:2, 1:2]))
   
-  # Check offset/count type
-  #  f <- function() testmat_n_na_boundall <- readDataSet(dset1, count = c("A", "B")) 
-  #  expect_that(f(), throws_error("Parameter count must be of type integer/numeric"))    
-  #  
-  #  f <- function() testmat_n_na_boundall <- readDataSet(dset1, offset = c("A", "B")) 
-  #  expect_that(f(), throws_error("Parameter offset must be of type integer/numeric"))    
-  
   # Check offset/count length
   f <- function() testmat_n_na_boundall <- readDataSet(dset1, selectDataSpace(dset1, count = 1:3))
   expect_that(f(), throws_error("Parameter count must have length of dataset dimensions"))    

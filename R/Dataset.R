@@ -105,8 +105,29 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
 setMethod("selectDataSpace", signature(.Object = "DataSet", 
         offset = "missing", count = "missing", elem = "matrix"), 
     function(.Object, elem) {
-      # TODO: check boundaries
-      dspace <- GetDataspaceElem(.Object@pointer, elem - 1)
+      if(any(is.na(elem))) {
+        stop("NAs are not allowed in element coordinates.")
+      }
+      
+      if(any(elem < 1L)) {
+        stop("Elements of parameter elem must be greater or equal than one.")
+      }
+      
+      elemtype <- typeof(elem)
+      if(!elemtype %in% c("double", "integer")) {
+        stop("Element matrix must be of type double or integer.")
+      }
+      
+      if(ncol(elem) != length(.Object@dim)) {
+        stop("Number of elem matrix columns must equal length of dataset dimensions.")
+      }
+      
+      dimmax <- apply(elem, 2, max)
+      if (any(dimmax > .Object@dim)) {
+        stop("subscript out of bounds")
+      }
+
+      dspace <- GetDataspaceElem(.Object@pointer, t(elem - 1))
       new("DataSpace", dspace, count = nrow(elem))
     })
 
@@ -126,7 +147,7 @@ setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", dspace = "A
       if(is.array(data)) {
         data <- aperm(data, rev(1:length(dim(data))))
       }
-			res <- WriteDataset(.Object@pointer, dspace@pointer, data, .Object@datatype)
+			res <- WriteDataset(.Object@pointer, dspace@pointer, data, .Object@datatype, dspace@count)
       closeh5(dspace)
       invisible(res)
 		})

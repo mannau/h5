@@ -18,24 +18,14 @@ hsize_t* GetSelectCount(const DataSpace dataspace) {
 }*/
 
 // [[Rcpp::export]]
-bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype) {
+bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype, NumericVector count) {
   try {
-    int ndim = dataspace->getSimpleExtentNdims();
-    // TODO: Refactor
-    hsize_t start_t[ndim];
-    hsize_t end_t[ndim];
-    dataspace->getSelectBounds(start_t, end_t);
+    int ndim = count.length();
     hsize_t count_t[ndim];
-    for (int i = 0; i < ndim; i++) {
-     count_t[i] = end_t[i] - start_t[i] + 1;
-    }
-    // END TO-DO
-
-    NumericVector count(count_t, count_t + sizeof count_t / sizeof count_t[0]);
-    //DataSpace *memspace = new DataSpace(DataSpace::ALL);
+    std::copy(count.begin(), count.end(), count_t);
     DataSpace *memspace = new DataSpace(ndim, count_t);
-
     size_t stsize = dataset->getDataType().getSize();
+
     const void *buf = ConvertBuffer(mat, datatype, stsize);
     dataset->write(buf, GetDataType(datatype, stsize), *memspace, *dataspace);
     return TRUE;
@@ -74,10 +64,8 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 // [[Rcpp::export]]
 SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector count) {
   try {
-    int ndim = dataspace->getSimpleExtentNdims();
-
-    //DataSpace *memspace = new DataSpace(DataSpace::ALL);
-    hsize_t count_t[count.length()];
+    int ndim = count.length();
+    hsize_t count_t[ndim];
     std::copy(count.begin(), count.end(), count_t);
     DataSpace *memspace = new DataSpace(ndim, count_t);
 
