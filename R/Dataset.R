@@ -300,3 +300,18 @@ setMethod("c", "DataSet",
     x
   })
 
+
+#' @rdname DataSet
+#' @param i integer; row index
+#' @param j integer; column index
+#' @param drop logical; specify if 
+#' @export
+setMethod("[", c("DataSet", "integer", "integer", "ANY"),
+  function(x, i, j, ..., drop=TRUE) {
+    dspace <- selectDataSpace(x, 
+        elem = cbind(rep(i, length(j)), rep(j, each = length(i))))
+    vec <- readDataSet(x, dspace)
+    matrix(vec, nrow = length(i))
+	# TODO: drop is not implemented yet
+  })
+

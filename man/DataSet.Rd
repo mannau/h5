@@ -4,6 +4,7 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
+\alias{[,DataSet,integer,integer-method}
 \alias{c,DataSet-method}
 \alias{cbind2,DataSet,matrix-method}
 \alias{checkParamBoundaries}
@@ -60,6 +61,8 @@ extendDataSet(.Object, dims)
 
 \S4method{c}{DataSet}(x, ..., recursive = FALSE)
 
+\S4method{[}{DataSet,integer,integer}(x, i, j, ..., drop = TRUE)
+
 \S4method{closeh5}{DataSpace}(.Object)
 }
 \arguments{
@@ -80,6 +83,12 @@ extendDataSet(.Object, dims)
 \item{...}{additional arguments passed to \code{\link{c}}.}
 
 \item{recursive}{logical; Argument passed to \code{\link{c}}.}
+
+\item{i}{integer; row index}
+
+\item{j}{integer; column index}
+
+\item{drop}{logical; specify if}
 }
 \description{
 The DataSet class used to store data objects in HDF5 tree.
