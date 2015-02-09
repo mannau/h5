@@ -15,7 +15,6 @@ GetDimensions <- function(data) {
 # Automatically set chunk size
 ChunkSize <- function(data) {
 	datadim <- GetDimensions(data)
-	datadim[1] <- 1e6
 	datadim
 }
 

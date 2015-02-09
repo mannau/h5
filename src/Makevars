@@ -1,3 +1,1 @@
-PKG_LIBS += -lz -lm -L.
-PKG_LIBS += -lhdf5 -lhdf5_cpp -lhdf5_hl -lhdf5_hl_cpp
-PKG_LIBS += $(RCPP_LDFLAGS)
+PKG_LIBS = -lz -lm -L. -lhdf5 -lhdf5_cpp -lhdf5_hl -lhdf5_hl_cpp $(RCPP_LDFLAGS)

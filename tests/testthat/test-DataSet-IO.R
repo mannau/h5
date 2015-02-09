@@ -207,3 +207,15 @@ test_that("datatypes-Array",{
   
   file.remove(fname)		
 })
+
+test_that("datatypes-Array-BugWithChunksize",{
+	testmat_n <- array(rnorm(347000), c(1, 1, 1, 347000))
+	fname <- "test.h5"
+	if(file.exists(fname)) file.remove(fname)
+	file <- new( "H5File", fname, "a")
+	group <- createGroup(file, "DataSet")
+	dset1 <- createDataSet(group, "testmat_n", testmat_n, chunksize = c(1, 1, 1, 347000))
+	closeh5(dset1)
+	closeh5(group)
+	closeh5(file)
+})
