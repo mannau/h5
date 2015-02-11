@@ -5,6 +5,7 @@
 \alias{DataSet}
 \alias{DataSet-class}
 \alias{[,DataSet,integer,integer-method}
+\alias{[<-,DataSet,integer,integer-method}
 \alias{c,DataSet-method}
 \alias{cbind.DataSet}
 \alias{cbind2,DataSet,matrix-method}
@@ -69,6 +70,8 @@ cbind.DataSet(..., deparse.level = 1)
 
 \S4method{[}{DataSet,integer,integer}(x, i, j, ..., drop = TRUE)
 
+\S4method{[}{DataSet,integer,integer}(x, i, j, ...) <- value
+
 \S4method{closeh5}{DataSpace}(.Object)
 }
 \arguments{
@@ -97,6 +100,8 @@ cbind.DataSet(..., deparse.level = 1)
 \item{j}{integer; column index}
 
 \item{drop}{logical; specify if}
+
+\item{value}{object; value to be assigned}
 }
 \description{
 The DataSet class used to store data objects in HDF5 tree.

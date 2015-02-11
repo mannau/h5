@@ -225,8 +225,3 @@ test_that("DataSet-Select-Hyperslab-array",{
   closeh5(group)
   closeh5(file)
 })
-
-
-
-
-

@@ -329,3 +329,14 @@ setMethod("[", c("DataSet", "integer", "integer", "ANY"),
 	# TODO: drop is not implemented yet
   })
 
+#' @rdname DataSet
+#' @param value object; value to be assigned
+#' @export
+setMethod("[<-", c("DataSet", "integer", "integer", "ANY"),
+	function(x, i, j, ..., value) {
+		dspace <- selectDataSpace(x, 
+				elem = cbind(rep(i, length(j)), rep(j, each = length(i))))
+		vec <- writeDataSet(x, value, dspace)
+		x
+	})
+
