@@ -6,6 +6,7 @@
 \alias{DataSet-class}
 \alias{[,DataSet,integer,integer-method}
 \alias{c,DataSet-method}
+\alias{cbind.DataSet}
 \alias{cbind2,DataSet,matrix-method}
 \alias{checkParamBoundaries}
 \alias{checkParamBoundaries,DataSet,numeric,numeric-method}
@@ -13,6 +14,7 @@
 \alias{closeh5,DataSpace-method}
 \alias{extendDataSet}
 \alias{extendDataSet,DataSet,numeric-method}
+\alias{rbind.DataSet}
 \alias{rbind2,DataSet,matrix-method}
 \alias{readDataSet}
 \alias{readDataSet,DataSet-method}
@@ -55,7 +57,11 @@ extendDataSet(.Object, dims)
 
 \S4method{extendDataSet}{DataSet,numeric}(.Object, dims)
 
+rbind.DataSet(..., deparse.level = 1)
+
 \S4method{rbind2}{DataSet,matrix}(x, y)
+
+cbind.DataSet(..., deparse.level = 1)
 
 \S4method{cbind2}{DataSet,matrix}(x, y)
 
@@ -81,6 +87,8 @@ extendDataSet(.Object, dims)
 \item{dims}{numeric; Dimensions of DataSet.}
 
 \item{...}{additional arguments passed to \code{\link{c}}.}
+
+\item{deparse.level}{numeric; Not implemented yet.}
 
 \item{recursive}{logical; Argument passed to \code{\link{c}}.}
 

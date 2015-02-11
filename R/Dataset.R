@@ -228,6 +228,13 @@ setMethod("extendDataSet", signature(.Object="DataSet", dims = "numeric"),
       .Object
     })
 
+#' @rdname DataSet
+#' @param deparse.level numeric; Not implemented yet. 
+#' @export
+rbind.DataSet <- function (..., deparse.level = 1)  {
+	args <- list(...)
+	rbind2(args[[1]], do.call(rbind, args[-1]))
+}
 
 #' @rdname DataSet
 #' @export
@@ -254,6 +261,13 @@ setMethod("rbind2", signature(x="DataSet", y = "matrix"),
       writeDataSet(x, y, dspace)
       x
 })
+
+#' @rdname DataSet
+#' @export
+cbind.DataSet <- function (..., deparse.level = 1)  {
+	args <- list(...)
+	cbind2(args[[1]], do.call(cbind, args[-1]))
+}
 
 #' @rdname DataSet
 #' @export
