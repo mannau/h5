@@ -1,9 +1,9 @@
 /.settings
 /.project
-*.a
 *.o
 *.so
 .project
 *.DS_Store
 *.Rcheck/
 *.tar.gz
+/TODO
