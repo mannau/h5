@@ -106,7 +106,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
         }
         char *strbuf = (char *)R_alloc(n, stsize);
         dataset->read(strbuf, dtype, *memspace, *dataspace);
-        for(int i = 0; i < n; i++) {
+        for(unsigned int i = 0; i < n; i++) {
           SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
           strbuf += stsize;
         }
@@ -230,9 +230,7 @@ NumericVector GetDataSetChunksize(XPtr<DataSet> dataset) {
   DataSpace dataspace = dataset->getSpace();
   int ndim = dataspace.getSimpleExtentNdims();
   hsize_t chunk_dims[ndim];
-  int rank_chunk;
   if( H5D_CHUNKED == cparms.getLayout()) {
-    rank_chunk = cparms.getChunk(ndim, chunk_dims);
     return NumericVector(chunk_dims, chunk_dims + sizeof chunk_dims / sizeof chunk_dims[0]);
   }
   return NA_REAL;
