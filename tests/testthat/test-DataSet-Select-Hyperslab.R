@@ -163,6 +163,7 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   testmat_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(1, 2), c(3, 4)))
   expect_that(testmat_n_read, is_identical_to(testmat_n[1:3, 2:5]))
   
+  closeh5(dset2)
   closeh5(dset1)
   closeh5(group)
   closeh5(file)
