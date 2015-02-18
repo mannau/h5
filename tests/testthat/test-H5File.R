@@ -3,19 +3,22 @@ fname <- "test.h5"
 
 test_that("H5File-param",{
 	f <- function() file <- new( "H5File", 1, "a")
-	expect_that(f(), throws_error("is.character\\(name\\) is not TRUE"))
+	expect_that(f(), throws_error("Error : is.character(name) ist nicht TRUE\n", fixed = TRUE))
 	
 	f <- function() file <- new( "H5File", c("a", "a"), "a")
-	expect_that(f(), throws_error("length\\(name\\) == 1 is not TRUE"))
+	expect_that(f(), throws_error("Error : length(name) == 1 ist nicht TRUE\n", fixed = TRUE))
 	
 	f <- function() file <- new( "H5File", "a", 1)
-	expect_that(f(), throws_error("is.character\\(mode\\) is not TRUE"))
+	expect_that(f(), throws_error("Error : is.character(mode) ist nicht TRUE\n", fixed = TRUE))
 	
 	f <- function() file <- new( "H5File", "a", c("a", "a"))
-	expect_that(f(), throws_error("length\\(mode\\) == 1 is not TRUE"))
+	expect_that(f(), throws_error("Error : length(mode) == 1 ist nicht TRUE\n", fixed = TRUE))
 	
 	f <- function() file <- new( "H5File", "a", c("a", "a"))
-	expect_that(f(), throws_error("length\\(mode\\) == 1 is not TRUE"))
+	expect_that(f(), throws_error("Error : length(mode) == 1 ist nicht TRUE\n", fixed = TRUE))
+	
+	f <- function() file <- new( "H5File", "path", "w--")
+	expect_that(f(), throws_error("Parameter mode must be either"))
 })
 
 test_that("H5File-FileMode-param",{
@@ -61,18 +64,13 @@ test_that("H5File-FileMode-param-w-",{
 
 test_that("H5File-FileMode-param-w",{
   expect_that(file.exists(fname), is_true())
-	f <- function() file <- new( "H5File", fname, "w")
-  # TODO: This should actually work, bug in HDF5 C++ API?
-  expect_that(f(), throws_error("H5Fcreate failed"))
-  
-  if(file.exists(fname)) file.remove(fname)
   file <- new( "H5File", fname, "w")
-	expect_that(file@mode, is_identical_to("w"))
-	expect_that(file@name, is_identical_to(fname))
-	expect_that(existsGroup(file, "testgroup1"), is_false())
-	group2 <- createGroup(file, "testgroup1")
-	closeh5(group2)
-	closeh5(file)
+  expect_that(file@mode, is_identical_to("w"))
+  expect_that(file@name, is_identical_to(fname))
+  expect_that(existsGroup(file, "testgroup1"), is_false())
+  group2 <- createGroup(file, "testgroup1")
+  closeh5(group2)
+  closeh5(file)
 	
   expect_that(file.exists(fname), is_true())
   file <- new( "H5File", fname, "w")

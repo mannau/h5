@@ -32,7 +32,6 @@ test_that("H5Group-createGroup",{
   if(file.exists(fname)) file.remove(fname)
   file <- new( "H5File", fname)
   
-  file <- new( "H5File", fname)
   # Fail for nested (non-existent) group name
   f <- function() group1 <- createGroup(file, "/testgroup/test")
   expect_that(f(), throws_error("H5Gcreate failed"))
@@ -73,8 +72,9 @@ test_that("H5Group-openGroup",{
   expect_that(grouprelative@name, is_identical_to("test"))
   # TODO: should absolute path be displayed?
   # eg. expect_that(grouprelative@name, is_identical_to("/testgroup3/test"))
-  closeh5(grouprelative)
   
+  closeh5(grouprelative)
+  closeh5(group3)
   closeh5(file)
   #file.remove(fname)
 })

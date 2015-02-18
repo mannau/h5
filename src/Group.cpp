@@ -47,6 +47,7 @@ bool ExistsGroup(XPtr<CommonFG> file, string groupname) {
      if (group_id < 0) {
        return false;
      }
+     H5Gclose(group_id);
      return true;
    } catch (Exception& error) {
      string msg = error.getDetailMsg() + " in " + error.getFuncName();
