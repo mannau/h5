@@ -53,6 +53,10 @@ GetDataspaceElem <- function(dataset, coords) {
     .Call('h5_GetDataspaceElem', PACKAGE = 'h5', dataset, coords)
 }
 
+GetDataspaceAll <- function(dataset) {
+    .Call('h5_GetDataspaceAll', PACKAGE = 'h5', dataset)
+}
+
 CloseDataspace <- function(dataspace) {
     .Call('h5_CloseDataspace', PACKAGE = 'h5', dataspace)
 }

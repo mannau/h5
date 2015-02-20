@@ -219,6 +219,21 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// GetDataspaceAll
+XPtr<DataSpace> GetDataspaceAll(XPtr<DataSet> dataset);
+RcppExport SEXP h5_GetDataspaceAll(SEXP datasetSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
+        XPtr<DataSpace> __result = GetDataspaceAll(dataset);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // CloseDataspace
 bool CloseDataspace(XPtr<DataSpace> dataspace);
 RcppExport SEXP h5_CloseDataspace(SEXP dataspaceSEXP) {

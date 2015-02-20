@@ -170,7 +170,7 @@ test_that("DataSet-Select-Subset-array",{
   
   # Read entire dataset
   testmat_n_read_all <- dset1[1:3, 1:3, 1:10]
-  expect_that(testmat_n_read_all, is_identical_to(as.vector(testmat_n)))
+  expect_that(testmat_n_read_all, is_identical_to(testmat_n))
   
   testmat_n_read_2 <- c(dset1[1, 2, 3], dset1[2, 3, 10]) 
   expect_that(testmat_n_read_2, is_identical_to(c(testmat_n[1, 2, 3], testmat_n[2, 3, 10])))

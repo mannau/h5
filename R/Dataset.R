@@ -87,6 +87,15 @@ setGeneric("selectDataSpace", function(.Object,
         elem)
       standardGeneric("selectDataSpace")
 )
+
+#' @rdname DataSet
+#' @export
+setMethod("selectDataSpace", signature(.Object = "DataSet", 
+        offset = "missing", count = "missing", elem = "missing"), 
+    function(.Object) {
+      dspace <- GetDataspaceAll(.Object@pointer)
+      new("DataSpace", dspace, .Object@dim)
+    })
     
 #' @rdname DataSet
 #' @export
@@ -314,29 +323,81 @@ setMethod("c", "DataSet",
     x
   })
 
+dataSpaceFromIndex <- function(dset, indices) {
+  stopifnot(inherits(dset, "DataSet"))
+  stopifnot(is.list(indices))
+
+  if(length(indices) == 0) {
+    return(selectDataSpace(dset))
+  }
+  
+  if(length(indices) != length(dset@dim)) {
+    stop("incorrect number of dimensions") 
+  }
+  # TODO: Include support for logical indices
+  if (!all(sapply(indices, function(x) is.numeric(x) | is.integer(x)))) {
+    stop("Subscript indices must be of type numeric or integer.") 
+  }
+  selectDataSpace(dset, elem = as.matrix(expand.grid(indices)))
+}
 
 #' @rdname DataSet
 #' @param i integer; row index
 #' @param j integer; column index
 #' @param drop logical; specify if 
 #' @export
-setMethod("[", c("DataSet", "integer", "integer", "ANY"),
+setMethod("[", c("DataSet", "ANY", "ANY", "ANY"),
   function(x, i, j, ..., drop=TRUE) {
-    dspace <- selectDataSpace(x, 
-        elem = cbind(rep(i, length(j)), rep(j, each = length(i))))
+    if(missing(i)) {
+      i <- integer(0)
+    }
+    if(missing(j)) {
+      j <- integer(0)
+    }
+    indices <- list(i, j, ...)
+    indices <- indices[sapply(indices, length) > 0]
+    dspace <- dataSpaceFromIndex(x, indices)
+    
     vec <- readDataSet(x, dspace)
-    matrix(vec, nrow = length(i))
+    setdim <- length(x@dim)
+    stopifnot(setdim >= 1)
+    if (setdim == 1) {
+      return(vec)
+    } else if (setdim == 2) {
+      return(matrix(vec, nrow = length(i)))
+    }
+    # TODO: remove workaround
+    adim <- NULL
+    if (length(indices) == 0) {
+      adim <- x@dim
+    } else {
+      adim <- sapply(indices, length)
+    }
+    array(vec, dim = adim)
 	# TODO: drop is not implemented yet
   })
 
 #' @rdname DataSet
-#' @param value object; value to be assigned
+#' @param value object; Value to be assigned to dataset
 #' @export
-setMethod("[<-", c("DataSet", "integer", "integer", "ANY"),
-	function(x, i, j, ..., value) {
-		dspace <- selectDataSpace(x, 
-				elem = cbind(rep(i, length(j)), rep(j, each = length(i))))
-		vec <- writeDataSet(x, value, dspace)
-		x
-	})
+setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
+    function(x, i, j, ..., value) {
+      if(missing(i)) {
+        i <- integer(0)
+      }
+      if(missing(j)) {
+        j <- integer(0)
+      }
+      indices <- list(i, j, ...)
+      indices <- indices[sapply(indices, length) > 0]
+      dspace <- dataSpaceFromIndex(x, indices)
+      res <- WriteDataset(x@pointer, dspace@pointer, value, x@datatype, dspace@count)
+      closeh5(dspace)
+      x
+    })
+
+
+
+
+
 

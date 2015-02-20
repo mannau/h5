@@ -4,8 +4,8 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
-\alias{[,DataSet,integer,integer-method}
-\alias{[<-,DataSet,integer,integer-method}
+\alias{[,DataSet-method}
+\alias{[<-,DataSet-method}
 \alias{c,DataSet-method}
 \alias{cbind.DataSet}
 \alias{cbind2,DataSet,matrix-method}
@@ -22,6 +22,7 @@
 \alias{selectDataSpace}
 \alias{selectDataSpace,DataSet,ANY,ANY,missing-method}
 \alias{selectDataSpace,DataSet,missing,missing,matrix-method}
+\alias{selectDataSpace,DataSet,missing,missing,missing-method}
 \alias{writeDataSet}
 \alias{writeDataSet,DataSet-method}
 \title{The DataSet class}
@@ -32,6 +33,8 @@ checkParamBoundaries(.Object, offset, count)
 
 selectDataSpace(.Object, offset = rep(NA_integer_, length(.Object@dim)),
   count = rep(NA_integer_, length(.Object@dim)), elem)
+
+\S4method{selectDataSpace}{DataSet,missing,missing,missing}(.Object)
 
 \S4method{selectDataSpace}{DataSet,ANY,ANY,missing}(.Object, offset, count)
 
@@ -68,9 +71,9 @@ cbind.DataSet(..., deparse.level = 1)
 
 \S4method{c}{DataSet}(x, ..., recursive = FALSE)
 
-\S4method{[}{DataSet,integer,integer}(x, i, j, ..., drop = TRUE)
+\S4method{[}{DataSet}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{DataSet,integer,integer}(x, i, j, ...) <- value
+\S4method{[}{DataSet}(x, i, j, ...) <- value
 
 \S4method{closeh5}{DataSpace}(.Object)
 }
@@ -101,7 +104,7 @@ cbind.DataSet(..., deparse.level = 1)
 
 \item{drop}{logical; specify if}
 
-\item{value}{object; value to be assigned}
+\item{value}{object; Value to be assigned to dataset}
 }
 \description{
 The DataSet class used to store data objects in HDF5 tree.

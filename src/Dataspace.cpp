@@ -47,6 +47,18 @@ XPtr<DataSpace> GetDataspaceElem(XPtr<DataSet> dataset, NumericMatrix coords) {
 }
 
 // [[Rcpp::export]]
+XPtr<DataSpace> GetDataspaceAll(XPtr<DataSet> dataset) {
+  try {
+    DataSpace *dataspace = new DataSpace(dataset->getSpace());
+    dataspace->selectAll();
+    return XPtr<DataSpace>(dataspace);
+  } catch(Exception& error) {
+      string msg = error.getDetailMsg() + " in " + error.getFuncName();
+      throw Rcpp::exception(msg.c_str());
+  }
+}
+
+// [[Rcpp::export]]
 bool CloseDataspace(XPtr<DataSpace> dataspace) {
   try {
     dataspace->close();
