@@ -335,10 +335,40 @@ dataSpaceFromIndex <- function(dset, indices) {
     stop("incorrect number of dimensions") 
   }
   # TODO: Include support for logical indices
-  if (!all(sapply(indices, function(x) is.numeric(x) | is.integer(x)))) {
+  if (!all(sapply(indices, function(dset) is.numeric(dset) | is.integer(dset)))) {
     stop("Subscript indices must be of type numeric or integer.") 
   }
   selectDataSpace(dset, elem = as.matrix(expand.grid(indices)))
+}
+
+subsetDataSet <- function(x, i, j, ..., drop = TRUE) {
+  if(missing(i)) {
+    i <- integer(0)
+  }
+  if(missing(j)) {
+    j <- integer(0)
+  }
+  indices <- list(i, j, ...)
+  indices <- indices[sapply(indices, length) > 0]
+  dspace <- dataSpaceFromIndex(x, indices)
+  
+  vec <- readDataSet(x, dspace)
+  setdim <- length(x@dim)
+  stopifnot(setdim >= 1)
+  if (setdim == 1) {
+    return(vec)
+  } else if (setdim == 2) {
+    return(matrix(vec, nrow = length(i)))
+  }
+  # TODO: remove workaround
+  adim <- NULL
+  if (length(indices) == 0) {
+    adim <- x@dim
+  } else {
+    adim <- sapply(indices, length)
+  }
+  array(vec, dim = adim)
+# TODO: drop is not implemented yet
 }
 
 #' @rdname DataSet
@@ -348,34 +378,114 @@ dataSpaceFromIndex <- function(dset, indices) {
 #' @export
 setMethod("[", c("DataSet", "ANY", "ANY", "ANY"),
   function(x, i, j, ..., drop=TRUE) {
-    if(missing(i)) {
-      i <- integer(0)
-    }
-    if(missing(j)) {
-      j <- integer(0)
-    }
-    indices <- list(i, j, ...)
-    indices <- indices[sapply(indices, length) > 0]
-    dspace <- dataSpaceFromIndex(x, indices)
-    
-    vec <- readDataSet(x, dspace)
-    setdim <- length(x@dim)
-    stopifnot(setdim >= 1)
-    if (setdim == 1) {
-      return(vec)
-    } else if (setdim == 2) {
-      return(matrix(vec, nrow = length(i)))
-    }
-    # TODO: remove workaround
-    adim <- NULL
-    if (length(indices) == 0) {
-      adim <- x@dim
-    } else {
-      adim <- sapply(indices, length)
-    }
-    array(vec, dim = adim)
-	# TODO: drop is not implemented yet
+    subsetDataSet(x, i, j, ..., drop = drop)
   })
+
+#' @rdname DataSet
+#' @export
+setMethod("[", c("DataSet", "missing", "missing", "ANY"),
+    function(x, i, j, ..., drop=TRUE) {
+      rank <- length(x@dim)
+      stopifnot(rank >= 1)
+      res <- NULL
+      if(rank == 1) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        res <- x[1:x@dim[1], drop = drop]
+      } else if (rank == 2) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        return(x[1:x@dim[1], 1:x@dim[2], drop = drop])
+      } else {
+        browser()
+        if(missing(...)) {
+          res <- readDataSet(x)
+        } else {
+          addargs <- tryCatch({	test <- list(...)
+                      TRUE}, error = function(e) FALSE)
+          if(addargs) {
+            res <- do.call("[", c(list(x), lapply(x@dim[1:2], 
+                        function(x) 1:x), list(...), list(drop = drop)))
+          } else {
+            res <- readDataSet(x)
+          }
+        }
+      }
+      res
+  })
+
+#' @rdname DataSet
+#' @export
+setMethod("[", c("DataSet", "numeric", "missing", "ANY"),
+    function(x, i, j, ..., drop=TRUE) {
+      rank <- length(x@dim)
+      stopifnot(rank >= 1)
+      res <- NULL
+      if(rank == 1) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        res <- subsetDataSet(x, i = i, drop = drop)
+      } else if (rank == 2) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        return(x[i, 1:x@dim[2], drop = drop])
+      } else {
+        browser()
+        if(missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        addargs <- tryCatch({	test <- list(...)
+              TRUE}, error = function(e) FALSE)
+        if(addargs) {
+          res <- do.call("[", c(list(x), list(i), list(1:x@dim[2]), 
+                  list(...), list(drop = drop)))
+        } else {
+          res <- do.call("[", c(list(x), list(i), 
+                  lapply(x@dim[-1], function(x) 1:x), list(drop = drop)))
+        }
+      }
+      res
+    })
+
+#' @rdname DataSet
+#' @export
+setMethod("[", c("DataSet", "missing", "numeric", "ANY"),
+    function(x, i, j, ..., drop=TRUE) {
+      rank <- length(x@dim)
+      stopifnot(rank >= 1)
+      res <- NULL
+      if(rank == 1) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        res <- x[i, drop = drop]
+      } else if (rank == 2) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        return(x[1:x@dim[1], j, drop = drop])
+      } else {
+        if(missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        browser()
+        addargs <- tryCatch({	test <- list(...)
+              TRUE}, error = function(e) FALSE)
+        if(addargs) {
+          res <- do.call("[", c(list(x), list(1:x@dim[1]), 
+                  list(j), list(...), list(drop = drop)))
+        } else {
+          res <- do.call("[", c(list(x), list(1:x@dim[1]), 
+                  list(j), lapply(x@dim[-c(1:2)], function(x) 1:x), list(drop = drop)))
+        }
+      }
+      res
+    })
+
 
 #' @rdname DataSet
 #' @param value object; Value to be assigned to dataset
@@ -395,9 +505,3 @@ setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
       closeh5(dspace)
       x
     })
-
-
-
-
-
-

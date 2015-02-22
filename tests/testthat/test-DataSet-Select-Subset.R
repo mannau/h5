@@ -107,6 +107,13 @@ test_that("DataSet-Select-Subset-matrix",{
   f <- function() dset2[10, 9:10]
   expect_that(f(), throws_error("subscript out of bounds"))
   
+  f <- function() dset2[1, 1, 1]
+  expect_that(f(), throws_error("incorrect number of dimensions"))
+  
+  f <- function() dset2[ , , ]
+  expect_that(f(), throws_error("incorrect number of dimensions"))
+  
+  # Assign submatrix to DataSet
   dset2[c(1, 3, 5), c(1, 3, 5)] <- submat
   
   closeh5(dset2)
@@ -118,13 +125,21 @@ test_that("DataSet-Select-Subset-matrix",{
   dset1 <- openDataSet(group, "testmat_n")
   
   # Read entire dataset
-  testmat_n_na_boundall <- readDataSet(dset1, 
-      selectDataSpace(dset1, elem = cbind(rep(1:10, 9), rep(1:9, each = 10))))
-  expect_that(testmat_n_na_boundall, is_identical_to(as.vector(testmat_n)))
+  expect_that(readDataSet(dset1), is_identical_to(testmat_n))
+  expect_that(dset1[], is_identical_to(testmat_n))
+  expect_that(dset1[,], is_identical_to(testmat_n))
       
   # Read single element
   testmat_n_read_2_2 <- readDataSet(dset1, selectDataSpace(dset1, elem = t(c(2L, 2L))))
   expect_that(testmat_n_read_2_2, is_identical_to(testmat_n[2, 2]))
+  expect_that(dset1[2, 2], is_identical_to(testmat_n[2, 2, drop = FALSE]))
+  
+  # Read columns / rows
+  # TODO: drop should also be implemented
+  expect_that(dset1[, 2], is_identical_to(testmat_n[, 2, drop = FALSE]))
+  expect_that(dset1[, 2:4], is_identical_to(testmat_n[, 2:4, drop = FALSE]))
+  expect_that(dset1[2, ], is_identical_to(testmat_n[2,, drop = FALSE]))
+  expect_that(dset1[2:4, ], is_identical_to(testmat_n[2:4,, drop = FALSE]))
   
   dset2 <- openDataSet(group, "testmat_n2")
   testmat_n2 <- testmat_n
@@ -141,7 +156,6 @@ test_that("DataSet-Select-Subset-array",{
   testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
   subarray <- array(as.integer(-100:-120), dim = c(2, 2, 5))
   
-  fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
@@ -157,6 +171,13 @@ test_that("DataSet-Select-Subset-array",{
   
   f <- function() dset2[3, 3, 10:11]
   expect_that(f(), throws_error("subscript out of bounds"))
+  
+  f <- function() dset2[1, 1, 1, 1]
+  expect_that(f(), throws_error("incorrect number of dimensions"))
+  
+  # TODO: This should generate an ERROR!
+  #f <- function() dset2[ , , , ]
+  #expect_that(f(), throws_error("incorrect number of dimensions"))
 
   dset2[2:3, 2:3, 3:7] <- subarray
 
@@ -169,6 +190,19 @@ test_that("DataSet-Select-Subset-array",{
   dset1 <- openDataSet(group, "testmat_n")
   
   # Read entire dataset
+  expect_that(readDataSet(dset1), is_identical_to(testmat_n))
+  expect_that(dset1[], is_identical_to(testmat_n))
+  expect_that(dset1[,,], is_identical_to(testmat_n))    
+      
+  # Read columns / rows
+  # TODO: drop should also be implemented
+  expect_that(dset1[2,,, drop = FALSE], is_identical_to(testmat_n[2,,, drop = FALSE]))
+  expect_that(dset1[2:3,,, drop = FALSE ], is_identical_to(testmat_n[2:3,,, drop = FALSE]))
+  expect_that(dset1[,2,, drop = FALSE], is_identical_to(testmat_n[, 2,, drop = FALSE]))
+  expect_that(dset1[, 2:3,, drop = FALSE], is_identical_to(testmat_n[, 2:3,, drop = FALSE]))
+  expect_that(dset1[,,2, drop = FALSE], is_identical_to(testmat_n[,,2, drop = FALSE]))    
+  expect_that(dset1[,,2:4, drop = FALSE], is_identical_to(testmat_n[,,2:4, drop = FALSE]))    
+  
   testmat_n_read_all <- dset1[1:3, 1:3, 1:10]
   expect_that(testmat_n_read_all, is_identical_to(testmat_n))
   

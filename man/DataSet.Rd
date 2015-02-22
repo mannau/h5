@@ -4,7 +4,10 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
-\alias{[,DataSet-method}
+\alias{[,DataSet,ANY,ANY-method}
+\alias{[,DataSet,missing,missing-method}
+\alias{[,DataSet,missing,numeric-method}
+\alias{[,DataSet,numeric,missing-method}
 \alias{[<-,DataSet-method}
 \alias{c,DataSet-method}
 \alias{cbind.DataSet}
@@ -71,7 +74,13 @@ cbind.DataSet(..., deparse.level = 1)
 
 \S4method{c}{DataSet}(x, ..., recursive = FALSE)
 
-\S4method{[}{DataSet}(x, i, j, ..., drop = TRUE)
+\S4method{[}{DataSet,ANY,ANY}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{DataSet,missing,missing}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{DataSet,numeric,missing}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{DataSet,missing,numeric}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{DataSet}(x, i, j, ...) <- value
 
