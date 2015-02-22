@@ -13,16 +13,16 @@ Using **devtools** you can easily install the latest development version of **h5
 library(devtools)
 install_github("mannau/h5")
 ```
-Please note that this version has been tested with the current hdf5 library 1.8.14 - you should therefore install the most current hdf5 library including its C++ API for your platform. This package already ships the library for windows operating systems. For MacOSX and linux the library files have to installed using the commands as described below.
+Please note that this version has been tested with the current hdf5 library 1.8.14 - you should therefore install the most current hdf5 library including its C++ API for your platform. This package already ships the library for windows operating systems. For MacOSX and Debian-based Linux systems the library files have to be installed using the commands as described below.
 
 ### MacOSX
-With MacOSX and Homebrew (http://brew.sh) you can use the following command to install HDF5 library dependencies and headers:
+Using MacOSX and Homebrew (http://brew.sh) you can use the following command to install HDF5 library dependencies and headers:
 ```shell
 brew install hdf5 --enable-cxx
 ```
 
 ### Linux (e.g. Debian, Ubuntu)
-With linux (Debian-based) you can use the following command to install the dependencies:
+With Debian-based Linux systems you can use the following command to install the dependencies:
 ```shell
 sudo apt-get install libhdf5-7 libhdf5-dev libhdf5-serial-dev
 ```
@@ -40,6 +40,3 @@ closeh5(dset)
 closeh5(group)
 closeh5(file)
 ```
-
-## License
-**h5** is released under the [GNU General Public License Version 3](http://www.gnu.org/copyleft/gpl.html)
