@@ -144,16 +144,22 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
 #' @export
 setGeneric("writeDataSet", function(.Object, data, 
         dspace = selectDataSpace(.Object, 
-            rep(NA_integer_, length(.Object@dim)), GetDimensions(data)))
+            rep(NA_integer_, length(.Object@dim)), GetDimensions(data)), 
+        transpose = TRUE)
 			standardGeneric("writeDataSet")
 )
 
 #' @rdname DataSet
+#' @param transpose logical; Determine if data object (if is array) should be transposed.
 #' @export
-setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", dspace = "ANY"), 
-		function(.Object, data, dspace) {      
+setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", dspace = "ANY", 
+        transpose = "ANY"), 
+		function(.Object, data, dspace, transpose) {      
       stopifnot(inherits(dspace, "DataSpace"))
-      if(is.array(data)) {
+      if(prod(GetDimensions(data)) != prod(dspace@count)) {
+        stop("number of items to replace is not equal to replacement length")
+      }
+      if(is.array(data) & transpose) {
         data <- aperm(data, rev(1:length(dim(data))))
       }
 			res <- WriteDataset(.Object@pointer, dspace@pointer, data, .Object@datatype, dspace@count)
@@ -399,7 +405,6 @@ setMethod("[", c("DataSet", "missing", "missing", "ANY"),
         }
         return(x[1:x@dim[1], 1:x@dim[2], drop = drop])
       } else {
-        browser()
         if(missing(...)) {
           res <- readDataSet(x)
         } else {
@@ -434,7 +439,6 @@ setMethod("[", c("DataSet", "numeric", "missing", "ANY"),
         }
         return(x[i, 1:x@dim[2], drop = drop])
       } else {
-        browser()
         if(missing(...)) {
           stop("incorrect number of dimensions")
         }
@@ -462,7 +466,7 @@ setMethod("[", c("DataSet", "missing", "numeric", "ANY"),
         if(!missing(...)) {
           stop("incorrect number of dimensions")
         }
-        res <- x[i, drop = drop]
+        res <- subsetDataSet(x, j = j, drop = drop)
       } else if (rank == 2) {
         if(!missing(...)) {
           stop("incorrect number of dimensions")
@@ -472,7 +476,6 @@ setMethod("[", c("DataSet", "missing", "numeric", "ANY"),
         if(missing(...)) {
           stop("incorrect number of dimensions")
         }
-        browser()
         addargs <- tryCatch({	test <- list(...)
               TRUE}, error = function(e) FALSE)
         if(addargs) {
@@ -501,7 +504,7 @@ setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
       indices <- list(i, j, ...)
       indices <- indices[sapply(indices, length) > 0]
       dspace <- dataSpaceFromIndex(x, indices)
-      res <- WriteDataset(x@pointer, dspace@pointer, value, x@datatype, dspace@count)
+      writeDataSet(x, value, dspace, transpose = FALSE) 
       closeh5(dspace)
       x
     })

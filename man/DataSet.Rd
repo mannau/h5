@@ -44,11 +44,11 @@ selectDataSpace(.Object, offset = rep(NA_integer_, length(.Object@dim)),
 \S4method{selectDataSpace}{DataSet,missing,missing,matrix}(.Object, elem)
 
 writeDataSet(.Object, data, dspace = selectDataSpace(.Object, rep(NA_integer_,
-  length(.Object@dim)), GetDimensions(data)))
+  length(.Object@dim)), GetDimensions(data)), transpose = TRUE)
 
 \S4method{writeDataSet}{DataSet}(.Object, data,
   dspace = selectDataSpace(.Object, rep(NA_integer_, length(.Object@dim)),
-  GetDimensions(data)))
+  GetDimensions(data)), transpose = TRUE)
 
 readDataSet(.Object, dspace = selectDataSpace(.Object, offset =
   rep(NA_integer_, length(.Object@dim)), count = rep(NA_integer_,
@@ -98,6 +98,8 @@ cbind.DataSet(..., deparse.level = 1)
 \item{data,y}{object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.}
 
 \item{dspace}{DataSpace; Data space object used for data selection.}
+
+\item{transpose}{logical; Determine if data object (if is array) should be transposed.}
 
 \item{dims}{numeric; Dimensions of DataSet.}
 
