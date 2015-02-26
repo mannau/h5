@@ -358,3 +358,16 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// GetFGInfo
+void GetFGInfo(XPtr<CommonFG> file, string path);
+RcppExport SEXP h5_GetFGInfo(SEXP fileSEXP, SEXP pathSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
+        Rcpp::traits::input_parameter< string >::type path(pathSEXP );
+        GetFGInfo(file, path);
+    }
+    return R_NilValue;
+END_RCPP
+}

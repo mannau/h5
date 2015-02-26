@@ -11,12 +11,21 @@
 \usage{
 \S4method{closeh5}{H5File}(.Object)
 
+H5File(name, mode = "a")
+
 flushh5(.Object)
 
 \S4method{flushh5}{H5File}(.Object)
 }
 \arguments{
 \item{.Object}{H5File; S4 object of class \code{H5File};}
+
+\item{name}{character; File path}
+
+\item{mode}{mode used for file.}
+}
+\value{
+H5File
 }
 \description{
 Class to represent an HDF5 file.

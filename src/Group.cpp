@@ -54,3 +54,35 @@ bool ExistsGroup(XPtr<CommonFG> file, string groupname) {
      throw Rcpp::exception(msg.c_str());
   }
 }
+
+// [[Rcpp::export]]
+void GetFGInfo(XPtr<CommonFG> file, string path) {
+	Rcout << path << endl;
+	file->iterateElems(path, NULL, file_info, NULL);
+}
+
+herr_t file_info(hid_t loc_id, const char *name, void *opdata)
+{
+    H5G_stat_t statbuf;
+
+    /*
+     * Get type of the object and display its name and type.
+     * The name of the object is passed to this function by
+     * the Library. Some magic :-)
+     */
+    H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
+    switch (statbuf.type) {
+    case H5G_GROUP:
+    	Rprintf("  %s/\n", name);
+         break;
+    case H5G_DATASET:
+    	Rprintf("  %s\n", name);
+         break;
+    case H5G_TYPE:
+    	Rprintf("  %s\n", name);
+         break;
+    default:
+    	Rprintf("<ERROR: Unable to identify an object>\n");
+    }
+    return 0;
+ }

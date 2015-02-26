@@ -89,3 +89,7 @@ ExistsGroup <- function(file, groupname) {
     .Call('h5_ExistsGroup', PACKAGE = 'h5', file, groupname)
 }
 
+GetFGInfo <- function(file, path) {
+    invisible(.Call('h5_GetFGInfo', PACKAGE = 'h5', file, path))
+}
+

@@ -8,4 +8,6 @@ Rcpp::XPtr<H5::Group> CreateGroup(Rcpp::XPtr<H5::CommonFG> file, std::string gro
 Rcpp::XPtr<H5::Group> OpenGroup(Rcpp::XPtr<H5::CommonFG> file, std::string groupname);
 bool CloseGroup(Rcpp::XPtr<H5::Group> group);
 bool ExistsGroup(Rcpp::XPtr<H5::CommonFG> file, std::string groupname);
+void GetFGInfo(Rcpp::XPtr<H5::CommonFG> file);
+herr_t file_info(hid_t loc_id, const char *name, void *opdata);
 #endif // __File_h__

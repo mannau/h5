@@ -25,7 +25,7 @@ test_that("H5File-FileMode-param",{
 	f <- function() file <- new( "H5File", "path", "w--")
 	expect_that(f(), throws_error("Parameter mode must be either"))
 })	
-	
+
 test_that("H5File-FileMode-param-a",{
 	if(file.exists(fname)) file.remove(fname)
 	file <- new( "H5File", fname)
@@ -114,7 +114,16 @@ test_that("H5File-FileMode-param-r+",{
   file.remove(fname) 
 })
 
-# TODO: include tests for flushh5
 
-
-
+test_that("H5File-show",{
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname)
+  group1 <- createGroup(file, "testgroup")
+  group2 <- createGroup(file, "testgroup2")
+  group3 <- createGroup(group2, "testgroup3")
+  closeh5(group1)
+  closeh5(group2)
+  closeh5(group3)
+  file
+  closeh5(file)
+})
