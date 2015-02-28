@@ -9,6 +9,9 @@
 \alias{[,DataSet,missing,numeric,ANY-method}
 \alias{[,DataSet,numeric,missing,ANY-method}
 \alias{[<-,DataSet,ANY,ANY-method}
+\alias{[<-,DataSet,missing,missing-method}
+\alias{[<-,DataSet,missing,numeric-method}
+\alias{[<-,DataSet,numeric,missing-method}
 \alias{c,DataSet-method}
 \alias{cbind.DataSet}
 \alias{cbind2,DataSet,matrix-method}
@@ -81,6 +84,12 @@ cbind.DataSet(..., deparse.level = 1)
 \S4method{[}{DataSet,numeric,missing,ANY}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{DataSet,missing,numeric,ANY}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{DataSet,missing,missing}(x, i, j, ...) <- value
+
+\S4method{[}{DataSet,numeric,missing}(x, i, j, ...) <- value
+
+\S4method{[}{DataSet,missing,numeric}(x, i, j, ...) <- value
 
 \S4method{[}{DataSet,ANY,ANY}(x, i, j, ...) <- value
 

@@ -117,7 +117,6 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
       if(any(is.na(elem))) {
         stop("NAs are not allowed in element coordinates.")
       }
-      
       if(any(elem < 1L)) {
         stop("Elements of parameter elem must be greater or equal than one.")
       }
@@ -143,10 +142,10 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
 #' @rdname DataSet
 #' @export
 setGeneric("writeDataSet", function(.Object, data, 
-        dspace = selectDataSpace(.Object, 
-            rep(NA_integer_, length(.Object@dim)), GetDimensions(data)), 
+        dspace = selectDataSpace(.Object,  rep(NA_integer_, length(.Object@dim)), 
+            GetDimensions(data)), 
         transpose = TRUE)
-			standardGeneric("writeDataSet")
+      standardGeneric("writeDataSet")
 )
 
 #' @rdname DataSet
@@ -159,8 +158,13 @@ setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", dspace = "A
       if(prod(GetDimensions(data)) != prod(dspace@count)) {
         stop("number of items to replace is not equal to replacement length")
       }
-      if(is.array(data) & transpose) {
-        data <- aperm(data, rev(1:length(dim(data))))
+      rank <- length(GetDimensions(data))
+      if(transpose & rank > 1) {
+        if(rank == 2) {
+          data = t(data)
+        } else if (rank > 2) {
+          data <- aperm(data, rev(1:length(dim(data))))
+        }
       }
 			res <- WriteDataset(.Object@pointer, dspace@pointer, data, .Object@datatype, dspace@count)
       closeh5(dspace)
@@ -336,7 +340,6 @@ dataSpaceFromIndex <- function(dset, indices) {
   if(length(indices) == 0) {
     return(selectDataSpace(dset))
   }
-  
   if(length(indices) != length(dset@dim)) {
     stop("incorrect number of dimensions") 
   }
@@ -489,22 +492,120 @@ setMethod("[", c("DataSet", "missing", "numeric", "ANY"),
       res
     })
 
+writeSubsetDataSet <- function(x, i, j, ..., value) {
+  if(missing(i)) {
+    i <- integer(0)
+  }
+  if(missing(j)) {
+    j <- integer(0)
+  }
+  indices <- list(i, j, ...)
+  indices <- indices[sapply(indices, length) > 0]
+  dspace <- dataSpaceFromIndex(x, indices)
+  writeDataSet(x, value, dspace, transpose = FALSE) 
+  closeh5(dspace)
+  x
+}
+
 
 #' @rdname DataSet
 #' @param value object; Value to be assigned to dataset
 #' @export
-setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
+setMethod("[<-", c("DataSet", "missing", "missing", "ANY"),
+  function(x, i, j, ..., value) {
+    rank <- length(x@dim)
+    stopifnot(rank >= 1)
+    if(rank == 1) {
+      if(!missing(...) | !missing(j)) {
+        stop("incorrect number of dimensions")
+      }
+      x[1:x@dim[1]] <- value
+    } else if (rank == 2) {
+      if(!missing(...)) {
+        stop("incorrect number of dimensions")
+      }
+      x[1:x@dim[1], 1:x@dim[2]] <- value
+    } else {
+      if(missing(...)) {
+        stop("incorrect number of dimensions")
+      }
+      addargs <- tryCatch({	test <- list(...)
+            TRUE}, error = function(e) FALSE)
+      if(addargs) {
+        do.call("[<-", c(list(x), lapply(x@dim[1:2], 
+                    function(x) 1:x), list(...), list(value = value)))
+      } else {
+        writeDataSet(x, value, selectDataSpace(x)) 
+      }
+    }
+    x
+  })
+
+#' @rdname DataSet
+#' @export
+setMethod("[<-", c("DataSet", "numeric", "missing", "ANY"),
     function(x, i, j, ..., value) {
-      if(missing(i)) {
-        i <- integer(0)
+      rank <- length(x@dim)
+      stopifnot(rank >= 1)
+      if(rank == 1) {
+        if(!missing(...) | !missing(j)) {
+          stop("incorrect number of dimensions")
+        }
+        writeSubsetDataSet(x, i = i, value = value)
+      } else if (rank == 2) {
+        if(!missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        x[i, 1:x@dim[2]] <- value
+      } else {
+        if(missing(...)) {
+          stop("incorrect number of dimensions")
+        }
+        addargs <- tryCatch({	test <- list(...)
+              TRUE}, error = function(e) FALSE)
+        if(addargs) {
+          res <- do.call("[<-", c(list(x), list(i), lapply(x@dim[2], 
+                      function(x) 1:x), list(...), list(value = value)))
+        } else {
+          res <- do.call("[<-", c(list(x), list(i), lapply(x@dim[2], 
+                      function(x) 1:x), list(value = value)))
+        }
       }
-      if(missing(j)) {
-        j <- integer(0)
-      }
-      indices <- list(i, j, ...)
-      indices <- indices[sapply(indices, length) > 0]
-      dspace <- dataSpaceFromIndex(x, indices)
-      writeDataSet(x, value, dspace, transpose = FALSE) 
-      closeh5(dspace)
       x
     })
+
+#' @rdname DataSet
+#' @export
+setMethod("[<-", c("DataSet", "missing", "numeric", "ANY"),
+  function(x, i, j, ..., value) {
+    rank <- length(x@dim)
+    if(rank < 2) {
+        stop("incorrect number of dimensions")
+    } else if (rank == 2) {
+      if(!missing(...)) {
+        stop("incorrect number of dimensions")
+      }
+      writeSubsetDataSet(x, i = 1:x@dim[1], j = j, value = value)
+    } else {
+      if(missing(...)) {
+        stop("incorrect number of dimensions")
+      }
+      addargs <- tryCatch({	test <- list(...)
+            TRUE}, error = function(e) FALSE)
+      if(addargs) {
+        res <- do.call("[<-", c(list(x), list(1:x@dim[1]), list(j), 
+                list(...), list(value = value)))
+      } else {
+        res <- do.call("[<-", c(list(x), list(1:x@dim[1]), list(j), 
+                list(value = value)))
+      }
+    }
+    x 
+  })
+
+#' @rdname DataSet
+#' @export
+setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
+  function(x, i, j, ..., value) {
+    writeSubsetDataSet(x, i = i, j = j, ..., value = value)
+  })
