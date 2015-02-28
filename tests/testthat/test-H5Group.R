@@ -38,14 +38,13 @@ test_that("H5Group-createGroup",{
   
   group3 <- createGroup(file, "/testgroup3")
   expect_that(group3, is_a("H5Group"))
-  expect_that(group3@name, is_identical_to("/testgroup3"))
-  closeh5(group3)
+  expect_that(group3@location, is_identical_to("/testgroup3"))
   
-  groupnested <- createGroup(file, "/testgroup3/test")
+  groupnested <- createGroup(group3, "/test")
   expect_that(groupnested, is_a("H5Group"))
-  expect_that(groupnested@name, is_identical_to("/testgroup3/test"))
+  expect_that(groupnested@location, is_identical_to("/testgroup3/test"))
   closeh5(groupnested)
-  
+  closeh5(group3)
   closeh5(file)
   #file.remove(fname)
 })
@@ -58,18 +57,18 @@ test_that("H5Group-openGroup",{
   
   group3 <- openGroup(file, "/testgroup3")
   expect_that(group3, is_a("H5Group"))
-  expect_that(group3@name, is_identical_to("/testgroup3"))
+  expect_that(group3@location, is_identical_to("/testgroup3"))
+  
+  groupnested <- openGroup(group3, "test")
+  expect_that(groupnested, is_a("H5Group"))
+  expect_that(groupnested@location, is_identical_to("/testgroup3/test"))
+  closeh5(groupnested)
   closeh5(group3)
   
-  groupnested <- openGroup(file, "/testgroup3/test")
-  expect_that(groupnested, is_a("H5Group"))
-  expect_that(groupnested@name, is_identical_to("/testgroup3/test"))
-  closeh5(groupnested)
-  
   group3 <- openGroup(file, "/testgroup3")
-  grouprelative <- openGroup(group3, "test")
+  grouprelative <- openGroup(group3, "/test")
   expect_that(grouprelative, is_a("H5Group"))
-  expect_that(grouprelative@name, is_identical_to("test"))
+  expect_that(grouprelative@location, is_identical_to("/testgroup3/test"))
   # TODO: should absolute path be displayed?
   # eg. expect_that(grouprelative@name, is_identical_to("/testgroup3/test"))
   

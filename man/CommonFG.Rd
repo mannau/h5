@@ -4,6 +4,10 @@
 \name{CommonFG}
 \alias{CommonFG}
 \alias{CommonFG-class}
+\alias{[,CommonFG,character,character,missing-method}
+\alias{[,CommonFG,character,missing,missing-method}
+\alias{[<-,CommonFG,character,character-method}
+\alias{[<-,CommonFG,missing,character-method}
 \alias{closeh5}
 \alias{createDataSet}
 \alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
@@ -12,6 +16,8 @@
 \alias{createGroup,CommonFG,character-method}
 \alias{existsGroup}
 \alias{existsGroup,CommonFG,character-method}
+\alias{getH5Group}
+\alias{getH5Group,CommonFG,character-method}
 \alias{openDataSet}
 \alias{openDataSet,CommonFG,character-method}
 \alias{openGroup}
@@ -47,6 +53,18 @@ openDataSet(.Object, datasetname, type)
 \S4method{openDataSet}{CommonFG,character}(.Object, datasetname, type)
 
 closeh5(.Object)
+
+\S4method{[}{CommonFG,character,missing,missing}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{CommonFG,character,character,missing}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{CommonFG,character,character}(x, i, j, ...) <- value
+
+\S4method{[}{CommonFG,missing,character}(x, i, j, ...) <- value
+
+getH5Group(.Object, groupname)
+
+\S4method{getH5Group}{CommonFG,character}(.Object, groupname)
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}
@@ -75,6 +93,18 @@ closeh5(.Object)
 defaults to \code{4}.}
 
 \item{size}{integer; Datatype size to be used, only relevant for character strings.}
+
+\item{x}{CommonFG; object to be subsetted}
+
+\item{i}{character/integer; groupname}
+
+\item{j}{character; name of dataset}
+
+\item{...}{Additional arguments for subsetting}
+
+\item{drop}{logical; specify if class of result set should be dropped (not implemented yet).}
+
+\item{value}{vector/matrix/array; Value to be assigend to dataset}
 }
 \description{
 The CommonFG class which links H5File with H5Group.

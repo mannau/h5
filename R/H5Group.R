@@ -18,9 +18,14 @@ setMethod("closeh5", signature(.Object="H5Group"), function(.Object) {
 		})
 
 setMethod( "initialize", "H5Group",
-		function(.Object, location, name) {
-			.Object@pointer <- location
-      .Object@name <- name
-			#TODO: should group object be closed?? closeh5(.Object)
+		function(.Object, pointer, location) {
+			.Object@pointer <- pointer
+      .Object@location <- location
 			.Object
 		})
+
+setMethod("show", "H5Group",
+    function(object) {
+      cat(sprintf("H5Group '%s'\n", object@location))
+      GetFGInfo(object@pointer, object@location)
+    })

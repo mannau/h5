@@ -8,7 +8,7 @@
 #' @aliases H5File-class
 #' @include H5Location.R CommonFG.R
 #' @export
-setClass( "H5File", representation(mode = "character", location = "character"), 
+setClass( "H5File", representation(mode = "character"), 
 		contains = c("CommonFG", "H5Location"))
 
 #' @rdname H5File
@@ -30,7 +30,6 @@ function(.Object, name, mode = "a") {
 	}
 					
 	.Object@pointer <- OpenFile(name, mode)
-	.Object@name <- name
   .Object@location <- file_path_as_absolute(name)
 	.Object@mode <- mode
 	.Object
@@ -59,8 +58,6 @@ setMethod("flushh5", signature(.Object="H5File"), function(.Object) {
 
 setMethod("show", "H5File",
     function(object) {
-      cat(sprintf("H5File at %s\n", object@location))
-      cat(sprintf("File Access Mode: '%s'\n", object@mode))
-      cat(sprintf("---Content------------\n", object@mode))
+      cat(sprintf("H5File '%s' (mode '%s')\n", basename(object@location), object@mode))
       GetFGInfo(object@pointer, "/")
     })

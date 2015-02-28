@@ -23,7 +23,16 @@
 #' @rdname CommonFG
 #' @aliases CommonFG-class
 #' @export
-setClass( "CommonFG", representation(pointer = "externalptr", name = "character") )
+setClass( "CommonFG", representation(pointer = "externalptr", location = "character") )
+
+getGroupLocation <- function(x, groupname) {
+  location <- if(inherits(x, "H5File")) {
+        paste0("/", groupname)
+      } else {
+        file.path(x@location, groupname, fsep = "/")
+      } 
+  gsub("/+", "/", location)
+}
 
 #' @rdname CommonFG
 #' @export
@@ -35,8 +44,8 @@ setGeneric("createGroup", function(.Object, groupname)
 #' @export
 setMethod( "createGroup", signature(.Object="CommonFG", groupname = "character"), 
 		function(.Object, groupname) {
-			groupptr <- CreateGroup(.Object@pointer, groupname)
-			new("H5Group", groupptr, groupname)
+			groupptr <- CreateGroup(.Object@pointer, sub("^/+", "", groupname))
+			new("H5Group", groupptr, getGroupLocation(.Object, groupname))
 		})
 
 #' @rdname CommonFG
@@ -49,8 +58,8 @@ setGeneric("openGroup", function(.Object, groupname)
 #' @export
 setMethod( "openGroup", signature(.Object="CommonFG", groupname = "character"), 
 		function(.Object, groupname) {
-			groupptr <- OpenGroup(.Object@pointer, groupname)
-			new("H5Group", groupptr, groupname)
+			groupptr <- OpenGroup(.Object@pointer, sub("^/+", "", groupname))
+      new("H5Group", groupptr, getGroupLocation(.Object, groupname))
 		})
 
 #' @rdname CommonFG
@@ -65,8 +74,6 @@ setMethod( "existsGroup", signature(.Object="CommonFG", groupname = "character")
 		function(.Object, groupname) {
 			ExistsGroup(.Object@pointer, groupname)
 		})
-
-
 
 #' @rdname CommonFG
 #' @export
@@ -166,8 +173,6 @@ createDataset_internal <- function(loc, datasetname, typechar, dimensions,
   new("DataSet", dsetptr, typechar)
 }
 
-
-
 #' @rdname CommonFG
 #' @export
 setGeneric("openDataSet", function(.Object, datasetname, type)
@@ -187,6 +192,74 @@ setMethod("openDataSet", signature(.Object="CommonFG", datasetname = "character"
 setGeneric("closeh5", function(.Object)
 			standardGeneric("closeh5")
 )
+
+#' @rdname CommonFG
+#' @param i character/integer; groupname
+#' @param drop logical; specify if class of result set should be dropped (not implemented yet).
+#' @export
+setMethod("[", c("CommonFG", "character", "missing", "missing"),
+    function(x, i, j, ..., drop=TRUE) {
+      getH5Group(x, i)
+})
+
+#' @rdname CommonFG
+#' @param j character; name of dataset
+#' @param x CommonFG; object to be subsetted
+#' @param ... Additional arguments for subsetting
+#' @export
+setMethod("[", c("CommonFG", "character", "character", "missing"),
+    function(x, i, j, ..., drop=TRUE) {
+      group <- getH5Group(x, i)
+      openDataSet(group, j)
+    })
+
+#' @rdname CommonFG
+#' @param value vector/matrix/array; Value to be assigend to dataset
+#' @export
+setMethod("[<-", c("CommonFG", "character", "character", "ANY"),
+    function(x, i, j, ..., value) {
+      group <- getH5Group(x, i)
+      res <- createDataSet(group, j, value, ...)
+      closeh5(group)
+      x
+    })
+
+#' @rdname CommonFG
+#' @export
+setMethod("[<-", c("CommonFG", "missing", "character", "ANY"),
+    function(x, i, j, ..., value) {
+      res <- createDataSet(x, j, value, ...)
+      x
+    })
+
+#' @rdname CommonFG
+#' @export
+setGeneric("getH5Group", function(.Object, groupname)
+      standardGeneric("getH5Group")
+)
+
+#' @rdname CommonFG
+#' @export
+setMethod( "getH5Group", signature(.Object="CommonFG", groupname = "character"), 
+    function(.Object, groupname) {
+      stopifnot(length(groupname) == 1)
+      if(groupname == "/") {
+        return(.Object)
+      }
+      gnames <- strsplit(groupname, "/")[[1]]
+      gnames <- gnames[nchar(gnames) > 0]
+      ex <- sapply(1:length(gnames), function(i) 
+            existsGroup(.Object, paste(gnames[1:i], collapse = "/")))
+
+      if(!all(ex)) {
+        excreate <- which(!ex)
+        for(i in excreate) {
+          gr <- createGroup(.Object, paste(gnames[1:i], collapse = "/"))
+          closeh5(gr)
+        }       
+      } 
+      openGroup(.Object, groupname)
+})
 
 
 

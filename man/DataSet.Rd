@@ -4,11 +4,11 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
-\alias{[,DataSet,ANY,ANY-method}
-\alias{[,DataSet,missing,missing-method}
-\alias{[,DataSet,missing,numeric-method}
-\alias{[,DataSet,numeric,missing-method}
-\alias{[<-,DataSet-method}
+\alias{[,DataSet,ANY,ANY,ANY-method}
+\alias{[,DataSet,missing,missing,ANY-method}
+\alias{[,DataSet,missing,numeric,ANY-method}
+\alias{[,DataSet,numeric,missing,ANY-method}
+\alias{[<-,DataSet,ANY,ANY-method}
 \alias{c,DataSet-method}
 \alias{cbind.DataSet}
 \alias{cbind2,DataSet,matrix-method}
@@ -74,15 +74,15 @@ cbind.DataSet(..., deparse.level = 1)
 
 \S4method{c}{DataSet}(x, ..., recursive = FALSE)
 
-\S4method{[}{DataSet,ANY,ANY}(x, i, j, ..., drop = TRUE)
+\S4method{[}{DataSet,ANY,ANY,ANY}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{DataSet,missing,missing}(x, i, j, ..., drop = TRUE)
+\S4method{[}{DataSet,missing,missing,ANY}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{DataSet,numeric,missing}(x, i, j, ..., drop = TRUE)
+\S4method{[}{DataSet,numeric,missing,ANY}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{DataSet,missing,numeric}(x, i, j, ..., drop = TRUE)
+\S4method{[}{DataSet,missing,numeric,ANY}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{DataSet}(x, i, j, ...) <- value
+\S4method{[}{DataSet,ANY,ANY}(x, i, j, ...) <- value
 
 \S4method{closeh5}{DataSpace}(.Object)
 }
