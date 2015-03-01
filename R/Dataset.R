@@ -404,12 +404,12 @@ setMethod("[", c("DataSet", "missing", "missing", "ANY"),
         if(!missing(...)) {
           stop("incorrect number of dimensions")
         }
-        res <- x[1:x@dim[1], drop = drop]
+        res <- readDataSet(x)
       } else if (rank == 2) {
         if(!missing(...)) {
           stop("incorrect number of dimensions")
         }
-        return(x[1:x@dim[1], 1:x@dim[2], drop = drop])
+        res <- readDataSet(x)
       } else {
         if(missing(...)) {
           res <- readDataSet(x)
