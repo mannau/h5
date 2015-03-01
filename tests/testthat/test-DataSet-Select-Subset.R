@@ -280,7 +280,6 @@ test_that("DataSet-Select-Subset-matrix-write",{
   closeh5(file)
 })
 
-
 test_that("DataSet-Select-Subset-array-read",{  
   testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
   subarray <- array(as.integer(-100:-120), dim = c(2, 2, 5))
@@ -344,6 +343,96 @@ test_that("DataSet-Select-Subset-array-read",{
   testmat_n2[2:3, 2:3, 3:7] <- subarray
   expect_that(testmat_n2_read_all, is_identical_to(testmat_n2))
  
+  closeh5(dset2)
+  closeh5(dset1)
+  closeh5(group)
+  closeh5(file)
+})
+
+test_that("DataSet-Select-Subset-array-write",{  
+  testmat_n <- array(as.integer(1:90), dim = c(3, 3, 10))
+  subarray <- array(as.integer(-100:-120), dim = c(2, 2, 5))
+  
+  if(file.exists(fname)) file.remove(fname)
+  file <- new( "H5File", fname, "a")
+  group <- createGroup(file, "/testgroup")
+  dset1 <- createDataSet(group, "testmat_n", testmat_n)
+  dset2 <- createDataSet(group, "testmat_n2", testmat_n)
+  f <- function() dset2[4, 3, 10] <- array(1:3, dim = c(1, 1, 1))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  f <- function() dset2[3, 4, 10] <- array(1:3, dim = c(1, 1, 1))
+  expect_that(f(), throws_error("subscript out of bounds"))
+  
+  f <- function() dset2[3, 3, 11] <- array(1:3, dim = c(1, 1, 1))
+  expect_that(f(), throws_error("subscript out of bounds"))
+
+  f <- function() dset2[1, 1, 1, 1] <- testmat_n
+  expect_that(f(), throws_error("incorrect number of dimensions"))
+  
+  # TODO: this should actually work!
+  #f <- function() dset2[,,,] <- testmat_n
+  #expect_that(f(), throws_error("incorrect number of dimensions"))
+  
+  # Write single element
+  dset2[2, 2, 2] <- -2L 
+  expect_that(dset2[2, 2, 2], is_identical_to(array(-2L, dim = c(1, 1, 1))))
+  
+  dset2[,,] <- dset1[,,]
+  expect_that(dset2[,,], is_identical_to(dset1[,,]))
+  
+  # TODO: this should actually work!
+  #dset2[] <- dset1[]
+  #expect_that(dset2[], is_identical_to(dset1[]))
+  
+  # Assign submatrix to DataSet
+  f <- function()  dset2[2:3, 2:3, 1:6] <- subarray
+  expect_that(f(), throws_error("number of items to replace is not equal to replacement length"))
+  
+  dset2[2:3, 2:3, 1:5] <- subarray
+  closeh5(dset2)
+  
+  dset2 <- openDataSet(group, "testmat_n2")
+  testmat_n2 <- testmat_n
+  testmat_n2[2:3, 2:3, 1:5] <- subarray
+  expect_that(readDataSet(dset2), is_identical_to(testmat_n2))
+  
+  # TODO: this should actually work
+  # dset3[1, 1:2, ]
+  
+  dset3 <- createDataSet(group, "testmat_n3", testmat_n)
+  dset3[, 1:2, 1:3] <- array(rep(1L, 18), dim = c(3, 2, 3))
+  
+  dset4 <- createDataSet(group, "testmat_n4", testmat_n)
+  dset4[1:2,,1:3] <- array(rep(1L, 18), dim = c(3, 2, 3))
+  
+  closeh5(dset4)
+  closeh5(dset3)
+  closeh5(dset1)
+  closeh5(dset2)
+  closeh5(group)
+  closeh5(file)
+  
+  file <- new( "H5File", fname, "r")
+  group <- openGroup(file, "/testgroup")
+  dset1 <- openDataSet(group, "testmat_n")
+  dset2 <- openDataSet(group, "testmat_n2")
+  dset3 <- openDataSet(group, "testmat_n3")
+  dset4 <- openDataSet(group, "testmat_n4")
+  
+  # Read entire dataset
+  expect_that(readDataSet(dset1), is_identical_to(testmat_n))
+  expect_that(dset1[], is_identical_to(testmat_n))
+  expect_that(dset2[], is_identical_to(testmat_n2))
+  testmat_n3 <- testmat_n
+  testmat_n3[, 1:2, 1:3] <- 1L
+  expect_that(dset3[], is_identical_to(testmat_n3))
+  testmat_n4 <- testmat_n
+  testmat_n4[1:2,,1:3] <- 1L
+  expect_that(dset4[], is_identical_to(testmat_n4))
+  
+  closeh5(dset4)
+  closeh5(dset3)
   closeh5(dset2)
   closeh5(dset1)
   closeh5(group)
