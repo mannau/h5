@@ -165,13 +165,8 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
     DataSpace dataspace (dimensions.length(), dims, maxdims);
     // Set chunksize
     hsize_t chunk_dims[rank];
-    for(int i = 0; i < rank; i++) {
-      if (R_IsNA(chunksize[i])) {
-        chunk_dims[i] = CHUNKSIZE;
-      } else {
-        chunk_dims[i] = chunksize[i];
-      }
-    }
+    std::copy(chunksize.begin(), chunksize.end(), chunk_dims);
+
     DSetCreatPropList prop;
     prop.setDeflate(compressionlevel);
     // TODO: set chunk dims appropriately
@@ -230,8 +225,10 @@ NumericVector GetDataSetChunksize(XPtr<DataSet> dataset) {
   DataSpace dataspace = dataset->getSpace();
   int ndim = dataspace.getSimpleExtentNdims();
   hsize_t chunk_dims[ndim];
+  int rank_chunk;
   if( H5D_CHUNKED == cparms.getLayout()) {
-    return NumericVector(chunk_dims, chunk_dims + sizeof chunk_dims / sizeof chunk_dims[0]);
+	  rank_chunk = cparms.getChunk( ndim, chunk_dims);
+	  return NumericVector(chunk_dims, chunk_dims + sizeof chunk_dims / sizeof chunk_dims[0]);
   }
   return NA_REAL;
 }
