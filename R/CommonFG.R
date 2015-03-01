@@ -207,7 +207,7 @@ setMethod("[", c("CommonFG", "character", "missing", "missing"),
 #' @param x CommonFG; object to be subsetted
 #' @param ... Additional arguments for subsetting
 #' @export
-setMethod("[", c("CommonFG", "character", "character", "missing"),
+setMethod("[", c("CommonFG", "character", "character", "ANY"),
     function(x, i, j, ..., drop=TRUE) {
       group <- getH5Group(x, i)
       openDataSet(group, j)
@@ -222,6 +222,13 @@ setMethod("[<-", c("CommonFG", "character", "character", "ANY"),
       res <- createDataSet(group, j, value, ...)
       closeh5(group)
       x
+    })
+
+#' @rdname CommonFG
+#' @export
+setMethod("[", c("CommonFG", "missing", "character", "ANY"),
+    function(x, i, j, ..., drop=TRUE) {
+      openDataSet(x, j)
     })
 
 #' @rdname CommonFG

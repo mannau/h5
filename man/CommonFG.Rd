@@ -4,8 +4,9 @@
 \name{CommonFG}
 \alias{CommonFG}
 \alias{CommonFG-class}
-\alias{[,CommonFG,character,character,missing-method}
+\alias{[,CommonFG,character,character,ANY-method}
 \alias{[,CommonFG,character,missing,missing-method}
+\alias{[,CommonFG,missing,character,ANY-method}
 \alias{[<-,CommonFG,character,character-method}
 \alias{[<-,CommonFG,missing,character-method}
 \alias{closeh5}
@@ -56,9 +57,11 @@ closeh5(.Object)
 
 \S4method{[}{CommonFG,character,missing,missing}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{CommonFG,character,character,missing}(x, i, j, ..., drop = TRUE)
+\S4method{[}{CommonFG,character,character,ANY}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{CommonFG,character,character}(x, i, j, ...) <- value
+
+\S4method{[}{CommonFG,missing,character,ANY}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{CommonFG,missing,character}(x, i, j, ...) <- value
 
