@@ -170,7 +170,7 @@ createDataset_internal <- function(loc, datasetname, typechar, dimensions,
   dsetptr <- CreateDataset(loc, datasetname, typechar, dimensions,
       chunksize, maxdimensions, compression, size)
   
-  new("DataSet", dsetptr, typechar)
+  new("DataSet", dsetptr, datasetname, typechar)
 }
 
 #' @rdname CommonFG
@@ -184,7 +184,7 @@ setGeneric("openDataSet", function(.Object, datasetname, type)
 setMethod("openDataSet", signature(.Object="CommonFG", datasetname = "character"), 
 		function(.Object, datasetname, type) {
 			dsetptr <- OpenDataset(.Object@pointer, datasetname)
-			dset <- new("DataSet", dsetptr, GetDataSetType(dsetptr))
+			dset <- new("DataSet", dsetptr, datasetname, GetDataSetType(dsetptr))
 })
 
 #' @rdname CommonFG

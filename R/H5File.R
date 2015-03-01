@@ -58,6 +58,7 @@ setMethod("flushh5", signature(.Object="H5File"), function(.Object) {
 
 setMethod("show", "H5File",
     function(object) {
+      dimstring <- 
       cat(sprintf("H5File '%s' (mode '%s')\n", basename(object@location), object@mode))
       GetFGInfo(object@pointer, "/")
     })

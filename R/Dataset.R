@@ -17,6 +17,7 @@
 #' @include H5Location.R Dataspace.R
 #' @export
 setClass( "DataSet", representation( pointer = "externalptr", 
+                                     name = "character",
                                      datatype = "character",
                                      dim = "numeric", 
                                      maxdim = "numeric", 
@@ -200,12 +201,14 @@ setMethod("readDataSet", signature(.Object = "DataSet", dspace = "ANY"),
 
 setMethod( "initialize", "DataSet",
 		function(.Object, location, 
+                      datasetname,
                       datatype, 
                       dim = GetDataSetDimensions(location), 
                       maxdim = GetDataSetMaxDimensions(location), 
                       chunksize = GetDataSetChunksize(location), 
                       compression = GetDataSetCompression(location)) {
 			.Object@pointer = location
+      .Object@name = datasetname
 			.Object@datatype = datatype
       .Object@dim = dim      
       .Object@maxdim = maxdim   
@@ -609,3 +612,20 @@ setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
   function(x, i, j, ..., value) {
     writeSubsetDataSet(x, i = i, j = j, ..., value = value)
   })
+
+setMethod("show", "DataSet",
+  function(object) {
+      dimstring <- paste(object@dim, collapse = " x ")
+      typestring <- switch(object@datatype, i = "integer", d = "numeric", 
+          c = "character", "unknown")
+      maxdimstring <- ifelse(object@maxdim > 1.844674e+19, "UNLIMITED", format(object@maxdim, "%.5g"))
+      if(all(maxdimstring == "UNLIMITED")) maxdimstring <- maxdimstring[1]
+      maxdimstring <- paste(maxdimstring, collapse = " x ")
+      chunksizestring <- paste(sprintf("%.5g", object@chunksize), collapse = " x ")
+      cat(sprintf("DataSet '%s' (%s)\n", object@name, dimstring))
+      cat(sprintf("type: %s\n", typestring))
+      cat(sprintf("chunksize: %s\n", chunksizestring))
+      cat(sprintf("maxdim: %s\n", maxdimstring))
+      cat(sprintf("compression: %s\n", object@compression))
+    })
+
