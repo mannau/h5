@@ -222,12 +222,11 @@ NumericVector GetDataSetMaxDimensions(XPtr<DataSet> dataset) {
 // [[Rcpp::export]]
 NumericVector GetDataSetChunksize(XPtr<DataSet> dataset) {
   DSetCreatPropList cparms = dataset->getCreatePlist();
-  DataSpace dataspace = dataset->getSpace();
-  int ndim = dataspace.getSimpleExtentNdims();
-  hsize_t chunk_dims[ndim];
-  int rank_chunk;
   if( H5D_CHUNKED == cparms.getLayout()) {
-	  rank_chunk = cparms.getChunk( ndim, chunk_dims);
+	  DataSpace dataspace = dataset->getSpace();
+	  int ndim = dataspace.getSimpleExtentNdims();
+	  hsize_t chunk_dims[ndim];
+	  cparms.getChunk( ndim, chunk_dims);
 	  return NumericVector(chunk_dims, chunk_dims + sizeof chunk_dims / sizeof chunk_dims[0]);
   }
   return NA_REAL;

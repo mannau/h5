@@ -1,13 +1,12 @@
-context("H5File")
+context("H5File-Subset")
 fname <- "test.h5"
 
 test_that("H5File-Subset-Group",{
   if(file.exists(fname)) file.remove(fname)
   file <- new( "H5File", fname, "a")
   
-  f <- function() file[c("1", "2", "3")] 
-  expect_that(f(), throws_error("length(groupname) == 1 is not TRUE", 
-          fixed = TRUE))
+  f <- function() file[c("1", "2", "3")]
+  expect_that(f(), throws_error("Error : length.*", perl = TRUE))
 
   group3 <- file["/testgroup3"] 
   expect_that(group3, is_a("H5Group"))
@@ -46,21 +45,38 @@ test_that("H5File-Subset-DataSet",{
   file["test/test1/test2/test3", "dset2"] <- matrix(1:9, nrow = 3)
   file["test/test1/test2/test3", "dset3"] <- array(1:6, dim = c(1, 2, 3))    
   file[, "dset4"] <- matrix(1:10, nrow = 5)
-      
-  expect_that(file["test/test1/test2/test3", "dset1"][], is_identical_to(1:10))
-  expect_that(file["test/test1/test2/test3", "dset2"][], 
-      is_identical_to(matrix(1:9, nrow = 3)))
-  expect_that(file["test/test1/test2/test3", "dset3"][], 
-      is_identical_to(array(1:6, dim = c(1, 2, 3))))
-  expect_that(file[, "dset4"][], 
-      is_identical_to(matrix(1:10, nrow = 5)))
+
+  # TODO: should work without closeh5()
+  dset <- file["test/test1/test2/test3", "dset1"]
+  expect_that(dset[], is_identical_to(1:10))
+  closeh5(dset)
+
+  dset <- file["test/test1/test2/test3", "dset2"]
+  expect_that(dset[], is_identical_to(matrix(1:9, nrow = 3)))
+  closeh5(dset)
+  
+  dset <- file["test/test1/test2/test3", "dset3"]
+  expect_that(dset[], is_identical_to(array(1:6, dim = c(1, 2, 3))))
+  closeh5(dset)
+  
+  dset <- file[, "dset4"]
+  expect_that(dset[], is_identical_to(matrix(1:10, nrow = 5)))
+  closeh5(dset)
   
   # check subsets
-  expect_that(file["test/test1/test2/test3", "dset1"][1:5], is_identical_to(1:5))
-  expect_that(file["test/test1/test2/test3", "dset2"][1:2,], 
-      is_identical_to(matrix(1:9, nrow = 3)[1:2,]))
-  expect_that(file["test/test1/test2/test3", "dset3"][1,1:2,3], 
+  # TODO: should work without closeh5()
+  dset <- file["test/test1/test2/test3", "dset1"]
+  expect_that(dset[1:5], is_identical_to(1:5))
+  closeh5(dset)
+  
+  dset <- file["test/test1/test2/test3", "dset2"]
+  expect_that(dset[1:2,], is_identical_to(matrix(1:9, nrow = 3)[1:2,]))
+  closeh5(dset)
+  
+  dset <- file["test/test1/test2/test3", "dset3"]
+  expect_that(dset[1,1:2,3], 
       is_identical_to(array(1:6, dim = c(1, 2, 3))[1,1:2,3,drop = FALSE]))
+  closeh5(dset)
   
   # set subsets
   # TODO: include test cases

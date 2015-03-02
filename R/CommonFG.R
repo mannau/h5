@@ -210,7 +210,9 @@ setMethod("[", c("CommonFG", "character", "missing", "missing"),
 setMethod("[", c("CommonFG", "character", "character", "ANY"),
     function(x, i, j, ..., drop=TRUE) {
       group <- getH5Group(x, i)
-      openDataSet(group, j)
+      ds <- openDataSet(group, j)
+	  closeh5(group)
+	  ds
     })
 
 #' @rdname CommonFG
@@ -219,8 +221,9 @@ setMethod("[", c("CommonFG", "character", "character", "ANY"),
 setMethod("[<-", c("CommonFG", "character", "character", "ANY"),
     function(x, i, j, ..., value) {
       group <- getH5Group(x, i)
-      res <- createDataSet(group, j, value, ...)
+      ds <- createDataSet(group, j, value, ...)
       closeh5(group)
+	  closeh5(ds)
       x
     })
 
@@ -235,7 +238,8 @@ setMethod("[", c("CommonFG", "missing", "character", "ANY"),
 #' @export
 setMethod("[<-", c("CommonFG", "missing", "character", "ANY"),
     function(x, i, j, ..., value) {
-      res <- createDataSet(x, j, value, ...)
+      ds <- createDataSet(x, j, value, ...)
+	  closeh5(ds)
       x
     })
 
