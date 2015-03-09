@@ -26,7 +26,7 @@ char GetTypechar(const DataType &dtype) {
     return 'd';
   } else if(dtype == PredType::NATIVE_INT32) {
     return 'i';
-  } else if (dtype == PredType::C_S1) {
+  } else if (dtype == PredType::C_S1 || dtype.getClass() == H5T_STRING) {
     return 'c';
   } else {
     throw Rcpp::exception("Datatype unknown.");

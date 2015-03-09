@@ -96,7 +96,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
       dataset->read(INTEGER(data), dtype, *memspace, *dataspace);
     } else if (tchar == 'c') {
        size_t stsize = dtype.getSize();
-        hsize_t n = dataspace->getSimpleExtentNpoints();
+        hsize_t n = dataspace->getSelectNpoints();
         if (ndim == 1) {
          data = PROTECT(Rf_allocVector(STRSXP, count[0]));
         } else if (ndim == 2) {
