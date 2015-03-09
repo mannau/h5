@@ -1,229 +1,88 @@
-#' The CommonFG class
+#' The CommonFG Class
 #'
-#' The CommonFG class which links H5File with H5Group.
-#'
+#' \code{CommonFG} is the base class of \code{\link{H5File}} and \code{\link{H5Group}} 
+#' and represents common  functionality of these two classes. The CommonFG base 
+#' class supports various subsetting operators to easily access and manipulate 
+#' \code{\link{H5Group}} and \code{\link{DataSet}} objects 
+#' (see also \code{\link{CommonFG-Group}} and \code{\link{CommonFG-DataSet}}).
+#' 
+#' Subsetting operators on \code{CommonFG} objects represent a convenient way
+#' to create/access \code{\link{H5Group}} and \code{\link{DataSet}} objects.
+#' Currently, only character arguments are supported whereas the first argument
+#' specifies the group to be created/accesses and the second the dataset name.
+#' 
+#' Groups can be created/accessed by simply using one character parameter, e.g.
+#' \code{group <- obj["groupname"]}.
+#' 
+#' DataSets can be either accessed by using  
+#' \code{dset <- obj["groupname", "datasetname"]} if existing or initialized by
+#' using \code{obj["groupname", "datasetname"] <- value}.
+#' 
+#' All created objects e.g. \code{group} or \code{dset} should be closed in the
+#' end using \code{h5close}.
 #' @param .Object CommonFG; S4 object of class \code{CommonFG};
-#' @param groupname character; HDF5 Group name to be used.
-#' @param datasetname character; HDF5 DataSet name to be used.
-#' @param data object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.
-#' @param type character; Character specifiying data type, can be either one of:
-#' 	\describe{
-#' 		\item{double}{Double precision real number.}
-#' 		\item{integer}{32 Bit Integer}
-#' 		\item{logical}{Boolean, which is mapped to 1/0 integer values.}
-#' 		\item{character}{Varable--length character strings.}
-#'  }
-#' @param dimensions integer; Dimensions of dataset to be created.
-#' @param chunksize integer; Chunksize to be used for dataset.
-#' @param maxdimensions integer; Maximum dimensions used for dataset, NA is mapped to 'unlimited'.
-#' @param compression integer; Default GZIP compression level to be used, from 0 (no compression) to 9 (maximum compression), 
-#' defaults to \code{4}.
-#' @param size integer; Datatype size to be used, only relevant for character strings.
-#' @name CommonFG 
-#' @rdname CommonFG
-#' @aliases CommonFG-class
-#' @export
-setClass( "CommonFG", representation(pointer = "externalptr", location = "character") )
-
-getGroupLocation <- function(x, groupname) {
-  location <- if(inherits(x, "H5File")) {
-        paste0("/", groupname)
-      } else {
-        file.path(x@location, groupname, fsep = "/")
-      } 
-  gsub("/+", "/", location)
-}
-
-#' @rdname CommonFG
-#' @export
-setGeneric("createGroup", function(.Object, groupname)
-			standardGeneric("createGroup")
-)
-
-#' @rdname CommonFG
-#' @export
-setMethod( "createGroup", signature(.Object="CommonFG", groupname = "character"), 
-		function(.Object, groupname) {
-			groupptr <- CreateGroup(.Object@pointer, sub("^/+", "", groupname))
-			new("H5Group", groupptr, getGroupLocation(.Object, groupname))
-		})
-
-#' @rdname CommonFG
-#' @export
-setGeneric("openGroup", function(.Object, groupname)
-			standardGeneric("openGroup")
-)
-
-#' @rdname CommonFG
-#' @export
-setMethod( "openGroup", signature(.Object="CommonFG", groupname = "character"), 
-		function(.Object, groupname) {
-			groupptr <- OpenGroup(.Object@pointer, sub("^/+", "", groupname))
-      new("H5Group", groupptr, getGroupLocation(.Object, groupname))
-		})
-
-#' @rdname CommonFG
-#' @export
-setGeneric("existsGroup", function(.Object, groupname)
-			standardGeneric("existsGroup")
-)
-
-#' @rdname CommonFG
-#' @export
-setMethod( "existsGroup", signature(.Object="CommonFG", groupname = "character"), 
-		function(.Object, groupname) {
-			ExistsGroup(.Object@pointer, groupname)
-		})
-
-#' @rdname CommonFG
-#' @export
-setGeneric("createDataSet", function(
-				.Object, datasetname, data, type, dimensions, 
-				chunksize = ChunkSize(data), 
-				maxdimensions = rep(NA_integer_, length(GetDimensions(data))), 
-				compression = 4L, size = -1)
-			standardGeneric("createDataSet")
-)
-
-
-#' @rdname CommonFG
-#' @export
-setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "character", 
-				data = "missing", type = "character", dimensions = "integer", 
-				chunksize = "ANY", maxdimensions = "ANY", 
-				compression = "ANY", size = "ANY"), 
-		function(.Object, datasetname, type, dimensions, chunksize, maxdimensions, 
-				compression, size) {
-      
-      stopifnot(type %in% c("double", "integer", "logical", "character"))
-      typechar <- substr(type, 1, 1)	
-      
-      createDataset_internal(.Object@pointer, datasetname, typechar, dimensions,
-          chunksize, maxdimensions, compression, size) 
-})
-
-
-#' @rdname CommonFG
-#' @export
-setMethod("createDataSet", signature(.Object="CommonFG", datasetname = "character", 
-				data = "ANY", type = "missing", dimensions = "missing", chunksize = "ANY",
-				maxdimensions = "ANY", compression = "ANY", size = "missing"), 
-		function(.Object, datasetname, data, chunksize, maxdimensions, compression) {
-			if(missing(data)) {
-        stop("Parameter data must be specified.")
-      }
-      stopifnot(length(maxdimensions) == length(GetDimensions(data)))
-      
-      dspace <- GetDataSpace(data)
-      dset <- createDataset_internal(.Object@pointer, datasetname, dspace$typechar, dspace$dim,
-          chunksize, maxdimensions, compression, dspace$size)
-      
-      writeDataSet(dset, data)
-			dset
-		})
-
-checkChunksize <- function(chunksize) {
-  if (!(is.numeric(chunksize) | is.integer(chunksize))) {
-    stop("Parameter chunksize must be of type integer/numeric.")
-  }
-  if (!all((chunksize > 0) | is.na(chunksize))) {
-    stop("All elements of chunksize must be greater than zero or NA.")
-  }
-  invisible(TRUE)
-}
-
-checkMaxDimensions <- function(maxdimensions) {
-  if (!(is.numeric(maxdimensions) | is.integer(maxdimensions))) {
-    stop("Parameter maxdimensions must be of type integer/numeric.")
-  }
-  if (!all((maxdimensions > 0) | is.na(maxdimensions)) ) {
-    stop("All elements of maxdimensions must be greater than zero or NA.")
-  }
-  invisible(TRUE)
-}
-
-checkCompression <- function(compression) {
-  if (!(is.numeric(compression) | is.integer(compression))) {
-    stop("Parameter compression must be of type integer/numeric.")
-  } 
-  if (!length(compression) == 1) {
-    stop("Parameter compression must be of length one.")
-  } 
-  if (!((compression >= 0) & (compression <= 9))) {
-    stop("Parameter compression must lie between 0 and 9.")
-  }
-  invisible(TRUE)
-  
-}
-
-createDataset_internal <- function(loc, datasetname, typechar, dimensions, 
-    chunksize, maxdimensions, compression, size) {
-  checkChunksize(chunksize)
-  checkMaxDimensions(maxdimensions)
-  chunksize <- ifelse(!is.na(maxdimensions) & (is.na(chunksize) | chunksize > maxdimensions), 
-      maxdimensions, chunksize)
-  if (!all(is.na(maxdimensions) | maxdimensions >= dimensions)) {
-    stop("Parameter maxdimensions must be equal or exceed data dimension size.")
-  } 
-  checkCompression(compression)
-  
-  dsetptr <- CreateDataset(loc, datasetname, typechar, dimensions,
-      chunksize, maxdimensions, compression, size)
-  
-  new("DataSet", dsetptr, datasetname, typechar)
-}
-
-#' @rdname CommonFG
-#' @export
-setGeneric("openDataSet", function(.Object, datasetname, type)
-			standardGeneric("openDataSet")
-)
-
-#' @rdname CommonFG
-#' @export
-setMethod("openDataSet", signature(.Object="CommonFG", datasetname = "character"), 
-		function(.Object, datasetname, type) {
-			dsetptr <- OpenDataset(.Object@pointer, datasetname)
-			dset <- new("DataSet", dsetptr, datasetname, GetDataSetType(dsetptr))
-})
-
-#' @rdname CommonFG
-#' @export
-setGeneric("closeh5", function(.Object)
-			standardGeneric("closeh5")
-)
-
-#' @rdname CommonFG
-#' @param i character/integer; groupname
-#' @param drop logical; specify if class of result set should be dropped (not implemented yet).
-#' @export
-setMethod("[", c("CommonFG", "character", "missing", "missing"),
-    function(x, i, j, ..., drop=TRUE) {
-      getH5Group(x, i)
-})
-
-#' @rdname CommonFG
-#' @param j character; name of dataset
+#' @param i character; Name of \code{\link{H5Group}}
+#' @param j character; Name of \code{\link{DataSet}}
 #' @param x CommonFG; object to be subsetted
-#' @param ... Additional arguments for subsetting
+#' @param drop logical; specify if class of result set should be dropped (not 
+#' implemented yet).
+#' @param ... Additional arguments passed to \code{\link{createDataSet}}; only 
+#' relevant for assignment operator.
+#' @rdname CommonFG
+#' @name CommonFG
+#' @aliases CommonFG-class
+#' @seealso \code{\link{CommonFG-Group}} \code{\link{CommonFG-DataSet}} 
+#' \code{\link{H5Location-Attribute}}
+#' @examples
+#' file <- H5File("test.h5")
+#' # Create new DataSet 'testset' in H5Group 'testgroup'
+#' file["testgroup", "testset"] <- matrix(1:9, nrow = 3)
+#' # Create new DataSet 'testset2' in file root
+#' file[, "testset2"] <- 1:10
+#' # Retrieve H5Group 'testgroup'
+#' group <- file["testgroup"]
+#' # Retrieve H5Group 'testset'
+#' dset <- group[,"testset"]
+#' h5close(dset)
+#' h5close(group)
+#' h5close(file)
+#' file.remove("test.h5")
+#' @export
+setClass( "CommonFG", representation(location = "character"), 
+    contains = "H5Location")
+
+#' @rdname CommonFG
+#' @export
+setGeneric("h5close", function(.Object)
+			standardGeneric("h5close")
+)
+
+#' @rdname CommonFG
 #' @export
 setMethod("[", c("CommonFG", "character", "character", "ANY"),
     function(x, i, j, ..., drop=TRUE) {
       group <- getH5Group(x, i)
       ds <- openDataSet(group, j)
-	  closeh5(group)
-	  ds
+      h5close(group)
+      ds
     })
 
 #' @rdname CommonFG
+#' @export
+setMethod("[", c("CommonFG", "character", "missing", "missing"),
+    function(x, i, j, ..., drop=TRUE) {
+      getH5Group(x, i)
+    })
+
 #' @param value vector/matrix/array; Value to be assigend to dataset
+#' @rdname CommonFG
 #' @export
 setMethod("[<-", c("CommonFG", "character", "character", "ANY"),
     function(x, i, j, ..., value) {
       group <- getH5Group(x, i)
       ds <- createDataSet(group, j, value, ...)
-      closeh5(group)
-	  closeh5(ds)
+      h5close(group)
+      h5close(ds)
       x
     })
 
@@ -239,39 +98,6 @@ setMethod("[", c("CommonFG", "missing", "character", "ANY"),
 setMethod("[<-", c("CommonFG", "missing", "character", "ANY"),
     function(x, i, j, ..., value) {
       ds <- createDataSet(x, j, value, ...)
-	  closeh5(ds)
+      h5close(ds)
       x
     })
-
-#' @rdname CommonFG
-#' @export
-setGeneric("getH5Group", function(.Object, groupname)
-      standardGeneric("getH5Group")
-)
-
-#' @rdname CommonFG
-#' @export
-setMethod( "getH5Group", signature(.Object="CommonFG", groupname = "character"), 
-    function(.Object, groupname) {
-      stopifnot(length(groupname) == 1)
-      if(groupname == "/") {
-        return(.Object)
-      }
-      gnames <- strsplit(groupname, "/")[[1]]
-      gnames <- gnames[nchar(gnames) > 0]
-      ex <- sapply(1:length(gnames), function(i) 
-            existsGroup(.Object, paste(gnames[1:i], collapse = "/")))
-
-      if(!all(ex)) {
-        excreate <- which(!ex)
-        for(i in excreate) {
-          gr <- createGroup(.Object, paste(gnames[1:i], collapse = "/"))
-          closeh5(gr)
-        }       
-      } 
-      openGroup(.Object, groupname)
-})
-
-
-
-

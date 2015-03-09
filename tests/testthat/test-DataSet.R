@@ -8,7 +8,7 @@ test_that("DataSet-createDataset",{
   
   f <- function() dset1 <- createDataSet(file, "testmat_n")
   expect_that(f(), throws_error("Parameter data must be specified"))
-  closeh5(file)
+  h5close(file)
 })  
 
 test_that("DataSet-createDataset-chunksize",{	
@@ -19,15 +19,15 @@ test_that("DataSet-createDataset-chunksize",{
   expect_that(f(), throws_error("Parameter chunksize must be of type integer"))
   
   dset_c9 <- createDataSet(file, "test_chunk_9", 1:10, chunksize = 9)
-  closeh5(dset_c9)
+  h5close(dset_c9)
   
   dset_c1 <- createDataSet(file, "test_chunk_1", 1:10, chunksize = 1)
-  closeh5(dset_c1)
+  h5close(dset_c1)
   
   f <- function() dset_c0 <- createDataSet(file, "test_chunk_0", 1:10, chunksize = 0)
   expect_that(f(), throws_error("All elements of chunksize must be greater than zero"))
   
-  closeh5(file)
+  h5close(file)
 })  
 
 test_that("DataSet-createDataset-maxdimensions",{	
@@ -46,7 +46,7 @@ test_that("DataSet-createDataset-maxdimensions",{
   expect_that(f(), throws_error("Parameter maxdimensions must be equal or exceed data dimension size"))
   
   dset_md_10 <- createDataSet(file, "test_md_10", 1:10, maxdimensions = 10)
-  closeh5(dset_md_10)
+  h5close(dset_md_10)
  
   testmat <- matrix(rep(1:10, 10), nrow = 10)
   f <- function() dset_wrongdim_9_10 <- createDataSet(file, "test_md_100", testmat, 
@@ -54,9 +54,9 @@ test_that("DataSet-createDataset-maxdimensions",{
   expect_that(f(), throws_error("Parameter maxdimensions must be equal or exceed data dimension size"))
  
   dset_md_10_10 <- createDataSet(file, "test_md_10_10", testmat, maxdimensions = c(10, 10))
-  closeh5(dset_md_10_10)
+  h5close(dset_md_10_10)
   
-  closeh5(file)
+  h5close(file)
 })  
 
 test_that("DataSet-createDataset-compression",{	
@@ -74,8 +74,8 @@ test_that("DataSet-createDataset-compression",{
   
   for(i in 0:9) {
     dset <- createDataSet(file, sprintf("cp_%d", i), 1:10, compression = i)
-    closeh5(dset)
+    h5close(dset)
   }
   
-  closeh5(file)
+  h5close(file)
 })  

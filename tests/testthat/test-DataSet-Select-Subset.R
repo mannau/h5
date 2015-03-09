@@ -9,9 +9,9 @@ test_that("DataSet-Select-Subset-params",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -40,9 +40,9 @@ test_that("DataSet-Select-Subset-params",{
   f <- function() testmat_n_na_bound_1 <- dset1[1:10, 1:10]
   expect_that(f(), throws_error("subscript out of bounds"))
   
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
   
 })
 
@@ -53,7 +53,7 @@ test_that("DataSet-Select-Subset-vector-read",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
-  closeh5(dset1)
+  h5close(dset1)
   
   # Write Elem
   dset2 <- createDataSet(group, "testvec_n2", testvec_n)
@@ -63,10 +63,10 @@ test_that("DataSet-Select-Subset-vector-read",{
   expect_that(f(), throws_error("subscript out of bounds"))
 
   dset2[88:90] <- subvec
-  closeh5(dset2)
+  h5close(dset2)
   
-  closeh5(group)
-  closeh5(file)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -80,14 +80,14 @@ test_that("DataSet-Select-Subset-vector-read",{
   selector <- as.integer(seq(1, dset1@dim), by = 2)
   testvec_n_read_sel <- dset1[selector]
   expect_that(testvec_n_read_sel, is_identical_to(selector))    
-  closeh5(dset1)
+  h5close(dset1)
   
   dset2 <- openDataSet(group, "testvec_n2")
   expect_that(dset2[], is_identical_to(c(1:87, 1:3)))
 
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Subset-read-string", { 
@@ -103,21 +103,21 @@ test_that("DataSet-Select-Subset-read-string", {
       file["test", "testvec"] <- LETTERS[1:9]
       file["test/testmat", "testmat"] <- mat
       file["test", "testarray"] <- arr
-      closeh5(file)
+      h5close(file)
       
       file <- H5File(fname, "r")
       testvec <- file["test", "testvec"]
       expect_that(testvec[1:3], is_identical_to(LETTERS[1:3]))
-      closeh5(testvec)
+      h5close(testvec)
       
       testmat <- file["test/testmat", "testmat"]
       expect_that(testmat[1:2, ], is_identical_to(mat[1:2, ]))
-      closeh5(testmat)
+      h5close(testmat)
       
       testarray <- file["test", "testarray"]
       expect_that(testarray[], is_identical_to(arr))
-      closeh5(testarray)
-      closeh5(file)
+      h5close(testarray)
+      h5close(file)
 })
       
 test_that("DataSet-Select-Subset-vector-write",{  
@@ -127,7 +127,7 @@ test_that("DataSet-Select-Subset-vector-write",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
-  closeh5(dset1)
+  h5close(dset1)
   
   # Write Elem
   dset2 <- createDataSet(group, "testvec_n2", testvec_n)
@@ -140,14 +140,14 @@ test_that("DataSet-Select-Subset-vector-write",{
   expect_that(f(), throws_error("number of items to replace is not equal to replacement length"))
   
   dset2[88:90] <- subvec
-  closeh5(dset2)
+  h5close(dset2)
   
   dset3 <- createDataSet(group, "testvec_n3", testvec_n)
   dset3[] <- -testvec_n
   
-  closeh5(dset3)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset3)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -161,7 +161,7 @@ test_that("DataSet-Select-Subset-vector-write",{
   selector <- as.integer(seq(1, dset1@dim), by = 2)
   testvec_n_read_sel <- dset1[selector]
   expect_that(testvec_n_read_sel, is_identical_to(selector))    
-  closeh5(dset1)
+  h5close(dset1)
   
   dset2 <- openDataSet(group, "testvec_n2")
   expect_that(dset2[], is_identical_to(c(1:87, 1:3)))
@@ -169,10 +169,10 @@ test_that("DataSet-Select-Subset-vector-write",{
   dset3 <- openDataSet(group, "testvec_n3")
   expect_that(dset3[], is_identical_to(-testvec_n))
   
-  closeh5(dset3)
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset3)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Subset-matrix-read",{  
@@ -182,7 +182,7 @@ test_that("DataSet-Select-Subset-matrix-read",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(group, "testmat_n2", testmat_n)
   submat <- matrix(-1L:-9L, nrow = 3)
   f <- function() dset2[10:11, 9]
@@ -197,9 +197,9 @@ test_that("DataSet-Select-Subset-matrix-read",{
   f <- function() dset2[ , , ]
   expect_that(f(), throws_error("incorrect number of dimensions"))
 
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -222,9 +222,9 @@ test_that("DataSet-Select-Subset-matrix-read",{
   expect_that(dset1[2, ], is_identical_to(testmat_n[2,, drop = FALSE]))
   expect_that(dset1[2:4, ], is_identical_to(testmat_n[2:4,, drop = FALSE]))
 
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Subset-matrix-write",{  
@@ -264,7 +264,7 @@ test_that("DataSet-Select-Subset-matrix-write",{
   expect_that(f(), throws_error("number of items to replace is not equal to replacement length"))
   
   dset2[c(1, 3, 5), c(1, 3, 5)] <- submat
-  closeh5(dset2)
+  h5close(dset2)
  
   dset2 <- openDataSet(group, "testmat_n2")
   testmat_n2 <- testmat_n
@@ -277,12 +277,12 @@ test_that("DataSet-Select-Subset-matrix-write",{
   dset4 <- createDataSet(group, "testmat_n4", testmat_n)
   dset4[, c(1, 3, 5)] <- matrix(rep(1L, 30), nrow = 10)
   
-  closeh5(dset4)
-  closeh5(dset3)
-  closeh5(dset1)
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset4)
+  h5close(dset3)
+  h5close(dset1)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -302,12 +302,12 @@ test_that("DataSet-Select-Subset-matrix-write",{
   testmat_n4[,c(1, 3, 5)] <- 1L
   expect_that(dset4[], is_identical_to(testmat_n4))
   
-  closeh5(dset4)
-  closeh5(dset3)
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset4)
+  h5close(dset3)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Subset-array-read",{  
@@ -318,7 +318,7 @@ test_that("DataSet-Select-Subset-array-read",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(group, "testmat_n2", testmat_n)
   
   f <- function() dset2[3:4, 3, 10]
@@ -339,9 +339,9 @@ test_that("DataSet-Select-Subset-array-read",{
 
   dset2[2:3, 2:3, 3:7] <- subarray
 
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
 
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -373,10 +373,10 @@ test_that("DataSet-Select-Subset-array-read",{
   testmat_n2[2:3, 2:3, 3:7] <- subarray
   expect_that(testmat_n2_read_all, is_identical_to(testmat_n2))
  
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Subset-array-write",{  
@@ -420,7 +420,7 @@ test_that("DataSet-Select-Subset-array-write",{
   expect_that(f(), throws_error("number of items to replace is not equal to replacement length"))
   
   dset2[2:3, 2:3, 1:5] <- subarray
-  closeh5(dset2)
+  h5close(dset2)
   
   dset2 <- openDataSet(group, "testmat_n2")
   testmat_n2 <- testmat_n
@@ -436,12 +436,12 @@ test_that("DataSet-Select-Subset-array-write",{
   dset4 <- createDataSet(group, "testmat_n4", testmat_n)
   dset4[1:2,,1:3] <- array(rep(1L, 18), dim = c(3, 2, 3))
   
-  closeh5(dset4)
-  closeh5(dset3)
-  closeh5(dset1)
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset4)
+  h5close(dset3)
+  h5close(dset1)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -461,10 +461,10 @@ test_that("DataSet-Select-Subset-array-write",{
   testmat_n4[1:2,,1:3] <- 1L
   expect_that(dset4[], is_identical_to(testmat_n4))
   
-  closeh5(dset4)
-  closeh5(dset3)
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset4)
+  h5close(dset3)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })

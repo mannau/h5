@@ -9,9 +9,9 @@ test_that("DataSet-Select-Elem-params",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -42,9 +42,9 @@ test_that("DataSet-Select-Elem-params",{
         readDataSet(dset1, selectDataSpace(dset1, elem = cbind(rep(1:10, each = 10), rep(1:10, 10))))   
   expect_that(f(), throws_error("subscript out of bounds"))
   
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Elem-vector",{  
@@ -54,7 +54,7 @@ test_that("DataSet-Select-Elem-vector",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
-  closeh5(dset1)
+  h5close(dset1)
   
   # Write Elem
   dset2 <- createDataSet(group, "testvec_n2", testvec_n)
@@ -65,10 +65,10 @@ test_that("DataSet-Select-Elem-vector",{
 
   dspace <- selectDataSpace(dset2, elem = matrix(88:90))
   writeDataSet(dset2, subvec, dspace)
-  closeh5(dset2)
+  h5close(dset2)
   
-  closeh5(group)
-  closeh5(file)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -84,14 +84,14 @@ test_that("DataSet-Select-Elem-vector",{
   dspace <- selectDataSpace(dset1, elem = matrix(selector))
   testvec_n_read_sel <- readDataSet(dset1, dspace)
   expect_that(testvec_n_read_sel, is_identical_to(selector))    
-  closeh5(dset1)
+  h5close(dset1)
   
   dset2 <- openDataSet(group, "testvec_n2")
   expect_that(readDataSet(dset2), is_identical_to(c(1:87, 1:3)))
 
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
 })
 
 
@@ -102,7 +102,7 @@ test_that("DataSet-Select-Elem-matrix",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(group, "testmat_n2", testmat_n)
   submat <- matrix(-1L:-9L, nrow = 3)
   f <- function() selectDataSpace(dset2, elem = matrix(c(10, 11, 9, 9), nrow = 2))
@@ -113,9 +113,9 @@ test_that("DataSet-Select-Elem-matrix",{
   
   writeDataSet(dset2, submat, selectDataSpace(dset2, elem = cbind(rep(c(1, 3, 5), each = 3), rep(c(1, 3, 5), 3))))
   
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -135,10 +135,10 @@ test_that("DataSet-Select-Elem-matrix",{
   testmat_n2[c(1, 3, 5), c(1, 3, 5)] <- submat
   expect_that(readDataSet(dset2), is_identical_to(testmat_n2))
   
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Elem-array",{  
@@ -149,7 +149,7 @@ test_that("DataSet-Select-Elem-array",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(group, "testmat_n2", testmat_n)
   
   f <- function() selectDataSpace(dset2, elem = matrix(c(3, 4, 3, 3, 10, 10), nrow = 2))
@@ -164,9 +164,9 @@ test_that("DataSet-Select-Elem-array",{
   writeDataSet(dset2, subarray, selectDataSpace(dset2, 
           elem = cbind(rep(2:3, each = 2*5), rep(2:3, each = 5), rep(3:7, 4))))
   
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
 
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -187,8 +187,8 @@ test_that("DataSet-Select-Elem-array",{
   testmat_n2[2:3, 2:3, 3:7] <- subarray
   expect_that(testmat_n2_read_all, is_identical_to(testmat_n2))
  
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })

@@ -26,7 +26,7 @@ test_that("DataSet-extend",{
   f <- function() extendDataSet(dset1, dimtestmat_n_x1)
   expect_that(f(), throws_error("Number of extendible dimensions exceeds maximum dimensions of DataSet"))
   
-  closeh5(dset1)
+  h5close(dset1)
   
   testmat_n_2 <- dim(testmat_n) * 2
   dset2 <- createDataSet(file, "testmat_2", testmat_n, maxdimensions = testmat_n_2)
@@ -40,8 +40,8 @@ test_that("DataSet-extend",{
   # TODO: check why test fails
   #expect_equal(readDataSet(dset2), testmat)
 
-  closeh5(dset2)
-  closeh5(file)
+  h5close(dset2)
+  h5close(file)
 })
 
 test_that("DataSet-extend-matrix-rbind",{  
@@ -61,21 +61,21 @@ test_that("DataSet-extend-matrix-rbind",{
 #  f <- function() rbind(dset1, matrix(integer(0), ncol = dset1@dim[2L]))
 #  expect_that(f(), throws_error("H5Sget_select_bounds failed in DataSpace::getSelectBounds"))
   dset1 <- rbind(dset1, matrix(rep(1L, dset1@dim[2L]), ncol = dset1@dim[2L]))
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(file, "testmat_2", testmat_n, 
       maxdimensions = c(dim(testmat_n)[1L] * 2, dim(testmat_n)[2L]))
   dset2 <- rbind(dset2, testmat_n)
-  closeh5(dset2)
-  closeh5(file)
+  h5close(dset2)
+  h5close(file)
 
   file <- new( "H5File", fname, "r")
   dset1 <- openDataSet(file, "testmat_1")
   expect_that(readDataSet(dset1), is_identical_to(rbind(testmat_n, 1L)))
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- openDataSet(file, "testmat_2")
   expect_that(readDataSet(dset2), is_identical_to(rbind(testmat_n, testmat_n)))
-  closeh5(dset2)
-  closeh5(file)
+  h5close(dset2)
+  h5close(file)
 })
 
 test_that("DataSet-extend-matrix-cbind",{  
@@ -96,21 +96,21 @@ test_that("DataSet-extend-matrix-cbind",{
   expect_that(f(), throws_error("Elements of parameter count must be greater than zero"))
   
   dset1 <- cbind(dset1, matrix(as.integer(rep(1, nrow(testmat_n))), ncol = 1))
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(file, "testmat_2", testmat_n, 
       maxdimensions = c(dim(testmat_n)[1L], dim(testmat_n)[2L] * 2))
   dset2 <- cbind(dset2, testmat_n)
-  closeh5(dset2)
-  closeh5(file)
+  h5close(dset2)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   dset1 <- openDataSet(file, "testmat_1")
   expect_that(readDataSet(dset1), is_identical_to(cbind(testmat_n, 1L)))
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- openDataSet(file, "testmat_2")
   expect_that(readDataSet(dset2), is_identical_to(cbind(testmat_n, testmat_n)))
-  closeh5(dset2)
-  closeh5(file)
+  h5close(dset2)
+  h5close(file)
 })
 
 test_that("DataSet-extend-vector-c",{  
@@ -125,15 +125,15 @@ test_that("DataSet-extend-vector-c",{
     expect_that(f(), throws_error("Elements of parameter count must be greater than zero"))
     
     dset1 <- c(dset1, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
-    closeh5(dset1)
-    closeh5(file)
+    h5close(dset1)
+    h5close(file)
     
     file <- new( "H5File", fname, "r")
     dset1 <- openDataSet(file, "testmat_1")
     testmat_n_extend <- c(testmat_n, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
     expect_that(readDataSet(dset1), is_identical_to(testmat_n_extend))
-    closeh5(dset1)
-    closeh5(file)
+    h5close(dset1)
+    h5close(file)
   })
 
 

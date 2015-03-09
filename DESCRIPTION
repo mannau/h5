@@ -1,13 +1,16 @@
 Package: h5
 Type: Package
-Title: Interface to the HDF5 C++ API
-Version: 0.3
-Date: 2014-02-17
-Author: Mario Annau
+Title: Interface to the HDF5 API
+Version: 0.9
+Date: 2015-03-16
+Author: See AUTHORS file.
 Maintainer: Mario Annau <mario.annau@gmail.com>
-Description: h5 is an R-package to provide a quite low--level interface to the
-    HDF5 C++ API. It therefore facilitates the way to handle HDF5 files and
-    create files, groups, datasetsets and attributes.
+Description: h5 provides an interface to the HDF5 API through S4-objects.
+    It supports fast storage and retrieval of R-objects like vectors, matrices
+    and arrays to binary files in a language independent format. The package
+    can therefore be used as an alternative to R's save/load mechanism. Since
+    h5 is able to access only subsets of stored data it can also handle data
+    sets which do not fit into memory.
 License: GPL (>= 2)
 BugReports: https://github.com/mannau/h5/issues
 Depends:
@@ -20,10 +23,15 @@ Suggests:
     testthat,
     roxygen2
 Collate:
+    'H5Location-Attribute.R'
+    'Attribute.R'
     'CommonFG.R'
-    'H5Location.R'
-    'Dataspace.R'
-    'Dataset.R'
+    'CommonFG-DataSet.R'
+    'CommonFG-Group.R'
+    'DataSet.R'
+    'DataSpace.R'
+    'Dataset-Extend.R'
+    'Dataset-Subset.R'
     'H5File.R'
     'H5Group.R'
     'Helpers.R'

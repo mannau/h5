@@ -9,9 +9,9 @@ test_that("DataSet-Select-Hyperslab-params",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -63,9 +63,9 @@ test_that("DataSet-Select-Hyperslab-params",{
   f <- function() testmat_n_na_bound_1 <- readDataSet(dset1, selectDataSpace(dset1, count = dim2))
   expect_that(f(), throws_error("subscript out of bounds"))
 
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
   
 })
 
@@ -77,7 +77,7 @@ test_that("DataSet-Select-Hyperslab-vector",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
-  closeh5(dset1)
+  h5close(dset1)
   
   # Write hyperslab
   dset2 <- createDataSet(group, "testvec_n2", testvec_n)
@@ -87,10 +87,10 @@ test_that("DataSet-Select-Hyperslab-vector",{
   expect_that(f(), throws_error("subscript out of bounds"))
 
   writeDataSet(dset2, subvec, selectDataSpace(dset2, offset = c(10), count = length(subvec)))
-  closeh5(dset2)
+  h5close(dset2)
   
-  closeh5(group)
-  closeh5(file)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -113,10 +113,10 @@ test_that("DataSet-Select-Hyperslab-vector",{
   testvec_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(2), c(4)))
   expect_that(testvec_n_read, is_identical_to(testvec_n[2:5]))
   
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 
@@ -128,7 +128,7 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   file <- new( "H5File", fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
-  closeh5(dset1)
+  h5close(dset1)
   dset2 <- createDataSet(group, "testmat_n2", testmat_n)
   submat <- matrix(1L:9L, nrow = 3)
   f <- function() writeDataSet(dset2, submat, selectDataSpace(dset2, offset = c(dset2@dim[1L] - 1, 3), count = dim(submat)))
@@ -139,9 +139,9 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   
   writeDataSet(dset2, submat, selectDataSpace(dset2, offset = c(3, 3), count = dim(submat)))
   
-  closeh5(dset2)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -163,10 +163,10 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   testmat_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(1, 2), c(3, 4)))
   expect_that(testmat_n_read, is_identical_to(testmat_n[1:3, 2:5]))
   
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })
 
 test_that("DataSet-Select-Hyperslab-array",{  
@@ -185,10 +185,10 @@ test_that("DataSet-Select-Hyperslab-array",{
   
   writeDataSet(dset2, subarray, selectDataSpace(dset2, offset = c(2, 2, 3), count = dim(subarray)))
   
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
   
   file <- new( "H5File", fname, "r")
   group <- openGroup(file, "/testgroup")
@@ -221,8 +221,8 @@ test_that("DataSet-Select-Hyperslab-array",{
   testmat_n_read <- readDataSet(dset1, selectDataSpace(dset1, c(2, 3, 4)))
   expect_that(testmat_n_read, is_identical_to(testmat_n[2:3,3,4:10, drop = FALSE]))
   
-  closeh5(dset2)
-  closeh5(dset1)
-  closeh5(group)
-  closeh5(file)
+  h5close(dset2)
+  h5close(dset1)
+  h5close(group)
+  h5close(file)
 })

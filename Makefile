@@ -30,7 +30,7 @@ $(PKG_NAME)_$(PKG_VERSION).tar.gz: $(PKG_FILES)
 	$(R) CMD build --resave-data --no-build-vignettes .
 
 roxygen: $(R_FILES)
-	$(Rscript) 'library(roxygen2); roxygenize()'
+	$(Rscript) 'library(roxygen2); roxygenize(clean = TRUE)'
 	
 $(RCPPEXPORTS): compileAttributes
 	
@@ -58,4 +58,5 @@ clean:
 	@rm -f $(OBJECTS)
 	@rm -rf $(wildcard *.Rcheck)
 	@rm -f $(wildcard *.tar.gz)
+	@rm -f $(wildcard *.pdf)
 	@echo '*** PACKAGE CLEANUP COMPLETE ***'

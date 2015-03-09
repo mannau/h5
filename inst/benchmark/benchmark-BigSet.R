@@ -18,7 +18,7 @@ time.saveh5 <- system.time({
 	file["/bigset", "bigset", 
         chunksize = c(nrow(dat), 1), 
         compression = 6] <- dat
-	closeh5(file)
+	h5close(file)
 })
 
 if(file.exists(fname.rda)) file.remove(fname.rda)
@@ -37,8 +37,8 @@ time.subseth5 <- system.time({
       vec <- seq(1, nrow(dat), by = 60)
       dset <- file["/bigset", "bigset"]
 	  out.subseth5 <- dset[vec, 2]
-	  closeh5(dset)
-	  closeh5(file)
+	  h5close(dset)
+	  h5close(file)
     })
 
 # read entire set
@@ -48,8 +48,8 @@ time.subseth52 <- system.time({
 	  dset <- file["/bigset", "bigset"]
       out.subseth52 <- dset[]
       out.subseth52 <- out.subseth52[vec, 2, drop = FALSE]
-	  closeh5(dset)
-	  closeh5(file)
+	  h5close(dset)
+	  h5close(file)
     })
 
 # use hyperslabs
@@ -57,11 +57,11 @@ time.subseth53 <- system.time({
 	  file <- H5File(fname, "r")
       vec <- seq(1, nrow(dat), by = 60)
       dset <- file["/bigset", "bigset"]
-      out.subseth53 <- readDataSet(dset, 
+      out.subseth53 <- readData(dset, 
           selectDataSpace(dset, offset = c(1, 2), count = c(nrow(dat), 1)))
       out.subseth53 <- out.subseth53[vec,, drop = FALSE]
-	  closeh5(dset)
-	  closeh5(file)
+	  h5close(dset)
+	  h5close(file)
     })
 
 time.subsetrda <- system.time({

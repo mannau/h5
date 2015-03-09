@@ -4,30 +4,62 @@
 \name{H5File}
 \alias{H5File}
 \alias{H5File-class}
-\alias{closeh5,H5File-method}
-\alias{flushh5}
-\alias{flushh5,H5File-method}
-\title{The H5File class}
+\alias{h5close,H5File-method}
+\alias{h5flush}
+\alias{h5flush,H5File-method}
+\title{The H5File Class}
 \usage{
-\S4method{closeh5}{H5File}(.Object)
-
 H5File(name, mode = "a")
 
-flushh5(.Object)
+h5flush(.Object)
 
-\S4method{flushh5}{H5File}(.Object)
+\S4method{h5flush}{H5File}(.Object)
+
+\S4method{h5close}{H5File}(.Object)
 }
 \arguments{
+\item{name}{character; File path pointing to H5File.}
+
+\item{mode}{mode used for file.
+The following modes are supported by H5File:
+\describe{
+  \item{r}{Read only, file must exist.}
+  \item{r+}{Read/write, file must exist.}
+  \item{w}{Create file, truncate if exists.}
+  \item{w-}{Create file, fail if exists.}
+  \item{a}{Read/write if exists, create otherwise (default).}
+}}
+
 \item{.Object}{H5File; S4 object of class \code{H5File};}
-
-\item{name}{character; File path}
-
-\item{mode}{mode used for file.}
-}
-\value{
-H5File
 }
 \description{
-Class to represent an HDF5 file.
+Representation of an HDF5 file which can be either created or accessed if
+existing. In addition to File--specific capabilities listed below H5File
+shares common functionality with H5Group through the \code{\link{CommonFG}}
+base class.
+}
+\details{
+HDF5 files can be opened or generated using the \code{H5File()} function and
+a specified file access mode. \code{H5File()} returns a \code{H5File} object
+which can be used to access \code{\link{H5Group}}s and \code{\link{DataSet}}s
+using subsetting parameters or functions accordingly.
+
+HDF5 files which have been created or opened through \code{H5File()} need
+to be closed afterwards using \code{h5close()}.
+
+\code{h5flush()} can be used to flush unwritten data to an HDF5 file.
+}
+\examples{
+# Create new file using mode 'a'
+file <- H5File("test.h5")
+h5close(file)
+# Open File for read-only
+file <- H5File("test.h5", "r")
+h5close(file)
+file.remove("test.h5")
+}
+\seealso{
+\code{\link{CommonFG}} \code{\link{CommonFG-Group}}
+  \code{\link{CommonFG-DataSet}} \code{\link{H5Location-Attribute}}
 }
 

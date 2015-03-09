@@ -7,11 +7,11 @@ test_that("H5Group-param",{
   
   group1 <- createGroup(file, "//testgroup")
   expect_that(group1, is_a("H5Group"))
-  closeh5(group1)
+  h5close(group1)
   
   group2 <- createGroup(file, "testgroup2//")
   expect_that(group2, is_a("H5Group"))
-  closeh5(group2)
+  h5close(group2)
   
   f <- function() grouproot <- createGroup(file, "/")
   expect_that(f(), throws_error("H5Gcreate failed"))
@@ -23,8 +23,8 @@ test_that("H5Group-param",{
   gname <- paste(rep(LETTERS, 1000), collapse = "")
   groupn <- createGroup(file, gname)
   expect_that(group1, is_a("H5Group"))
-  closeh5(groupn)
-  closeh5(file)
+  h5close(groupn)
+  h5close(file)
   file.remove(fname)
 })
 
@@ -43,9 +43,9 @@ test_that("H5Group-createGroup",{
   groupnested <- createGroup(group3, "/test")
   expect_that(groupnested, is_a("H5Group"))
   expect_that(groupnested@location, is_identical_to("/testgroup3/test"))
-  closeh5(groupnested)
-  closeh5(group3)
-  closeh5(file)
+  h5close(groupnested)
+  h5close(group3)
+  h5close(file)
   #file.remove(fname)
 })
 
@@ -62,8 +62,8 @@ test_that("H5Group-openGroup",{
   groupnested <- openGroup(group3, "test")
   expect_that(groupnested, is_a("H5Group"))
   expect_that(groupnested@location, is_identical_to("/testgroup3/test"))
-  closeh5(groupnested)
-  closeh5(group3)
+  h5close(groupnested)
+  h5close(group3)
   
   group3 <- openGroup(file, "/testgroup3")
   grouprelative <- openGroup(group3, "/test")
@@ -72,9 +72,9 @@ test_that("H5Group-openGroup",{
   # TODO: should absolute path be displayed?
   # eg. expect_that(grouprelative@name, is_identical_to("/testgroup3/test"))
   
-  closeh5(grouprelative)
-  closeh5(group3)
-  closeh5(file)
+  h5close(grouprelative)
+  h5close(group3)
+  h5close(file)
   #file.remove(fname)
 })
 
@@ -87,8 +87,8 @@ test_that("H5Group-existsGroup",{
   
   group3 <- openGroup(file, "/testgroup3")
   expect_that(existsGroup(group3, "test"), is_true())
-  closeh5(group3)
-  closeh5(file)
+  h5close(group3)
+  h5close(file)
 })
 
 

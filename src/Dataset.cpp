@@ -18,7 +18,8 @@ hsize_t* GetSelectCount(const DataSpace dataspace) {
 }*/
 
 // [[Rcpp::export]]
-bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype, NumericVector count) {
+bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat,
+		char datatype, NumericVector count) {
   try {
     int ndim = count.length();
     hsize_t count_t[ndim];
@@ -142,7 +143,7 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
     NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size) {
   try {
     //TODO: expect dimensions.length() == maxshape.length()
-    // Preprocess paramters
+    // Preprocess parameters
     //hsize_t dims = ProcessDimensions(dimensions);
     //hsize_t maxdims = ProcessMaxDimensions(maxshape);
     int rank = dimensions.length();

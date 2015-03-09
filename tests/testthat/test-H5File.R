@@ -35,8 +35,8 @@ test_that("H5File-FileMode-param-a",{
 	expect_that(basename(file@location), is_identical_to(fname))
 	group1 <- createGroup(file, "testgroup")
 	expect_that(group1, is_a("H5Group"))
-	closeh5(group1)
-	closeh5(file)
+	h5close(group1)
+	h5close(file)
 	
 	# Open existing file for append
 	expect_that(file.exists(fname), is_true())
@@ -44,8 +44,8 @@ test_that("H5File-FileMode-param-a",{
 	expect_that(file, is_a("H5File"))
 	existsGroup(file, "testgroup")
 	group2 <- createGroup(file, "testgroup2")
-	closeh5(group2)
-	closeh5(file)
+	h5close(group2)
+	h5close(file)
 })
 
 test_that("H5File-FileMode-param-w-",{
@@ -59,8 +59,8 @@ test_that("H5File-FileMode-param-w-",{
 	expect_that(basename(file@location), is_identical_to(fname))
 	group1 <- createGroup(file, "testgroup1")
 	expect_that(existsGroup(file, "testgroup1"), is_true())
-	closeh5(group1)
-	closeh5(file)
+	h5close(group1)
+	h5close(file)
 })
 
 test_that("H5File-FileMode-param-w",{
@@ -70,15 +70,15 @@ test_that("H5File-FileMode-param-w",{
   expect_that(basename(file@location), is_identical_to(fname))
   expect_that(existsGroup(file, "testgroup1"), is_false())
   group2 <- createGroup(file, "testgroup1")
-  closeh5(group2)
-  closeh5(file)
+  h5close(group2)
+  h5close(file)
 	
   expect_that(file.exists(fname), is_true())
   file <- new( "H5File", fname, "w")
   expect_that(file@mode, is_identical_to("w"))
   expect_that(basename(file@location), is_identical_to(fname))
   expect_that(existsGroup(file, "testgroup1"), is_false())
-  closeh5(file)
+  h5close(file)
   #expect_that(file.remove(fname), is_true())		
 })
 			
@@ -88,7 +88,7 @@ test_that("H5File-FileMode-param-r",{
   expect_that(file@mode, is_identical_to("r"))
   expect_that(basename(file@location), is_identical_to(fname))
 	#expect_that(existsGroup(file, "testgroup1"), is_true())
-	closeh5(file)
+	h5close(file)
   
   file.remove(fname)
   expect_that(file.exists(fname), is_false())
@@ -104,14 +104,14 @@ test_that("H5File-FileMode-param-r+",{
   file <- new( "H5File", fname, "a")
   group1 <- createGroup(file, "testgroup")
   expect_that(group1, is_a("H5Group"))
-  closeh5(group1)
-  closeh5(file)
+  h5close(group1)
+  h5close(file)
   
   file <- new( "H5File", fname, "r+")
   expect_that(existsGroup(file, "testgroup"), is_true())
   expect_that(group1, is_a("H5Group"))
-  closeh5(group1)
-  closeh5(file)
+  h5close(group1)
+  h5close(file)
   file.remove(fname) 
 })
 
@@ -122,9 +122,9 @@ test_that("H5File-show",{
   group1 <- createGroup(file, "testgroup")
   group2 <- createGroup(file, "testgroup2")
   group3 <- createGroup(group2, "testgroup3")
-  closeh5(group1)
-  closeh5(group2)
-  closeh5(group3)
+  h5close(group1)
+  h5close(group2)
+  h5close(group3)
   file
-  closeh5(file)
+  h5close(file)
 })

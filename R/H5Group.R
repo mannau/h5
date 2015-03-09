@@ -1,21 +1,19 @@
-#' The H5Group class
+#' The H5Group Class
 #'
-#' Class to represent an HDF5 Group.
-#'
+#' HDF5 Groups are represented by the H5Group class and are the building blocks
+#' of the hierarchical organization of an H5File. They form containers for 
+#' HDF5 objects and are therefore similar to file system folders. 
+#' 
+#' In addition to Group--specific capabilities listed below H5Group 
+#' shares common functionality with H5File through the CommonFG base class.
 #' @param .Object H5Group; S4 object of class \code{H5Group};
-#' @name H5Group 
 #' @rdname H5Group
+#' @name H5Group
 #' @aliases H5Group-class
-#' @include H5Location.R CommonFG.R
+#' @include H5Location-Attribute.R CommonFG.R
+#' @references \url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html}
 #' @export
-setClass( "H5Group",
-    contains = c("CommonFG", "H5Location"))
-
-#' @rdname H5Group
-#' @export
-setMethod("closeh5", signature(.Object="H5Group"), function(.Object) {
-			invisible(CloseGroup(.Object@pointer))
-		})
+setClass( "H5Group", contains = c("CommonFG"))
 
 setMethod( "initialize", "H5Group",
 		function(.Object, pointer, location) {
@@ -28,4 +26,10 @@ setMethod("show", "H5Group",
     function(object) {
       cat(sprintf("H5Group '%s'\n", object@location))
       GetFGInfo(object@pointer, object@location)
+    })
+
+#' @rdname H5Group
+#' @export
+setMethod("h5close", "H5Group", function(.Object) {
+      invisible(CloseGroup(.Object@pointer))
     })

@@ -9,107 +9,78 @@
 \alias{[,CommonFG,missing,character,ANY-method}
 \alias{[<-,CommonFG,character,character-method}
 \alias{[<-,CommonFG,missing,character-method}
-\alias{closeh5}
-\alias{createDataSet}
-\alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
-\alias{createDataSet,CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY-method}
-\alias{createGroup}
-\alias{createGroup,CommonFG,character-method}
-\alias{existsGroup}
-\alias{existsGroup,CommonFG,character-method}
-\alias{getH5Group}
-\alias{getH5Group,CommonFG,character-method}
-\alias{openDataSet}
-\alias{openDataSet,CommonFG,character-method}
-\alias{openGroup}
-\alias{openGroup,CommonFG,character-method}
-\title{The CommonFG class}
+\alias{h5close}
+\title{The CommonFG Class}
 \usage{
-createGroup(.Object, groupname)
-
-\S4method{createGroup}{CommonFG,character}(.Object, groupname)
-
-openGroup(.Object, groupname)
-
-\S4method{openGroup}{CommonFG,character}(.Object, groupname)
-
-existsGroup(.Object, groupname)
-
-\S4method{existsGroup}{CommonFG,character}(.Object, groupname)
-
-createDataSet(.Object, datasetname, data, type, dimensions,
-  chunksize = ChunkSize(data), maxdimensions = rep(NA_integer_,
-  length(GetDimensions(data))), compression = 4L, size = -1)
-
-
-  \S4method{createDataSet}{CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY}(.Object,
-  datasetname, type, dimensions, chunksize, maxdimensions, compression, size)
-
-
-  \S4method{createDataSet}{CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing}(.Object,
-  datasetname, data, chunksize, maxdimensions, compression)
-
-openDataSet(.Object, datasetname, type)
-
-\S4method{openDataSet}{CommonFG,character}(.Object, datasetname, type)
-
-closeh5(.Object)
-
-\S4method{[}{CommonFG,character,missing,missing}(x, i, j, ..., drop = TRUE)
+h5close(.Object)
 
 \S4method{[}{CommonFG,character,character,ANY}(x, i, j, ..., drop = TRUE)
+
+\S4method{[}{CommonFG,character,missing,missing}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{CommonFG,character,character}(x, i, j, ...) <- value
 
 \S4method{[}{CommonFG,missing,character,ANY}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{CommonFG,missing,character}(x, i, j, ...) <- value
-
-getH5Group(.Object, groupname)
-
-\S4method{getH5Group}{CommonFG,character}(.Object, groupname)
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}
 
-\item{groupname}{character; HDF5 Group name to be used.}
-
-\item{datasetname}{character; HDF5 DataSet name to be used.}
-
-\item{data}{object; Object to be stored in HDF5 file, can be either of type vector, matrix or array.}
-
-\item{type}{character; Character specifiying data type, can be either one of:
-   \describe{
-       \item{double}{Double precision real number.}
-       \item{integer}{32 Bit Integer}
-       \item{logical}{Boolean, which is mapped to 1/0 integer values.}
-       \item{character}{Varable--length character strings.}
-}}
-
-\item{dimensions}{integer; Dimensions of dataset to be created.}
-
-\item{chunksize}{integer; Chunksize to be used for dataset.}
-
-\item{maxdimensions}{integer; Maximum dimensions used for dataset, NA is mapped to 'unlimited'.}
-
-\item{compression}{integer; Default GZIP compression level to be used, from 0 (no compression) to 9 (maximum compression),
-defaults to \code{4}.}
-
-\item{size}{integer; Datatype size to be used, only relevant for character strings.}
-
 \item{x}{CommonFG; object to be subsetted}
 
-\item{i}{character/integer; groupname}
+\item{i}{character; Name of \code{\link{H5Group}}}
 
-\item{j}{character; name of dataset}
+\item{j}{character; Name of \code{\link{DataSet}}}
 
-\item{...}{Additional arguments for subsetting}
+\item{...}{Additional arguments passed to \code{\link{createDataSet}}; only
+relevant for assignment operator.}
 
-\item{drop}{logical; specify if class of result set should be dropped (not implemented yet).}
+\item{drop}{logical; specify if class of result set should be dropped (not
+implemented yet).}
 
 \item{value}{vector/matrix/array; Value to be assigend to dataset}
 }
 \description{
-The CommonFG class which links H5File with H5Group.
+\code{CommonFG} is the base class of \code{\link{H5File}} and \code{\link{H5Group}}
+and represents common  functionality of these two classes. The CommonFG base
+class supports various subsetting operators to easily access and manipulate
+\code{\link{H5Group}} and \code{\link{DataSet}} objects
+(see also \code{\link{CommonFG-Group}} and \code{\link{CommonFG-DataSet}}).
+}
+\details{
+Subsetting operators on \code{CommonFG} objects represent a convenient way
+to create/access \code{\link{H5Group}} and \code{\link{DataSet}} objects.
+Currently, only character arguments are supported whereas the first argument
+specifies the group to be created/accesses and the second the dataset name.
+
+Groups can be created/accessed by simply using one character parameter, e.g.
+\code{group <- obj["groupname"]}.
+
+DataSets can be either accessed by using
+\code{dset <- obj["groupname", "datasetname"]} if existing or initialized by
+using \code{obj["groupname", "datasetname"] <- value}.
+
+All created objects e.g. \code{group} or \code{dset} should be closed in the
+end using \code{h5close}.
+}
+\examples{
+file <- H5File("test.h5")
+# Create new DataSet 'testset' in H5Group 'testgroup'
+file["testgroup", "testset"] <- matrix(1:9, nrow = 3)
+# Create new DataSet 'testset2' in file root
+file[, "testset2"] <- 1:10
+# Retrieve H5Group 'testgroup'
+group <- file["testgroup"]
+# Retrieve H5Group 'testset'
+dset <- group[,"testset"]
+h5close(dset)
+h5close(group)
+h5close(file)
+file.remove("test.h5")
+}
+\seealso{
+\code{\link{CommonFG-Group}} \code{\link{CommonFG-DataSet}}
+\code{\link{H5Location-Attribute}}
 }
 

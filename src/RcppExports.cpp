@@ -6,6 +6,119 @@
 
 using namespace Rcpp;
 
+// CreateAttribute_CommonFG
+XPtr<Attribute> CreateAttribute_CommonFG(XPtr<CommonFG> loc, string attributename, char datatype, NumericVector dimensions, int size);
+RcppExport SEXP h5_CreateAttribute_CommonFG(SEXP locSEXP, SEXP attributenameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
+    Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    __result = Rcpp::wrap(CreateAttribute_CommonFG(loc, attributename, datatype, dimensions, size));
+    return __result;
+END_RCPP
+}
+// CreateAttribute_DataSet
+XPtr<Attribute> CreateAttribute_DataSet(XPtr<DataSet> loc, string attributename, char datatype, NumericVector dimensions, int size);
+RcppExport SEXP h5_CreateAttribute_DataSet(SEXP locSEXP, SEXP attributenameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
+    Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    __result = Rcpp::wrap(CreateAttribute_DataSet(loc, attributename, datatype, dimensions, size));
+    return __result;
+END_RCPP
+}
+// WriteAttribute
+bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat, char datatype, NumericVector count);
+RcppExport SEXP h5_WriteAttribute(SEXP attributeSEXP, SEXP matSEXP, SEXP datatypeSEXP, SEXP countSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Attribute> >::type attribute(attributeSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP);
+    __result = Rcpp::wrap(WriteAttribute(attribute, mat, datatype, count));
+    return __result;
+END_RCPP
+}
+// ReadAttribute
+SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count);
+RcppExport SEXP h5_ReadAttribute(SEXP attributeSEXP, SEXP countSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Attribute> >::type attribute(attributeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP);
+    __result = Rcpp::wrap(ReadAttribute(attribute, count));
+    return __result;
+END_RCPP
+}
+// CloseAttribute
+bool CloseAttribute(XPtr<Attribute> attribute);
+RcppExport SEXP h5_CloseAttribute(SEXP attributeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Attribute> >::type attribute(attributeSEXP);
+    __result = Rcpp::wrap(CloseAttribute(attribute));
+    return __result;
+END_RCPP
+}
+// OpenAttribute_CommonFG
+XPtr<Attribute> OpenAttribute_CommonFG(XPtr<CommonFG> loc, string attributename);
+RcppExport SEXP h5_OpenAttribute_CommonFG(SEXP locSEXP, SEXP attributenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
+    __result = Rcpp::wrap(OpenAttribute_CommonFG(loc, attributename));
+    return __result;
+END_RCPP
+}
+// OpenAttribute_DataSet
+XPtr<Attribute> OpenAttribute_DataSet(XPtr<DataSet> loc, string attributename);
+RcppExport SEXP h5_OpenAttribute_DataSet(SEXP locSEXP, SEXP attributenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
+    __result = Rcpp::wrap(OpenAttribute_DataSet(loc, attributename));
+    return __result;
+END_RCPP
+}
+// GetAttributeType
+char GetAttributeType(XPtr<Attribute> attribute);
+RcppExport SEXP h5_GetAttributeType(SEXP attributeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Attribute> >::type attribute(attributeSEXP);
+    __result = Rcpp::wrap(GetAttributeType(attribute));
+    return __result;
+END_RCPP
+}
+// GetAttributeDimensions
+NumericVector GetAttributeDimensions(XPtr<Attribute> attribute);
+RcppExport SEXP h5_GetAttributeDimensions(SEXP attributeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Attribute> >::type attribute(attributeSEXP);
+    __result = Rcpp::wrap(GetAttributeDimensions(attribute));
+    return __result;
+END_RCPP
+}
 // WriteDataset
 bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype, NumericVector count);
 RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP matSEXP, SEXP datatypeSEXP, SEXP countSEXP) {

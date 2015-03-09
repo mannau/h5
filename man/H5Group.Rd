@@ -4,15 +4,24 @@
 \name{H5Group}
 \alias{H5Group}
 \alias{H5Group-class}
-\alias{closeh5,H5Group-method}
-\title{The H5Group class}
+\alias{h5close,H5Group-method}
+\title{The H5Group Class}
 \usage{
-\S4method{closeh5}{H5Group}(.Object)
+\S4method{h5close}{H5Group}(.Object)
 }
 \arguments{
 \item{.Object}{H5Group; S4 object of class \code{H5Group};}
 }
 \description{
-Class to represent an HDF5 Group.
+HDF5 Groups are represented by the H5Group class and are the building blocks
+of the hierarchical organization of an H5File. They form containers for
+HDF5 objects and are therefore similar to file system folders.
+}
+\details{
+In addition to Group--specific capabilities listed below H5Group
+shares common functionality with H5File through the CommonFG base class.
+}
+\references{
+\url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html}
 }
 

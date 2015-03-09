@@ -29,3 +29,13 @@ GetDataSpace <- function(data) {
 	
 	list(typechar = typechar, dim = GetDimensions(data), size = size)
 }
+
+transpose_data <- function(dset) {
+  if(is.matrix(dset)) {
+    return(t(dset))
+  }
+  if(is.array(dset)) {
+    return(aperm(dset, rev(1:length(dim(dset)))))
+  }
+  dset   
+}

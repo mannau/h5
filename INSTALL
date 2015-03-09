@@ -1,0 +1,60 @@
+This package provides an Interface to the HDF5 API, see also AUTORS file for
+copyright notices.
+Depending on the operating system the installation of HDF5 library dependencies
+and headers may be required. h5 requires an installed version of the hdf5 
+library (tested with 1.8.11+, ZLIB enabled) including its C++ API and header 
+files.
+
+1. LINUX (e.g. DEBIAN, UBUNTU)
+	With Debian-based Linux systems the following commands can be used to 
+	install the dependencies:
+	$ sudo apt-get install libhdf5-7 libhdf5-dev libhdf5-serial-dev
+
+2. MACOSX
+	Using MacOSX and Homebrew (http://brew.sh) the following command can be used 
+	to install the HDF5 library dependencies and headers:
+	$ brew install hdf5 --enable-cxx
+
+3. WINDOWS
+	The h5 package already ships with the compiled version of the HDF library 
+	1.8.14 with the C++ API, High-Level (HL) and ZLIB compression enabled for 
+	32Bit and 64Bit architectures.
+
+	3.1. COMPILATION
+	The Library has been compiled using Windows 7 and the following toolchain:
+	- Rtools 3.2, see http://cran.r-project.org/bin/windows/Rtools
+	- CMake, current version (e.g. 3.2.1), see http://www.cmake.org/download
+	- MinGW-64 64Bit 4.6.3 SetJump LongJump (SJLJ) rev. 2, see
+	  http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/
+	  4.6.3/64-bit/threads-win32/sjlj
+	  Note that MinGW-64 is actually only used for different version of 
+	  mingw32-make, which seems to be required by the CMake tool.
+	- ZLIB library from Brian Ripley's goodies package, see 
+	  http://www.stats.ox.ac.uk/pub/Rtools/goodies/multilib/local320.zip
+	  Unzipped to e.g. C:\local320
+
+	STEPS:
+	- SET Windows Environment PATH variable in the following order:
+	  <Rtools\bin> <Rtools\gcc-4.6.3\bin> <MinGW64>
+	  e.g. for a standard installation of R-tools to c:\Program Files and an
+	  installation of MinGW64 to c:\MinGW64 the Path variable should contain
+	  C:\Program Files\Rtools\bin;C:\Program Files\Rtools\gcc-4.6.3\bin;C:\MinGW64
+	- Download current source of HDF5 (used 1.8.14) from 
+	  http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.14.tar.gz,
+	  unpack the current version to e.g. C:\hdf5
+	- Install CMake using standard parameters and open.
+	- Set CMake Source dir to HDF5 Source, e.g. C:\hdf5; Set build dir to new 
+	  directory.
+	- The following parameters need to be set manually in the CMake tool (check
+	  Advanced Box):
+		* BUILD_STATIC_EXECS: check
+		* HDF5_BUILD_CPP_LIB: check
+		* HDF5_BUILD_HL_LIB: check
+		* HDF5_ENABLE_ZLIB_SUPPORT: check
+	  * ZLIB_INCLUDE_DIR: C:/local320/include
+	  For 32Bit Platforms:
+	  * ZLIB_LIBRARY: C:/local320/lib/i386/libz.a
+	  For 64Bit Platforms:
+	  * ZLIB_LIBRARY: C:/local320/lib/x64/libz.a
+	  * CMAKE_C_FLAGS: -m64
+	  * CMAKE_CXX_FLAGS: -m64
