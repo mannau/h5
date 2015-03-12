@@ -10,364 +10,274 @@ using namespace Rcpp;
 bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype, NumericVector count);
 RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP matSEXP, SEXP datatypeSEXP, SEXP countSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
-        Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP );
-        Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
-        bool __result = WriteDataset(dataset, dataspace, mat, datatype, count);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP);
+    __result = Rcpp::wrap(WriteDataset(dataset, dataspace, mat, datatype, count));
+    return __result;
 END_RCPP
 }
 // ExtendDataset
 bool ExtendDataset(XPtr<DataSet> dset, NumericVector dimsnew);
 RcppExport SEXP h5_ExtendDataset(SEXP dsetSEXP, SEXP dimsnewSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dset(dsetSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type dimsnew(dimsnewSEXP );
-        bool __result = ExtendDataset(dset, dimsnew);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dset(dsetSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dimsnew(dimsnewSEXP);
+    __result = Rcpp::wrap(ExtendDataset(dset, dimsnew));
+    return __result;
 END_RCPP
 }
 // GetDataSetType
 char GetDataSetType(XPtr<DataSet> dataset);
 RcppExport SEXP h5_GetDataSetType(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        char __result = GetDataSetType(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(GetDataSetType(dataset));
+    return __result;
 END_RCPP
 }
 // ReadDataset
 SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector count);
 RcppExport SEXP h5_ReadDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP countSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
-        SEXP __result = ReadDataset(dataset, dataspace, count);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP);
+    __result = Rcpp::wrap(ReadDataset(dataset, dataspace, count));
+    return __result;
 END_RCPP
 }
 // CloseDataset
 bool CloseDataset(XPtr<DataSet> dataset);
 RcppExport SEXP h5_CloseDataset(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        bool __result = CloseDataset(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(CloseDataset(dataset));
+    return __result;
 END_RCPP
 }
 // CreateDataset
 XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char datatype, NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size);
 RcppExport SEXP h5_CreateDataset(SEXP fileSEXP, SEXP datasetnameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP chunksizeSEXP, SEXP maxshapeSEXP, SEXP compressionlevelSEXP, SEXP sizeSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
-        Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type chunksize(chunksizeSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type maxshape(maxshapeSEXP );
-        Rcpp::traits::input_parameter< int >::type compressionlevel(compressionlevelSEXP );
-        Rcpp::traits::input_parameter< int >::type size(sizeSEXP );
-        XPtr<DataSet> __result = CreateDataset(file, datasetname, datatype, dimensions, chunksize, maxshape, compressionlevel, size);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP);
+    Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type chunksize(chunksizeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type maxshape(maxshapeSEXP);
+    Rcpp::traits::input_parameter< int >::type compressionlevel(compressionlevelSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    __result = Rcpp::wrap(CreateDataset(file, datasetname, datatype, dimensions, chunksize, maxshape, compressionlevel, size));
+    return __result;
 END_RCPP
 }
 // OpenDataset
 XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname);
 RcppExport SEXP h5_OpenDataset(SEXP fileSEXP, SEXP datasetnameSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP );
-        XPtr<DataSet> __result = OpenDataset(file, datasetname);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type datasetname(datasetnameSEXP);
+    __result = Rcpp::wrap(OpenDataset(file, datasetname));
+    return __result;
 END_RCPP
 }
 // GetDataSetDimensions
 NumericVector GetDataSetDimensions(XPtr<DataSet> dataset);
 RcppExport SEXP h5_GetDataSetDimensions(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        NumericVector __result = GetDataSetDimensions(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(GetDataSetDimensions(dataset));
+    return __result;
 END_RCPP
 }
 // GetDataSetMaxDimensions
 NumericVector GetDataSetMaxDimensions(XPtr<DataSet> dataset);
 RcppExport SEXP h5_GetDataSetMaxDimensions(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        NumericVector __result = GetDataSetMaxDimensions(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(GetDataSetMaxDimensions(dataset));
+    return __result;
 END_RCPP
 }
 // GetDataSetChunksize
 NumericVector GetDataSetChunksize(XPtr<DataSet> dataset);
 RcppExport SEXP h5_GetDataSetChunksize(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        NumericVector __result = GetDataSetChunksize(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(GetDataSetChunksize(dataset));
+    return __result;
 END_RCPP
 }
 // GetDataSetCompression
 CharacterVector GetDataSetCompression(XPtr<DataSet> dataset);
 RcppExport SEXP h5_GetDataSetCompression(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        CharacterVector __result = GetDataSetCompression(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(GetDataSetCompression(dataset));
+    return __result;
 END_RCPP
 }
 // GetDataspace
 XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, NumericVector count);
 RcppExport SEXP h5_GetDataspace(SEXP datasetSEXP, SEXP offsetSEXP, SEXP countSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type offset(offsetSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP );
-        XPtr<DataSpace> __result = GetDataspace(dataset, offset, count);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type offset(offsetSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type count(countSEXP);
+    __result = Rcpp::wrap(GetDataspace(dataset, offset, count));
+    return __result;
 END_RCPP
 }
 // GetDataspaceElem
 XPtr<DataSpace> GetDataspaceElem(XPtr<DataSet> dataset, NumericMatrix coords);
 RcppExport SEXP h5_GetDataspaceElem(SEXP datasetSEXP, SEXP coordsSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        Rcpp::traits::input_parameter< NumericMatrix >::type coords(coordsSEXP );
-        XPtr<DataSpace> __result = GetDataspaceElem(dataset, coords);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type coords(coordsSEXP);
+    __result = Rcpp::wrap(GetDataspaceElem(dataset, coords));
+    return __result;
 END_RCPP
 }
 // GetDataspaceAll
 XPtr<DataSpace> GetDataspaceAll(XPtr<DataSet> dataset);
 RcppExport SEXP h5_GetDataspaceAll(SEXP datasetSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP );
-        XPtr<DataSpace> __result = GetDataspaceAll(dataset);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type dataset(datasetSEXP);
+    __result = Rcpp::wrap(GetDataspaceAll(dataset));
+    return __result;
 END_RCPP
 }
 // CloseDataspace
 bool CloseDataspace(XPtr<DataSpace> dataspace);
 RcppExport SEXP h5_CloseDataspace(SEXP dataspaceSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP );
-        bool __result = CloseDataspace(dataspace);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSpace> >::type dataspace(dataspaceSEXP);
+    __result = Rcpp::wrap(CloseDataspace(dataspace));
+    return __result;
 END_RCPP
 }
 // OpenFile
 XPtr<H5File> OpenFile(string filePath, string mode);
 RcppExport SEXP h5_OpenFile(SEXP filePathSEXP, SEXP modeSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< string >::type filePath(filePathSEXP );
-        Rcpp::traits::input_parameter< string >::type mode(modeSEXP );
-        XPtr<H5File> __result = OpenFile(filePath, mode);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< string >::type filePath(filePathSEXP);
+    Rcpp::traits::input_parameter< string >::type mode(modeSEXP);
+    __result = Rcpp::wrap(OpenFile(filePath, mode));
+    return __result;
 END_RCPP
 }
 // CloseFile
 bool CloseFile(XPtr<H5File> file);
 RcppExport SEXP h5_CloseFile(SEXP fileSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<H5File> >::type file(fileSEXP );
-        bool __result = CloseFile(file);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<H5File> >::type file(fileSEXP);
+    __result = Rcpp::wrap(CloseFile(file));
+    return __result;
 END_RCPP
 }
 // FlushFile
 bool FlushFile(XPtr<H5File> file);
 RcppExport SEXP h5_FlushFile(SEXP fileSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<H5File> >::type file(fileSEXP );
-        bool __result = FlushFile(file);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<H5File> >::type file(fileSEXP);
+    __result = Rcpp::wrap(FlushFile(file));
+    return __result;
 END_RCPP
 }
 // CreateGroup
 XPtr<Group> CreateGroup(XPtr<CommonFG> file, string groupname);
 RcppExport SEXP h5_CreateGroup(SEXP fileSEXP, SEXP groupnameSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP );
-        XPtr<Group> __result = CreateGroup(file, groupname);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP);
+    __result = Rcpp::wrap(CreateGroup(file, groupname));
+    return __result;
 END_RCPP
 }
 // OpenGroup
 XPtr<Group> OpenGroup(XPtr<CommonFG> file, string groupname);
 RcppExport SEXP h5_OpenGroup(SEXP fileSEXP, SEXP groupnameSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP );
-        XPtr<Group> __result = OpenGroup(file, groupname);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP);
+    __result = Rcpp::wrap(OpenGroup(file, groupname));
+    return __result;
 END_RCPP
 }
 // CloseGroup
 bool CloseGroup(XPtr<Group> group);
 RcppExport SEXP h5_CloseGroup(SEXP groupSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<Group> >::type group(groupSEXP );
-        bool __result = CloseGroup(group);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Group> >::type group(groupSEXP);
+    __result = Rcpp::wrap(CloseGroup(group));
+    return __result;
 END_RCPP
 }
 // ExistsGroup
 bool ExistsGroup(XPtr<CommonFG> file, string groupname);
 RcppExport SEXP h5_ExistsGroup(SEXP fileSEXP, SEXP groupnameSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP );
-        bool __result = ExistsGroup(file, groupname);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type groupname(groupnameSEXP);
+    __result = Rcpp::wrap(ExistsGroup(file, groupname));
+    return __result;
 END_RCPP
 }
 // GetFGInfo
 void GetFGInfo(XPtr<CommonFG> file, string path);
 RcppExport SEXP h5_GetFGInfo(SEXP fileSEXP, SEXP pathSEXP) {
 BEGIN_RCPP
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP );
-        Rcpp::traits::input_parameter< string >::type path(pathSEXP );
-        GetFGInfo(file, path);
-    }
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type path(pathSEXP);
+    GetFGInfo(file, path);
     return R_NilValue;
 END_RCPP
 }
