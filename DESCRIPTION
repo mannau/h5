@@ -2,7 +2,7 @@ Package: h5
 Type: Package
 Title: Interface to the HDF5 API
 Version: 0.9
-Date: 2015-03-16
+Date: 2015-03-18
 Author: See AUTHORS file.
 Maintainer: Mario Annau <mario.annau@gmail.com>
 Description: h5 provides an interface to the HDF5 API through S4-objects.
