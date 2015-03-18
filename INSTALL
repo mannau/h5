@@ -58,3 +58,5 @@ files.
 	  * ZLIB_LIBRARY: C:/local320/lib/x64/libz.a
 	  * CMAKE_C_FLAGS: -m64
 	  * CMAKE_CXX_FLAGS: -m64
+	- After Configuration is finished change to build-dir and compile using
+	  $ mingw32-make

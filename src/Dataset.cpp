@@ -4,27 +4,12 @@ using namespace H5;
 using namespace Rcpp;
 using namespace std;
 
-/*
-hsize_t* GetSelectCount(const DataSpace dataspace) {
-  int ndim = dataspace.getSimpleExtentNdims();
-  hsize_t start_t[ndim];
-  hsize_t end_t[ndim];
-  dataspace.getSelectBounds(start_t, end_t);
-  hsize_t *count_t = new hsize_t[ndim];
-  for (int i = 0; i < ndim; i++) {
-    count_t[i] = end_t[i] - start_t[i] + 1;
-  }
-  return count_t;
-}*/
-
 // [[Rcpp::export]]
 bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat,
 		char datatype, NumericVector count) {
   try {
-    int ndim = count.length();
-    hsize_t count_t[ndim];
-    std::copy(count.begin(), count.end(), count_t);
-    DataSpace *memspace = new DataSpace(ndim, count_t);
+    vector<hsize_t> count_t(count.begin(), count.end());
+    DataSpace *memspace = new DataSpace(count.length(), &count_t[0]);
     size_t stsize = dataset->getDataType().getSize();
 
     const void *buf = ConvertBuffer(mat, datatype, stsize);
@@ -39,10 +24,8 @@ bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat,
 // [[Rcpp::export]]
 bool ExtendDataset(XPtr<DataSet> dset, NumericVector dimsnew) {
   try {
-    hsize_t dimsnew_t[dimsnew.length()];
-    std::copy(dimsnew.begin(), dimsnew.end(), dimsnew_t);
-
-    dset->extend(dimsnew_t);
+	vector<hsize_t> dimsnew_t(dimsnew.begin(), dimsnew.end());
+    dset->extend(&dimsnew_t[0]);
     return TRUE;
   } catch(Exception& error) {
        string msg = error.getDetailMsg() + " in " + error.getFuncName();
@@ -66,10 +49,8 @@ char GetDataSetType(XPtr<DataSet> dataset) {
 SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector count) {
   try {
     int ndim = count.length();
-    hsize_t count_t[ndim];
-    std::copy(count.begin(), count.end(), count_t);
-    DataSpace *memspace = new DataSpace(ndim, count_t);
-
+    vector<hsize_t> count_t(count.begin(), count.end());
+    DataSpace *memspace = new DataSpace(ndim, &count_t[0]);
     DataType dtype = dataset->getDataType();
     char tchar = GetTypechar(dtype);
 
@@ -143,35 +124,26 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
     NumericVector dimensions, NumericVector chunksize, NumericVector maxshape, int compressionlevel, int size) {
   try {
     //TODO: expect dimensions.length() == maxshape.length()
-    // Preprocess parameters
-    //hsize_t dims = ProcessDimensions(dimensions);
-    //hsize_t maxdims = ProcessMaxDimensions(maxshape);
-    int rank = dimensions.length();
-    hsize_t dims[rank];
-    for(int i = 0; i < rank; i++) {
-     dims[i] = dimensions[i];
-    }
-
+	vector<hsize_t> dims(dimensions.begin(), dimensions.end());
     // Set maximum dimensions
-    hsize_t maxdims[rank];
-    for(int i = 0; i < rank; i++) {
+	vector<hsize_t> maxdims(maxshape.begin(), maxshape.end());
+
+	int rank = dimensions.length();
+	for(int i = 0; i < rank; i++) {
       if (R_IsNA(maxshape[i])) {
          maxdims[i] = H5S_UNLIMITED;
-      } else {
-        maxdims[i] = maxshape[i];
       }
     }
 
     // Create the data space for the dataset.
-    DataSpace dataspace (dimensions.length(), dims, maxdims);
+    DataSpace dataspace (dimensions.length(), &dims[0], &maxdims[0]);
     // Set chunksize
-    hsize_t chunk_dims[rank];
-    std::copy(chunksize.begin(), chunksize.end(), chunk_dims);
+    vector<hsize_t> chunk_dims(chunksize.begin(), chunksize.end());
 
     DSetCreatPropList prop;
     prop.setDeflate(compressionlevel);
     // TODO: set chunk dims appropriately
-    prop.setChunk(rank, chunk_dims);
+    prop.setChunk(rank, &chunk_dims[0]);
     DataSet dataset = file->createDataSet((H5std_string)datasetname,
         GetDataType(datatype, size), dataspace, prop);
 
@@ -205,19 +177,19 @@ XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname) {
 NumericVector GetDataSetDimensions(XPtr<DataSet> dataset) {
   DataSpace dataspace = dataset->getSpace();
   int ndim = dataspace.getSimpleExtentNdims();
-  hsize_t dims_out[ndim];
-  dataspace.getSimpleExtentDims( dims_out, NULL);
-  return NumericVector(dims_out, dims_out + sizeof dims_out / sizeof dims_out[0]);
+  vector<hsize_t> dims_out(ndim);
+  dataspace.getSimpleExtentDims( &dims_out[0], NULL);
+  return NumericVector(dims_out.begin(), dims_out.end());
 }
 
 // [[Rcpp::export]]
 NumericVector GetDataSetMaxDimensions(XPtr<DataSet> dataset) {
   DataSpace dataspace = dataset->getSpace();
   int ndim = dataspace.getSimpleExtentNdims();
-  hsize_t dims_out[ndim];
-  hsize_t maxdims_out[ndim];
-  dataspace.getSimpleExtentDims( dims_out, maxdims_out);
-  return NumericVector(maxdims_out, maxdims_out + sizeof maxdims_out / sizeof maxdims_out[0]);
+  vector<hsize_t> dims_out(ndim);
+  vector<hsize_t> maxdims_out(ndim);
+  dataspace.getSimpleExtentDims(&dims_out[0], &maxdims_out[0]);
+  return NumericVector(maxdims_out.begin(), maxdims_out.end());
 }
 
 // [[Rcpp::export]]
@@ -226,9 +198,9 @@ NumericVector GetDataSetChunksize(XPtr<DataSet> dataset) {
   if( H5D_CHUNKED == cparms.getLayout()) {
 	  DataSpace dataspace = dataset->getSpace();
 	  int ndim = dataspace.getSimpleExtentNdims();
-	  hsize_t chunk_dims[ndim];
-	  cparms.getChunk( ndim, chunk_dims);
-	  return NumericVector(chunk_dims, chunk_dims + sizeof chunk_dims / sizeof chunk_dims[0]);
+	  vector<hsize_t> chunk_dims(ndim);
+	  cparms.getChunk( ndim, &chunk_dims[0]);
+	  return NumericVector(chunk_dims.begin(), chunk_dims.end());
   }
   return NA_REAL;
 }

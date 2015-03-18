@@ -24,13 +24,8 @@ XPtr<Attribute> CreateAttribute_DataSet(XPtr<DataSet> loc, string attributename,
 XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 		char datatype, NumericVector dimensions, int size) {
   try {
-    int rank = dimensions.length();
-	hsize_t dims[rank];
-	for(int i = 0; i < rank; i++) {
-	dims[i] = dimensions[i];
-	}
-
-	DataSpace dataspace (dimensions.length(), dims);
+	vector<hsize_t> dims(dimensions.begin(), dimensions.end());
+	DataSpace dataspace (dimensions.length(), &dims[0]);
 
 	PredType dtype = GetDataType(datatype, size);
 
@@ -53,12 +48,7 @@ XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat,
 		char datatype, NumericVector count) {
   try {
-    int ndim = count.length();
-    hsize_t count_t[ndim];
-
-    std::copy(count.begin(), count.end(), count_t);
     size_t stsize = attribute->getDataType().getSize();
-
     const void *buf = ConvertBuffer(mat, datatype, stsize);
     attribute->write(GetDataType(datatype, stsize), buf);
     return TRUE;
@@ -72,8 +62,6 @@ bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat,
 SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count) {
   try {
     int ndim = count.length();
-    hsize_t count_t[ndim];
-    std::copy(count.begin(), count.end(), count_t);
     unsigned int nelem = std::accumulate(count.begin(), count.end(), 1,
     		std::multiplies<unsigned int>());
     DataType dtype = attribute->getDataType();
@@ -175,8 +163,8 @@ char GetAttributeType(XPtr<Attribute> attribute) {
 NumericVector GetAttributeDimensions(XPtr<Attribute> attribute) {
   DataSpace dataspace = attribute->getSpace();
   int ndim = dataspace.getSimpleExtentNdims();
-  hsize_t dims_out[ndim];
-  dataspace.getSimpleExtentDims( dims_out, NULL);
-  return NumericVector(dims_out, dims_out + sizeof dims_out / sizeof dims_out[0]);
+  vector<hsize_t> dims_out(ndim);
+  dataspace.getSimpleExtentDims(&dims_out[0], NULL);
+  return NumericVector(dims_out.begin(), dims_out.end());
 }
 

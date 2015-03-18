@@ -15,13 +15,9 @@ XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, Numeri
 
     // if hyperslab is selected
     if (hyperslab) {
-     hsize_t count_t[count.length()];
-     std::copy(count.begin(), count.end(), count_t);
-
-     hsize_t offset_t[offset.length()];
-     std::copy(offset.begin(), offset.end(), offset_t);
-
-     dataspace->selectHyperslab(H5S_SELECT_SET, count_t, offset_t);
+      vector<hsize_t> count_t(count.begin(), count.end());
+      vector<hsize_t> offset_t(offset.begin(), offset.end());
+      dataspace->selectHyperslab(H5S_SELECT_SET, &count_t[0], &offset_t[0]);
     }
     return XPtr<DataSpace>(dataspace);
   } catch(Exception& error) {
@@ -34,15 +30,12 @@ XPtr<DataSpace> GetDataspace(XPtr<DataSet> dataset, NumericVector offset, Numeri
 XPtr<DataSpace> GetDataspaceElem(XPtr<DataSet> dataset, NumericMatrix coords) {
   try {
     DataSpace *dataspace = new DataSpace(dataset->getSpace());
-
-    hsize_t coords_t[coords.length()];
-    std::copy(coords.begin(), coords.end(), coords_t);
-
-    dataspace->selectElements(H5S_SELECT_SET, coords.ncol(), coords_t);
+    vector<hsize_t> coords_t(coords.begin(), coords.end());
+    dataspace->selectElements(H5S_SELECT_SET, coords.ncol(), &coords_t[0]);
     return XPtr<DataSpace>(dataspace);
   } catch(Exception& error) {
-      string msg = error.getDetailMsg() + " in " + error.getFuncName();
-      throw Rcpp::exception(msg.c_str());
+	string msg = error.getDetailMsg() + " in " + error.getFuncName();
+	throw Rcpp::exception(msg.c_str());
   }
 }
 

@@ -1,3 +1,3 @@
 WLIB = libwin/${R_ARCH}
 PKG_LIBS = -lm -L. -L${WLIB} -lhdf5_cpp -lhdf5_hl -lhdf5_hl_cpp -lhdf5 -lz $(RCPP_LDFLAGS)
-PKG_CXXFLAGS = -I../inst/include/hdf5 -I../inst/include/hdf5_cpp -I../inst/include/hdf5_hl -I../inst/include/hdf5_hl_cpp -I../inst/include/cmakeconf -I../inst/include/zlib
+PKG_CXXFLAGS += -I../inst/include/hdf5 -I../inst/include/hdf5_cpp -I../inst/include/hdf5_hl -I../inst/include/hdf5_hl_cpp -I../inst/include/cmakeconf -I../inst/include/zlib
