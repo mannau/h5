@@ -2,23 +2,24 @@ This package provides an Interface to the HDF5 API, see also AUTORS file for
 copyright notices.
 Depending on the operating system the installation of HDF5 library dependencies
 and headers may be required. h5 requires an installed version of the hdf5 
-library (tested with 1.8.11+, ZLIB enabled) including its C++ API and header 
-files.
+library including its C++ API and header files.
 
 1. LINUX (e.g. DEBIAN, UBUNTU)
 	With Debian-based Linux systems the following commands can be used to 
 	install the dependencies:
-	$ sudo apt-get install libhdf5-7 libhdf5-dev libhdf5-serial-dev
+	$ sudo apt-get install libhdf5-dev
 
 2. MACOSX
 	Using MacOSX and Homebrew (http://brew.sh) the following command can be used 
 	to install the HDF5 library dependencies and headers:
-	$ brew install hdf5 --enable-cxx
+	$ brew install homebrew/science/hdf5 --enable-cxx
 
 3. WINDOWS
 	The h5 package already ships with the compiled version of the HDF library 
 	1.8.14 with the C++ API, High-Level (HL) and ZLIB compression enabled for 
-	32Bit and 64Bit architectures.
+	32Bit and 64Bit architectures. The required headers and pre-compiled binaries
+	are located at https://github.com/mannau/h5-libwin and are downloaded during
+	the installation process by the configure.win script.
 
 	3.1. COMPILATION
 	The Library has been compiled using Windows 7 and the following toolchain:

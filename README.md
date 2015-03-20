@@ -18,13 +18,14 @@ Please note that this version has been tested with the current hdf5 library 1.8.
 ### MacOSX
 Using MacOSX and Homebrew (http://brew.sh) you can use the following command to install HDF5 library dependencies and headers:
 ```shell
-brew install hdf5 --enable-cxx
+brew install homebrew/science/hdf5 --enable-cxx
 ```
 
 ### Linux (e.g. Debian, Ubuntu)
-With Debian-based Linux systems you can use the following command to install the dependencies:
+With Debian-based Linux systems you can use the following command to install the 
+dependencies:
 ```shell
-sudo apt-get install libhdf5-7 libhdf5-dev libhdf5-serial-dev
+sudo apt-get install libhdf5-dev
 ```
 
 ## Usage

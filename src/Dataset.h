@@ -5,7 +5,6 @@
 #ifndef __Dataset_h__
 #define __Dataset_h__
 
-#define CHUNKSIZE 1e6
 // Dataset functions
 bool WriteDataset(Rcpp::XPtr<H5::DataSet> dataset, SEXP mat, char datatype);
 SEXP ReadDataset(Rcpp::XPtr<H5::DataSet> dataset, char datatype);

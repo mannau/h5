@@ -7,3 +7,4 @@
 *.Rcheck/
 *.tar.gz
 /TODO
+/autom4te.cache/

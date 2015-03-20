@@ -1,35 +1,13 @@
-# Sample .travis.yml for R projects.
-#
-# See README.md for instructions, or for more configuration options,
-# see the wiki:
-#   https://github.com/craigcitro/r-travis/wiki
-
-language: c
+language: r
 
 env:
   global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
-    - CRAN="http://cran.us.r-project.org"
-    - WARNINGS_ARE_ERRORS=1
     - PKG_CXXFLAGS="-pedantic"
 
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-install:
-  - ./travis-tool.sh install_aptget libhdf5-7 libhdf5-dev libhdf5-serial-dev
-  - ./travis-tool.sh install_deps
-  
-script: ./travis-tool.sh run_tests
+# Be strict when checking our package
+warnings_are_errors: true
+cran: http://cran.us.r-project.org
 
-after_failure:
-  - ./travis-tool.sh dump_logs
-
-notifications:
-  email:
-    on_success: change
-    on_failure: change
-    
-
+# System dependencies for HTTP calling
+apt_packages:
+ - libhdf5-7 libhdf5-dev

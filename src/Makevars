@@ -1,1 +1,0 @@
-PKG_LIBS = -lm -L. -lhdf5 -lhdf5_cpp -lhdf5_hl -lhdf5_hl_cpp -lz $(RCPP_LDFLAGS)
