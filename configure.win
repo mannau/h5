@@ -5,8 +5,11 @@
 echo "  checking hdf5 headers and libraries"
 allok=yes
 
-if [ ! -e src/libwin/i386/libhdf5_cpp.a ]; then
-	echo "  cannot find current hdf5 files"
+LIBWIN="$(echo ${LIB_HDF5}/lib${R_ARCH} | sed 's/\\/\//g')"
+INC_HDF5=""
+
+if [ ! -e ${LIBWIN}/libhdf5_cpp.a ]; then
+	echo "  cannot find current hdf5 file(s) in ${LIBWIN}/libhdf5_cpp.a"
 	echo "  attempting to download them"
 	echo 'library(RCurl);f = CFILE("h5-libwin.zip", mode="wb");curlPerform(url = "https://github.com/mannau/h5-libwin/archive/master.zip", .opts = curlOptions(followlocation = TRUE, ssl.verifypeer = FALSE), writedata = f@ref);close(f)'|${R_HOME}/bin/R --vanilla --slave
   if [ ! -e h5-libwin.zip ]; then
@@ -14,11 +17,11 @@ if [ ! -e src/libwin/i386/libhdf5_cpp.a ]; then
   else
 	  echo "  unpacking current hdf5"
 	  unzip h5-libwin.zip
-	  cp -rf h5-libwin-master/src .
-	  cp -rf h5-libwin-master/inst .
+	  cp -rf h5-libwin-master/include inst
+	  cp -rf h5-libwin-master/lib src
 	  rm h5-libwin.zip
 	  rm -rf h5-libwin-master
-		if [ ! -e src/libwin/i386/libhdf5_cpp.a ]; then
+		if [ ! -e src/lib${R_ARCH}/libhdf5_cpp.a ]; then
 		  allok=no
 		fi
 		if [ ! -e inst/include/hdf5_cpp/H5Cpp.h ]; then
@@ -40,5 +43,4 @@ if [ ${allok} != yes ]; then
 fi
 
 echo "  seems ok, ready to go"
-
 exit 0

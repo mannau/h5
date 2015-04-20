@@ -1,3 +1,10 @@
-WLIB = libwin${R_ARCH}
-PKG_LIBS = -lm -L. -L${WLIB} -lhdf5_cpp -lhdf5_hl -lhdf5_hl_cpp -lhdf5 -lz
-PKG_CXXFLAGS += -I../inst/include/hdf5 -I../inst/include/hdf5_cpp -I../inst/include/hdf5_hl -I../inst/include/hdf5_hl_cpp -I../inst/include/cmakeconf -I../inst/include/zlib
+ifdef LIB_HDF5
+	WINC = "${LIB_HDF5}/include"
+	WLIB = "${LIB_HDF5}/lib${R_ARCH}"
+else
+	WINC = ../inst/include
+	WLIB = "lib${R_ARCH}"
+endif
+
+PKG_LIBS = -L${WLIB} -lhdf5_cpp -lhdf5 -lz -lm
+PKG_CXXFLAGS += -I${WINC}/hdf5 -I${WINC}/hdf5_cpp -I${WINC}/hdf5_hl -I${WINC}/hdf5_hl_cpp -I${WINC}/cmakeconf
