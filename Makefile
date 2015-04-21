@@ -1,5 +1,6 @@
-Rscript := $(shell whereis Rscript) --vanilla -e
-R := $(shell whereis R)
+R_HOME := $(shell R RHOME)
+Rscript := '$(R_HOME)/bin/Rscript' --vanilla -e
+R := "${R_HOME}/bin/R"
 
 PKG_VERSION := $(shell grep -i ^version DESCRIPTION | cut -d : -d \  -f 2)
 PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
