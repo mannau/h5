@@ -41,7 +41,7 @@ compileAttributes: $(SRC_FILES)
 	
 check: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-manual --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	$(R) CMD check --no-manual --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 00check.log: check
 	@mv $(CHECKPATH)\\00check.log .
