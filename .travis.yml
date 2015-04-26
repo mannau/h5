@@ -10,4 +10,4 @@ cran: http://cran.us.r-project.org
 
 # System dependencies for HTTP calling
 apt_packages:
- - libhdf5-7 libhdf5-dev
+ - libhdf5-serial-dev libhdf5-dev libhdf5-7
