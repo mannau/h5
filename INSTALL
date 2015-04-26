@@ -4,10 +4,16 @@ Depending on the operating system the installation of HDF5 library dependencies
 and headers may be required. h5 requires an installed version of the hdf5 
 library including its C++ API and header files.
 
-1. LINUX (e.g. DEBIAN, UBUNTU)
+1. LINUX 
+1.1 DEBIAN-BASED, e.g. UBUNTU
 	With Debian-based Linux systems the following commands can be used to 
 	install the dependencies:
 	$ sudo apt-get install libhdf5-dev
+	On older platforms it might be required to install using
+	$ sudo apt-get install libhdf5-serial-dev
+1.2 RPM-BASED, e.g. FEDORA
+	For RPM-BASED platforms the following command can be used:
+	$ sudo yum install hdf5-devel
 
 2. MACOSX
 	Using MacOSX and Homebrew (http://brew.sh) the following command can be used 

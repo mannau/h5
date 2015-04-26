@@ -1,20 +1,21 @@
 Package: h5
 Type: Package
-Title: Interface to the HDF5 API
+Title: Interface to the 'HDF5' Library
 Version: 0.9
 Date: 2015-04-22
 Authors@R: c(person("Mario", "Annau", role = c("aut", "cre"),
          email = "mario.annau@gmail.com"))
 Copyright: See COPYRIGHTS file.
-Description: Interface to the HDF5 API through S4-objects supporting fast
-    storage and retrieval of R-objects like vectors, matrices
-    and arrays to binary files in a language independent format. The HDF5 format
-    can therefore be used as an alternative to R's save/load mechanism. Since
-    h5 is able to access only subsets of stored data it can also handle data
-    sets which do not fit into memory.
+Description: S4 Interface to the 'HDF5' library supporting fast storage and
+    retrieval of R-objects like vectors, matrices and arrays to binary files in
+    a language independent format. The 'HDF5' format can therefore be used as
+    an alternative to R's save/load mechanism. Since h5 is able to access only
+    subsets of stored data it can also handle data sets which do not fit into
+    memory.
 License: BSD_2_clause + file LICENSE
 BugReports: https://github.com/mannau/h5/issues
-SystemRequirements: libhdf5 (>= 1.8.4)
+SystemRequirements: libhdf5 (>= 1.8.4) with C++ interface enabled
+    (--enable-cxx=yes)
 Depends:
     R (>= 3.1)
 Imports:
