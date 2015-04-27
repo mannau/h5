@@ -31,7 +31,7 @@ test_that("H5File-FileMode-param-a",{
 	file <- new( "H5File", fname)
 	expect_that(file, is_a("H5File"))
 	expect_that(file@mode, is_identical_to("a"))
-  expect_that(file@location, is_identical_to(file.path(getwd(), fname)))
+#  expect_that(file@location, is_identical_to(file.path(getwd(), fname)))
 	expect_that(basename(file@location), is_identical_to(fname))
 	group1 <- createGroup(file, "testgroup")
 	expect_that(group1, is_a("H5Group"))
