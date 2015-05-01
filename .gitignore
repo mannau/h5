@@ -8,3 +8,5 @@
 *.tar.gz
 /TODO
 /autom4te.cache/
+configure.win.temp
+src/Makevars.win.temp

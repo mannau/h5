@@ -9,3 +9,7 @@ src/symbols.rds
 .settings
 h5.Rcheck
 README.md
+configure.win.cran
+src/Makevars.win.cran
+configure.win.temp
+src/Makevars.win.temp

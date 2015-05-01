@@ -19,7 +19,8 @@ OBJECTS := $(wildcard src/*.o) $(wildcard src/*.o-*) $(wildcard src/*.dll) $(wil
 CHECKPATH := $(PKG_NAME).Rcheck
 CHECKLOG := `cat $(CHECKPATH)/00check.log`
 
-.PHONY: all build check manual install clean compileAttributes
+.PHONY: all build check manual install clean compileAttributes \
+	build-cran check-cran
 
 all: 
 	install
@@ -29,6 +30,19 @@ build: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 $(PKG_NAME)_$(PKG_VERSION).tar.gz: $(PKG_FILES)
 	@make roxygen
 	$(R) CMD build --resave-data --no-build-vignettes .
+
+build-cran:
+	@make clean
+	@make roxygen
+	@cp configure.win configure.win.temp
+	@cp src/Makevars.win src/Makevars.win.temp
+	@cp configure.win.cran configure.win
+	@cp src/Makevars.win.cran src/Makevars.win
+	$(R) CMD build --resave-data --no-build-vignettes .
+	@cp configure.win.temp configure.win 
+	@cp src/Makevars.win.temp src/Makevars.win
+	@rm configure.win.temp
+	@rm src/Makevars.win.temp
 
 roxygen: $(R_FILES)
 	$(Rscript) 'library(roxygen2); roxygenize(clean = TRUE)'
@@ -40,6 +54,11 @@ compileAttributes: $(SRC_FILES)
 	$(Rscript) 'library(Rcpp); Rcpp::compileAttributes()'
 	
 check: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
+	@rm -rf $(CHECKPATH)
+	$(R) CMD check --no-manual --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
+
+check-cran: 
+	@make build-cran
 	@rm -rf $(CHECKPATH)
 	$(R) CMD check --no-manual --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
 

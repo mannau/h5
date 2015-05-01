@@ -1,0 +1,4 @@
+WINC = "${LIB_HDF5}/include"
+WLIB = "${LIB_HDF5}/lib${R_ARCH}"
+PKG_LIBS = -L${WLIB} -lhdf5_cpp -lhdf5 -lz -lm
+PKG_CXXFLAGS += -I${WINC}/hdf5 -I${WINC}/hdf5_cpp -I${WINC}/hdf5_hl -I${WINC}/hdf5_hl_cpp -I${WINC}/cmakeconf
