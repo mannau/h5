@@ -4,19 +4,13 @@
 \name{DataSet-Extend}
 \alias{DataSet-Extend}
 \alias{c,DataSet-method}
-\alias{cbind.DataSet}
 \alias{extendDataSet}
 \alias{extendDataSet,DataSet,numeric-method}
-\alias{rbind.DataSet}
 \title{Functions to Extend a DataSet}
 \usage{
 extendDataSet(.Object, dims)
 
 \S4method{extendDataSet}{DataSet,numeric}(.Object, dims)
-
-rbind.DataSet(..., deparse.level = 1)
-
-cbind.DataSet(..., deparse.level = 1)
 
 \S4method{c}{DataSet}(x, ..., recursive = FALSE)
 }
@@ -26,8 +20,6 @@ cbind.DataSet(..., deparse.level = 1)
 \item{dims}{numeric; Dimensions of DataSet.}
 
 \item{...}{additional arguments passed to \code{\link{c}}.}
-
-\item{deparse.level}{numeric; Not implemented yet.}
 
 \item{recursive}{logical; Argument passed to \code{\link{c}}.}
 }

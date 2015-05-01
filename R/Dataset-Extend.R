@@ -16,7 +16,6 @@
 #' @param .Object,x DataSet; S4 object of class \code{DataSet};
 #' @param dims numeric; Dimensions of DataSet.
 #' @param recursive logical; Argument passed to \code{\link{c}}.
-#' @param deparse.level numeric; Not implemented yet. 
 #' @param ... additional arguments passed to \code{\link{c}}.
 #' @rdname DataSet-Extend
 #' @name DataSet-Extend
@@ -48,13 +47,6 @@ setMethod("extendDataSet", signature(.Object="DataSet", dims = "numeric"),
       .Object
     })
 
-#' @rdname DataSet-Extend
-#' @export
-rbind.DataSet <- function (..., deparse.level = 1)  {
-  args <- list(...)
-  rbind2(args[[1]], do.call(rbind, args[-1]))
-}
-
 #' Additional function for cbind S4 dispatching
 #' @noRd
 setMethod("rbind2", signature(x="DataSet", y = "matrix"), 
@@ -80,13 +72,6 @@ setMethod("rbind2", signature(x="DataSet", y = "matrix"),
       writeDataSet(x, y, dspace)
       x
     })
-
-#' @rdname DataSet-Extend
-#' @export
-cbind.DataSet <- function (..., deparse.level = 1)  {
-  args <- list(...)
-  cbind2(args[[1]], do.call(cbind, args[-1]))
-}
 
 #' Additional function for cbind S4 dispatching
 #' @noRd
