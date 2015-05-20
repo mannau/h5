@@ -1722,7 +1722,7 @@ if test -z "${H5CPP}"; then
   	The required HDF5 library files can be installed as follows:
   	- Debian-based (e.g Ubuntu): 'sudo apt-get install libhdf5-dev'
         - Old Debian-based: 'sudo apt-get install libhdf5-serial-dev'
-        - OSX using Homebrew: 'brew install homebrew/science/hdf5 --enable-cxx'
+        - OS X using Homebrew: 'brew install homebrew/science/hdf5 --enable-cxx'
         - RPM-based (e.g Fedora): 'sudo yum install hdf5-devel'" "$LINENO" 5
 fi
 
