@@ -99,7 +99,7 @@ setMethod( "initialize", "DataSet",
 
 setMethod("show", "DataSet",
   function(object) {
-      dimstring <- paste(sprintf("%.5g", dset@dim), collapse = " x ")
+      dimstring <- paste(sprintf("%.5g", object@dim), collapse = " x ")
       typestring <- switch(object@datatype, i = "integer", d = "numeric", 
           c = "character", "unknown")
       maxdimstring <- ifelse(object@maxdim >= 1.844674e+19, "UNLIMITED", 
