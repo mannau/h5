@@ -7,4 +7,5 @@
 H5::PredType GetDataType(const char datatype, int size);
 char GetTypechar(const H5::DataType &dtype);
 void *ConvertBuffer(const SEXP &mat, char datatype, int stsize);
+H5S_seloper_t GetOperator(std::string opstring);
 #endif // __Dataset_h__

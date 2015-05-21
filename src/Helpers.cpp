@@ -34,6 +34,22 @@ char GetTypechar(const DataType &dtype) {
   return 'd'; // Never reached
 }
 
+H5S_seloper_t GetOperator(string opstring) {
+  if (opstring == "SET") {
+    return H5S_SELECT_SET;
+  } else if (opstring == "OR") {
+	  return H5S_SELECT_OR;
+  } else if (opstring == "AND") {
+	  return H5S_SELECT_AND;
+  } else if (opstring == "XOR") {
+	  return H5S_SELECT_XOR;
+  } else if (opstring == "NOTB") {
+	  return H5S_SELECT_NOTB;
+  } else if (opstring == "NOTA") {
+	  return H5S_SELECT_NOTA;
+  }
+  throw Rcpp::exception("Unknown operator.");
+}
 
 
 void *ConvertBuffer(const SEXP &mat, char datatype, int stsize) {

@@ -53,7 +53,8 @@ setGeneric("selectDataSpace", function(.Object,
 setMethod("selectDataSpace", signature(.Object = "DataSet", 
         offset = "missing", count = "missing", elem = "missing"), 
     function(.Object) {
-      dspace <- GetDataspaceAll(.Object@pointer)
+      dspace <- GetDataspace(.Object@pointer)
+      dspace <- SelectAll(dspace)
       new("DataSpace", dspace, .Object@dim)
     })
 
@@ -65,7 +66,8 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
       out <- checkParamBoundaries(.Object, offset, count)
       offset <- out[[1]]
       count <- out[[2]]
-      dspace <- GetDataspace(.Object@pointer, offset - 1, count)
+      dspace <- GetDataspace(.Object@pointer)
+      dspace <- SelectHyperslab(dspace, offset - 1, count)
       new("DataSpace", dspace, count)
     })
 
@@ -94,8 +96,8 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
       if (any(dimmax > .Object@dim)) {
         stop("subscript out of bounds")
       }
-      
-      dspace <- GetDataspaceElem(.Object@pointer, t(elem - 1))
+      dspace <- GetDataspace(.Object@pointer)
+      dspace <- SelectElem(dspace, t(elem - 1))
       new("DataSpace", dspace, count = nrow(elem))
     })
 

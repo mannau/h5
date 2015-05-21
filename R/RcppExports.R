@@ -81,16 +81,20 @@ GetDataSetCompression <- function(dataset) {
     .Call('h5_GetDataSetCompression', PACKAGE = 'h5', dataset)
 }
 
-GetDataspace <- function(dataset, offset, count) {
-    .Call('h5_GetDataspace', PACKAGE = 'h5', dataset, offset, count)
+GetDataspace <- function(dataset) {
+    .Call('h5_GetDataspace', PACKAGE = 'h5', dataset)
 }
 
-GetDataspaceElem <- function(dataset, coords) {
-    .Call('h5_GetDataspaceElem', PACKAGE = 'h5', dataset, coords)
+SelectHyperslab <- function(dataspace, offset, count, seloper = "SET") {
+    .Call('h5_SelectHyperslab', PACKAGE = 'h5', dataspace, offset, count, seloper)
 }
 
-GetDataspaceAll <- function(dataset) {
-    .Call('h5_GetDataspaceAll', PACKAGE = 'h5', dataset)
+SelectElem <- function(dataspace, coords) {
+    .Call('h5_SelectElem', PACKAGE = 'h5', dataspace, coords)
+}
+
+SelectAll <- function(dataspace) {
+    .Call('h5_SelectAll', PACKAGE = 'h5', dataspace)
 }
 
 CloseDataspace <- function(dataspace) {
