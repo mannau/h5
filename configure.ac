@@ -1,4 +1,4 @@
-AC_INIT([h5], 0.9, [mario.annau@gmail.com])
+AC_INIT([h5], 0.9.2, [mario.annau@gmail.com])
 
 dnl Now find the compiler and compiler flags to use
 : ${R_HOME=`R RHOME`}
@@ -47,7 +47,7 @@ if test -d /usr/include/hdf5/serial; then
     CPPFLAGS="${CPPFLAGS} -I/usr/include/hdf5/serial"
 fi
 
-dnl substitute RODBC_CPPFLAGS and LIBS
+dnl substitute CPPFLAGS and LIBS
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LIBS)
 dnl and do subsitution in the src/Makevars.in 

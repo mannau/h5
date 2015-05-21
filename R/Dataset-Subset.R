@@ -150,7 +150,7 @@ writeSubsetDataSet <- function(x, i, j, ..., value) {
   indices <- list(i, j, ...)
   indices <- indices[sapply(indices, length) > 0]
   dspace <- dataSpaceFromIndex(x, indices)
-  writeDataSet(x, value, dspace, transpose = FALSE) 
+  writeDataSet(x, value, dspace)#, transpose = FALSE) 
   h5close(dspace)
   x
 }
@@ -257,7 +257,7 @@ setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
       writeSubsetDataSet(x, i = i, j = j, ..., value = value)
     })
 
-dataSpaceFromIndex <- function(dset, indices) {
+dataSpaceFromIndex <- function(dset, indices, maxspaces = 100) {
   stopifnot(inherits(dset, "DataSet"))
   stopifnot(is.list(indices))
   
@@ -271,7 +271,46 @@ dataSpaceFromIndex <- function(dset, indices) {
   if (!all(sapply(indices, function(dset) is.numeric(dset) | is.integer(dset)))) {
     stop("Subscript indices must be of type numeric or integer.") 
   }
-  selectDataSpace(dset, elem = as.matrix(expand.grid(indices)))
+  if (any(is.na(unlist(indices)))) {
+    stop("NAs are not allowed in element coordinates.")
+  }
+  if(any(unlist(indices) < 1L)) {
+    stop("Elements of parameter elem must be greater or equal than one.")
+  }
+  # Calculate contiguous spaces in selection
+  startidx <- lapply(indices, function(x) 
+        if(length(x) > 1) which(c(TRUE, diff(x) > 1)) else 1)
+  count <- lapply(1:length(startidx), function(i) 
+        diff(c(startidx[[i]], length(indices[[i]]) + 1)))
+  countsum <- sapply(count, sum)
+  
+  startidx <- as.matrix(expand.grid(startidx))
+  count <- as.matrix(expand.grid(count))
+  offset <- do.call(cbind, lapply(1:length(indices), 
+          function(i) indices[[i]][startidx[, i]]))
+  
+  # check if entire space is selected
+  if (nrow(count) == 1) {
+    if (all(count == dset@dim) & all(offset == 1)) {
+      dspace <- selectDataSpace(dset)
+      return(dspace)
+    }
+  }
+
+  dspace <- NULL
+  if(nrow(offset) > maxspaces) {
+    dspace <- selectDataSpace(dset, elem = as.matrix(expand.grid(indices)))
+  } else {
+    dspaceptr <- GetDataspace(dset@pointer)
+    ops <- c("SET", rep("OR", nrow(offset) - 1))
+    for(i in 1:nrow(offset)) {
+      out <- checkParamBoundaries(dset, offset[i,,drop = TRUE], 
+          count[i,,drop = TRUE])
+      dspaceptr <- SelectHyperslab(dspaceptr, out[[1]] - 1, out[[2]], ops[i])
+    }
+    dspace <- new("DataSpace", dspaceptr, countsum)
+  }
+  dspace
 }
 
 subsetDataSet <- function(x, i, j, ..., drop = TRUE) {
@@ -286,6 +325,7 @@ subsetDataSet <- function(x, i, j, ..., drop = TRUE) {
   dspace <- dataSpaceFromIndex(x, indices)
   
   vec <- readDataSet(x, dspace)
+  h5close(dspace)
   setdim <- length(x@dim)
   stopifnot(setdim >= 1)
   if (setdim == 1) {
