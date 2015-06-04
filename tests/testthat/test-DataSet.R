@@ -4,7 +4,7 @@ fname <- "test.h5"
 
 test_that("DataSet-createDataset",{	
 	if(file.exists(fname)) file.remove(fname)
-	file <- new( "H5File", fname, "a")
+	file <- h5file(fname, "a")
   
   f <- function() dset1 <- createDataSet(file, "testmat_n")
   expect_that(f(), throws_error("Parameter data must be specified"))
@@ -13,7 +13,7 @@ test_that("DataSet-createDataset",{
 
 test_that("DataSet-createDataset-chunksize",{	
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   
   f <- function() dset1 <- createDataSet(file, "testmat_n", 1:10, chunksize = "test")
   expect_that(f(), throws_error("Parameter chunksize must be of type integer"))
@@ -32,7 +32,7 @@ test_that("DataSet-createDataset-chunksize",{
 
 test_that("DataSet-createDataset-maxdimensions",{	
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   
   f <- function() dset1 <- createDataSet(file, "testmat_n", 1:10, maxdimensions = "test")
   expect_that(f(), throws_error("Parameter maxdimensions must be of type integer"))
@@ -61,7 +61,7 @@ test_that("DataSet-createDataset-maxdimensions",{
 
 test_that("DataSet-createDataset-compression",{	
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   
   f <- function() dset_cp_type <- createDataSet(file, "cp_type_n", 1:10, compression = "test")
   expect_that(f(), throws_error("Parameter compression must be of type integer"))

@@ -6,14 +6,14 @@ test_that("DataSet-Select-Hyperslab-params",{
   testmat_n <- matrix(as.integer(1:90), ncol = 9)
   
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testmat_n")
   
@@ -74,7 +74,7 @@ test_that("DataSet-Select-Hyperslab-vector",{
   
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
   h5close(dset1)
@@ -92,7 +92,7 @@ test_that("DataSet-Select-Hyperslab-vector",{
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testvec_n")
   
@@ -125,7 +125,7 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
@@ -143,7 +143,7 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testmat_n")
   
@@ -175,7 +175,7 @@ test_that("DataSet-Select-Hyperslab-array",{
   
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   
@@ -190,7 +190,7 @@ test_that("DataSet-Select-Hyperslab-array",{
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testmat_n")
   

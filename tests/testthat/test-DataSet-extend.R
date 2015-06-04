@@ -7,7 +7,7 @@ test_that("DataSet-extend",{
   
   # Test normal usecase with unlimited dset
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   dset1 <- createDataSet(file, "testmat_1", testmat_n, maxdimensions = dim(testmat_n))
   
   dimtestmat_n <- dim(testmat_n)
@@ -49,7 +49,7 @@ test_that("DataSet-extend-matrix-rbind",{
   
   # Test normal usecase with unlimited dset
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   dset1 <- createDataSet(file, "testmat_1", testmat_n)
   
   f <- function() rbind(dset1, matrix(1:8, ncol = 8))
@@ -68,7 +68,7 @@ test_that("DataSet-extend-matrix-rbind",{
   h5close(dset2)
   h5close(file)
 
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   dset1 <- openDataSet(file, "testmat_1")
   expect_that(readDataSet(dset1), is_identical_to(rbind(testmat_n, 1L)))
   h5close(dset1)
@@ -83,7 +83,7 @@ test_that("DataSet-extend-matrix-cbind",{
   
   # Test normal usecase with unlimited dset
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   dset1 <- createDataSet(file, "testmat_1", testmat_n)
   
   f <- function() cbind(dset1, matrix(1:9, nrow = 9))
@@ -103,7 +103,7 @@ test_that("DataSet-extend-matrix-cbind",{
   h5close(dset2)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   dset1 <- openDataSet(file, "testmat_1")
   expect_that(readDataSet(dset1), is_identical_to(cbind(testmat_n, 1L)))
   h5close(dset1)
@@ -118,7 +118,7 @@ test_that("DataSet-extend-vector-c",{
     
     # Test normal usecase with unlimited dset
     if(file.exists(fname)) file.remove(fname)
-    file <- new( "H5File", fname, "a")
+    file <- h5file(fname, "a")
     dset1 <- createDataSet(file, "testmat_1", testmat_n)
     
     f <- function() c(dset1, integer(0))
@@ -128,7 +128,7 @@ test_that("DataSet-extend-vector-c",{
     h5close(dset1)
     h5close(file)
     
-    file <- new( "H5File", fname, "r")
+    file <- h5file(fname, "r")
     dset1 <- openDataSet(file, "testmat_1")
     testmat_n_extend <- c(testmat_n, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
     expect_that(readDataSet(dset1), is_identical_to(testmat_n_extend))

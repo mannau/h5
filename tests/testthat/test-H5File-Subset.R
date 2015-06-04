@@ -3,7 +3,7 @@ fname <- "test.h5"
 
 test_that("H5File-Subset-Group",{
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   
   f <- function() file[c("1", "2", "3")]
   expect_that(f(), throws_error("Error : length.*", perl = TRUE))
@@ -35,7 +35,7 @@ test_that("H5File-Subset-Group",{
 
 test_that("H5File-Subset-DataSet",{
   if(file.exists(fname)) file.remove(fname)
-  file <- H5File(fname, "a")
+  file <- h5file(fname, "a")
      
   # TODO: should actually work
   #f <- file["/testgroup3", "test"]

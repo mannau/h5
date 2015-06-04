@@ -67,7 +67,7 @@
 #' 
 #' @examples
 #' # 1. Create/Open file 'test.h5' (mode set to 'a'ppend)
-#' file <- H5File("test.h5", 'a')
+#' file <- h5file("test.h5", 'a')
 #' 
 #' # 2. Store character vector in group '/test' and dataset 'testvec'
 #' file["test", "testvec"] <- LETTERS[1:9]

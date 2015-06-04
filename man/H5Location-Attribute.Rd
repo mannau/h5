@@ -49,7 +49,7 @@ methods to create and access attributes for inherited classes.
 }
 \examples{
 # Write Attributes for H5File, H5Group and DataSet
-file <- H5File("test.h5")
+file <- h5file("test.h5")
 h5attr(file, "fileattrib") <- 1:10
 group <- file["testgroup"]
 h5attr(group, "groupattrib") <- matrix(1:9, nrow = 3)

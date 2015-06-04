@@ -3,7 +3,7 @@ fname <- "test.h5"
 
 test_that("H5Group-param",{
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname)
+  file <- h5file(fname)
   
   group1 <- createGroup(file, "//testgroup")
   expect_that(group1, is_a("H5Group"))
@@ -30,7 +30,7 @@ test_that("H5Group-param",{
 
 test_that("H5Group-createGroup",{
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname)
+  file <- h5file(fname)
   
   # Fail for nested (non-existent) group name
   f <- function() group1 <- createGroup(file, "/testgroup/test")
@@ -50,7 +50,7 @@ test_that("H5Group-createGroup",{
 })
 
 test_that("H5Group-openGroup",{
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   # Fail for nested (non-existent) group name
   f <- function() group1 <- openGroup(file, "/testgroup/test")
   expect_that(f(), throws_error("H5Gopen failed"))
@@ -79,7 +79,7 @@ test_that("H5Group-openGroup",{
 })
 
 test_that("H5Group-existsGroup",{
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   # Fail for nested (non-existent) group name
   expect_that(existsGroup(file, "/testgroup/test"), is_false())     
   expect_that(existsGroup(file, "/testgroup3"), is_true())

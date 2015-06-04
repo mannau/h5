@@ -6,14 +6,14 @@ test_that("DataSet-Select-Elem-params",{
   testmat_n <- matrix(as.integer(1:90), ncol = 9)
   
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testmat_n")
   
@@ -51,7 +51,7 @@ test_that("DataSet-Select-Elem-vector",{
   testvec_n <- as.integer(1:90)
   
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
   h5close(dset1)
@@ -70,7 +70,7 @@ test_that("DataSet-Select-Elem-vector",{
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testvec_n")
   
@@ -99,7 +99,7 @@ test_that("DataSet-Select-Elem-matrix",{
   testmat_n <- matrix(as.integer(1:90), ncol = 9)
   
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
@@ -117,7 +117,7 @@ test_that("DataSet-Select-Elem-matrix",{
   h5close(group)
   h5close(file)
   
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testmat_n")
   
@@ -146,7 +146,7 @@ test_that("DataSet-Select-Elem-array",{
   subarray <- array(as.integer(-100:-120), dim = c(2, 2, 5))
   
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
@@ -168,7 +168,7 @@ test_that("DataSet-Select-Elem-array",{
   h5close(group)
   h5close(file)
 
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset1 <- openDataSet(group, "testmat_n")
   

@@ -34,7 +34,7 @@
 #' @seealso \code{\link{CommonFG-Group}} \code{\link{CommonFG-DataSet}} 
 #' \code{\link{H5Location-Attribute}}
 #' @examples
-#' file <- H5File("test.h5")
+#' file <- h5file("test.h5")
 #' # Create new DataSet 'testset' in H5Group 'testgroup'
 #' file["testgroup", "testset"] <- matrix(1:9, nrow = 3)
 #' # Create new DataSet 'testset2' in file root

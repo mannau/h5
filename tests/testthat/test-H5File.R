@@ -2,33 +2,33 @@ context("H5File")
 fname <- "test.h5"
 
 test_that("H5File-param",{
-	f <- function() file <- new( "H5File", 1, "a")
+	f <- function() file <- h5file(1, "a")
 	expect_that(f(), throws_error("Error : is.character.*", perl = TRUE))
 	
-	f <- function() file <- new( "H5File", c("a", "a"), "a")
+	f <- function() file <- h5file(c("a", "a"), "a")
 	expect_that(f(), throws_error("Error : length.*", perl = TRUE))
 	
-	f <- function() file <- new( "H5File", "a", 1)
+	f <- function() file <- h5file("a", 1)
   expect_that(f(), throws_error("Error : is.character.*", perl = TRUE))
 	
-	f <- function() file <- new( "H5File", "a", c("a", "a"))
+	f <- function() file <- h5file("a", c("a", "a"))
 	expect_that(f(), throws_error("Error : length.*", perl = TRUE))
 	
-	f <- function() file <- new( "H5File", "a", c("a", "a"))
+	f <- function() file <- h5file("a", c("a", "a"))
   expect_that(f(), throws_error("Error : length.*", perl = TRUE))
 	
-	f <- function() file <- new( "H5File", "path", "w--")
+	f <- function() file <- h5file("path", "w--")
 	expect_that(f(), throws_error("Parameter mode must be either"))
 })
 
 test_that("H5File-FileMode-param",{
-	f <- function() file <- new( "H5File", "path", "w--")
+	f <- function() file <- h5file("path", "w--")
 	expect_that(f(), throws_error("Parameter mode must be either"))
 })	
 
 test_that("H5File-FileMode-param-a",{
 	if(file.exists(fname)) file.remove(fname)
-	file <- new( "H5File", fname)
+	file <- h5file(fname)
 	expect_that(file, is_a("H5File"))
 	expect_that(file@mode, is_identical_to("a"))
 #  expect_that(file@location, is_identical_to(file.path(getwd(), fname)))
@@ -40,7 +40,7 @@ test_that("H5File-FileMode-param-a",{
 	
 	# Open existing file for append
 	expect_that(file.exists(fname), is_true())
-	file <- new( "H5File", fname, "a")
+	file <- h5file(fname, "a")
 	expect_that(file, is_a("H5File"))
 	existsGroup(file, "testgroup")
 	group2 <- createGroup(file, "testgroup2")
@@ -50,11 +50,11 @@ test_that("H5File-FileMode-param-a",{
 
 test_that("H5File-FileMode-param-w-",{
 	expect_that(file.exists(fname), is_true())
-	f <- function() file <- new( "H5File", fname, "w-")
+	f <- function() file <- h5file(fname, "w-")
 	expect_that(f(), throws_error("H5Fcreate failed"))
 	expect_that(file.remove(fname), is_true())
 	
-	file <- new( "H5File", fname, "w-")
+	file <- h5file(fname, "w-")
 	expect_that(file@mode, is_identical_to("w-"))
 	expect_that(basename(file@location), is_identical_to(fname))
 	group1 <- createGroup(file, "testgroup1")
@@ -65,7 +65,7 @@ test_that("H5File-FileMode-param-w-",{
 
 test_that("H5File-FileMode-param-w",{
   expect_that(file.exists(fname), is_true())
-  file <- new( "H5File", fname, "w")
+  file <- h5file(fname, "w")
   expect_that(file@mode, is_identical_to("w"))
   expect_that(basename(file@location), is_identical_to(fname))
   expect_that(existsGroup(file, "testgroup1"), is_false())
@@ -74,7 +74,7 @@ test_that("H5File-FileMode-param-w",{
   h5close(file)
 	
   expect_that(file.exists(fname), is_true())
-  file <- new( "H5File", fname, "w")
+  file <- h5file(fname, "w")
   expect_that(file@mode, is_identical_to("w"))
   expect_that(basename(file@location), is_identical_to(fname))
   expect_that(existsGroup(file, "testgroup1"), is_false())
@@ -84,7 +84,7 @@ test_that("H5File-FileMode-param-w",{
 			
 test_that("H5File-FileMode-param-r",{
 	expect_that(file.exists(fname), is_true())
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   expect_that(file@mode, is_identical_to("r"))
   expect_that(basename(file@location), is_identical_to(fname))
 	#expect_that(existsGroup(file, "testgroup1"), is_true())
@@ -92,22 +92,22 @@ test_that("H5File-FileMode-param-r",{
   
   file.remove(fname)
   expect_that(file.exists(fname), is_false())
-  f <- function() file <- new( "H5File", fname, "r")
+  f <- function() file <- h5file(fname, "r")
   expect_that(f(), throws_error("H5Fopen failed"))
 })
 
 test_that("H5File-FileMode-param-r+",{
   if(file.exists(fname)) file.remove(fname)
-  f <- function() file <- new( "H5File", fname, "r+")
+  f <- function() file <- h5file(fname, "r+")
   expect_that(f(), throws_error("H5Fopen failed"))
   
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group1 <- createGroup(file, "testgroup")
   expect_that(group1, is_a("H5Group"))
   h5close(group1)
   h5close(file)
   
-  file <- new( "H5File", fname, "r+")
+  file <- h5file(fname, "r+")
   expect_that(existsGroup(file, "testgroup"), is_true())
   expect_that(group1, is_a("H5Group"))
   h5close(group1)
@@ -118,7 +118,7 @@ test_that("H5File-FileMode-param-r+",{
 
 test_that("H5File-show",{
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname)
+  file <- h5file(fname)
   group1 <- createGroup(file, "testgroup")
   group2 <- createGroup(file, "testgroup2")
   group3 <- createGroup(group2, "testgroup3")

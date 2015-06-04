@@ -14,7 +14,7 @@ dat <- cbind(unclass(dates),
 
 if(file.exists(fname)) file.remove(fname)
 time.saveh5 <- system.time({   
-	file <- H5File(fname, "a")
+	file <- h5file(fname, "a")
 	file["/bigset", "bigset", 
         chunksize = c(nrow(dat), 1), 
         compression = 6] <- dat
@@ -33,7 +33,7 @@ benchmark.save <- cbind(time.saveh5, time.saverda)
 # elapsed           0.75        20.51
 
 time.subseth5 <- system.time({
-	  file <- H5File(fname, "r")
+	  file <- h5file(fname, "r")
       vec <- seq(1, nrow(dat), by = 60)
       dset <- file["/bigset", "bigset"]
 	  out.subseth5 <- dset[vec, 2]
@@ -43,7 +43,7 @@ time.subseth5 <- system.time({
 
 # read entire set
 time.subseth52 <- system.time({
-	  file <- H5File(fname, "r")
+	  file <- h5file(fname, "r")
       vec <- seq(1, nrow(dat), by = 60)
 	  dset <- file["/bigset", "bigset"]
       out.subseth52 <- dset[]
@@ -54,7 +54,7 @@ time.subseth52 <- system.time({
 
 # use hyperslabs
 time.subseth53 <- system.time({
-	  file <- H5File(fname, "r")
+	  file <- h5file(fname, "r")
       vec <- seq(1, nrow(dat), by = 60)
       dset <- file["/bigset", "bigset"]
       out.subseth53 <- readData(dset, 

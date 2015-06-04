@@ -12,7 +12,7 @@ test_that("DataSet-Vector",{
   testvec_c[40] <- paste0(testvec_c[1], testvec_c[1])
   
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testvec_n", testvec_n)
   h5close(dset1)
@@ -27,7 +27,7 @@ test_that("DataSet-Vector",{
   h5close(file)
   
   ### Check if written data equals input data
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset11 <- openDataSet(group, "testvec_n")
   testvec_n_read <- readDataSet(dset11)
@@ -53,7 +53,7 @@ test_that("DataSet-Vector-boundaries",{
   
   if(file.exists(fname)) file.remove(fname)
   
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   
 # TODO: check if code below should work
 #  testvec_i_0 <- integer(0)
@@ -79,7 +79,7 @@ test_that("DataSet-Vector-boundaries",{
   h5close(file)
   
   ### Check if written data equals input data
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   
 #  dset0 <- openDataSet(file, "testvec_i_0")
 #  testvec_i_0_read <- readDataSet(dset0)
@@ -118,7 +118,7 @@ test_that("datatypes-Matrix",{
   
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
@@ -133,7 +133,7 @@ test_that("datatypes-Matrix",{
   h5close(file)
   
   ### Check if written data equals input data
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset11 <- openDataSet(group, "testmat_n")
   testmat_n_read <- readDataSet(dset11)
@@ -170,7 +170,7 @@ test_that("datatypes-Array",{
   
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
-  file <- new( "H5File", fname, "a")
+  file <- h5file(fname, "a")
   group <- createGroup(file, "/testgroup")
   dset1 <- createDataSet(group, "testmat_n", testmat_n)
   h5close(dset1)
@@ -186,7 +186,7 @@ test_that("datatypes-Array",{
   
   
   ### Check if written data equals input data
-  file <- new( "H5File", fname, "r")
+  file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
   dset11 <- openDataSet(group, "testmat_n")
   testmat_n_read <- readDataSet(dset11)
@@ -212,7 +212,7 @@ test_that("datatypes-Array-BugWithChunksize",{
 	testmat_n <- array(rnorm(347000), c(1, 1, 1, 347000))
 	fname <- "test.h5"
 	if(file.exists(fname)) file.remove(fname)
-	file <- new( "H5File", fname, "a")
+	file <- h5file(fname, "a")
 	group <- createGroup(file, "DataSet")
 	dset1 <- createDataSet(group, "testmat_n", testmat_n, chunksize = c(1, 1, 1, 347000))
 	h5close(dset1)

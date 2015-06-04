@@ -6,7 +6,7 @@
 #' base class.
 #' 
 #' HDF5 files can be opened or generated using the \code{H5File()} function and
-#' a specified file access mode. \code{H5File()} returns a \code{H5File} object
+#' a specified file access mode. \code{h5file()} returns a \code{H5File} object
 #' which can be used to access \code{\link{H5Group}}s and \code{\link{DataSet}}s 
 #' using subsetting parameters or functions accordingly.
 #' 
@@ -19,7 +19,7 @@
 #' @param .Object H5File; S4 object of class \code{H5File};
 #' @param name character; File path pointing to H5File.
 #' @param mode mode used for file.
-#' The following modes are supported by H5File:
+#' The following modes are supported by h5file:
 #' \describe{
 #'   \item{r}{Read only, file must exist.}
 #'   \item{r+}{Read/write, file must exist.}
@@ -29,10 +29,10 @@
 #' }
 #' @examples
 #' # Create new file using mode 'a'
-#' file <- H5File("test.h5")
+#' file <- h5file("test.h5")
 #' h5close(file)
 #' # Open File for read-only
-#' file <- H5File("test.h5", "r")
+#' file <- h5file("test.h5", "r")
 #' h5close(file)
 #' file.remove("test.h5")
 #' @rdname H5File
@@ -63,7 +63,14 @@ function(.Object, name, mode = "a") {
 
 #' @rdname H5File
 #' @export
+h5file <- function(name, mode = "a") {
+  new("H5File", name, mode)
+}
+
+#' @rdname H5File
+#' @export
 H5File <- function(name, mode = "a") {
+  warning("This function is deprecated, use h5file instead")
   new("H5File", name, mode)
 }
 
