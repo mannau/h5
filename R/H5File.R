@@ -54,6 +54,8 @@ function(.Object, name, mode = "a") {
 	if (!mode %in% c("r", "r+", "w", "w-", "a")) {
 		stop(sprintf("Parameter mode must be either 'r', 'r+', 'w', 'w-' or 'a' - '%s' was given", mode))
 	}
+  
+  name <- path.expand(name)
 					
 	.Object@pointer <- OpenFile(name, mode)
   .Object@location <- file_path_as_absolute(name)
