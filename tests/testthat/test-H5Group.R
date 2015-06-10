@@ -91,4 +91,40 @@ test_that("H5Group-existsGroup",{
   h5close(file)
 })
 
+test_that("DataSet-list-groups",{	
+    if(file.exists(fname)) file.remove(fname)
+    file <- h5file(fname, "a")
+    
+    f <- function() list.groups(file, path = "a/be/bu")
+    expect_that(f(), throws_error("Specified path does not exist."))
+    
+    expect_that(list.groups(file), is_identical_to(character(0)))
+    
+    file["testgroup", "testset"] <- 1:3
+    expect_that(list.groups(file), is_identical_to(c("/testgroup")))
+    expect_that(list.groups(file, recursive = FALSE), is_identical_to(c("/testgroup")))
+    expect_that(list.groups(file, full.names = FALSE), is_identical_to(c("testgroup")))
+    
+    
+    file["testgroup/testgroup1", "testset1"] <- 1:3
+    file["testgroup/testgroup2", "testset2"] <- 1:3
+    file["testgroup3/testgroup3", "testset3"] <- 1:3
+    group <- file["testgroupN"]
+    h5close(group)
+    
+    ex <- c("/testgroup", "/testgroup3", "/testgroupN", "/testgroup/testgroup1", 
+        "/testgroup/testgroup2", "/testgroup3/testgroup3")
+    expect_that(list.groups(file), is_identical_to(ex))
+    
+    ex <- c("testgroup", "testgroup1", "testgroup2", "testgroup3", "testgroup3", "testgroupN")
+    expect_that(list.groups(file, full.names = FALSE), is_identical_to(ex))
+    
+    ex <- c("/testgroup", "/testgroup3", "/testgroupN")
+    expect_that(list.groups(file, recursive = FALSE), is_identical_to(ex))
+
+    ex <- c("/testgroup/testgroup1", "/testgroup/testgroup2")
+    expect_that(list.groups(file["testgroup"], full.names = TRUE), is_identical_to(ex))
+
+    h5close(file)
+  })  
 

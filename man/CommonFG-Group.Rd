@@ -9,6 +9,8 @@
 \alias{existsGroup,CommonFG,character-method}
 \alias{getH5Group}
 \alias{getH5Group,CommonFG,character-method}
+\alias{list.groups}
+\alias{list.groups,CommonFG-method}
 \alias{openGroup}
 \alias{openGroup,CommonFG,character-method}
 \title{Functions to Create/Open Groups in \code{\link{CommonFG}} objects}
@@ -28,11 +30,24 @@ existsGroup(.Object, groupname)
 getH5Group(.Object, groupname)
 
 \S4method{getH5Group}{CommonFG,character}(.Object, groupname)
+
+list.groups(.Object, path = "/", full.names = TRUE, recursive = TRUE)
+
+\S4method{list.groups}{CommonFG}(.Object, path = "/", full.names = TRUE,
+  recursive = TRUE)
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}
 
 \item{groupname}{character; HDF5 Group name to be used.}
+
+\item{path}{character; Relative path to .Object.}
+
+\item{full.names}{character; Specify if absolute DataSet path names should be
+returned.}
+
+\item{recursive}{logical; Specify DatSets should be retrieved recursively
+from .Object.}
 }
 \description{
 Although \code{\link{H5Group}} objects can implicitly be created using

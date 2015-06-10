@@ -406,3 +406,28 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// GetGroupNames
+CharacterVector GetGroupNames(XPtr<CommonFG> file, string path, bool recursive);
+RcppExport SEXP h5_GetGroupNames(SEXP fileSEXP, SEXP pathSEXP, SEXP recursiveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type path(pathSEXP);
+    Rcpp::traits::input_parameter< bool >::type recursive(recursiveSEXP);
+    __result = Rcpp::wrap(GetGroupNames(file, path, recursive));
+    return __result;
+END_RCPP
+}
+// GetDataSetNames
+CharacterVector GetDataSetNames(XPtr<CommonFG> file, string path);
+RcppExport SEXP h5_GetDataSetNames(SEXP fileSEXP, SEXP pathSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type path(pathSEXP);
+    __result = Rcpp::wrap(GetDataSetNames(file, path));
+    return __result;
+END_RCPP
+}

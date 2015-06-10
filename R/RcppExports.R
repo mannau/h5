@@ -133,3 +133,11 @@ GetFGInfo <- function(file, path) {
     invisible(.Call('h5_GetFGInfo', PACKAGE = 'h5', file, path))
 }
 
+GetGroupNames <- function(file, path, recursive) {
+    .Call('h5_GetGroupNames', PACKAGE = 'h5', file, path, recursive)
+}
+
+GetDataSetNames <- function(file, path) {
+    .Call('h5_GetDataSetNames', PACKAGE = 'h5', file, path)
+}
+

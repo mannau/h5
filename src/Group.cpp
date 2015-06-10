@@ -61,28 +61,89 @@ void GetFGInfo(XPtr<CommonFG> file, string path) {
 	file->iterateElems(path, NULL, file_info, NULL);
 }
 
-herr_t file_info(hid_t loc_id, const char *name, void *opdata)
-{
+herr_t file_info(hid_t loc_id, const char *name, void *opdata) {
     H5G_stat_t statbuf;
-
-    /*
-     * Get type of the object and display its name and type.
-     * The name of the object is passed to this function by
-     * the Library. Some magic :-)
-     */
     H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
     switch (statbuf.type) {
-    case H5G_GROUP:
-    	Rprintf("  + %s\n", name);
-         break;
-    case H5G_DATASET:
-    	Rprintf("  D %s\n", name);
-         break;
-    case H5G_TYPE:
-    	Rprintf("  T %s\n", name);
-         break;
-    default:
-    	Rprintf("<ERROR: Unable to identify an object>\n");
+		case H5G_GROUP:
+			Rprintf("  + %s\n", name);
+			 break;
+		case H5G_DATASET:
+			Rprintf("  D %s\n", name);
+			 break;
+		case H5G_TYPE:
+			Rprintf("  T %s\n", name);
+			 break;
+		default:
+			Rprintf("<ERROR: Unable to identify an object>\n");
     }
     return 0;
- }
+}
+
+// [[Rcpp::export]]
+CharacterVector GetGroupNames(XPtr<CommonFG> file, string path, bool recursive) {
+	try {
+		CharacterVector(out);
+		if(recursive) {
+			H5Giterate(file->getLocId(), path.c_str(), NULL, group_info_recursive, &out);
+		} else{
+			H5Giterate(file->getLocId(), path.c_str(), NULL, group_info, &out);
+		}
+		return out;
+	} catch (Exception& error) {
+	     string msg = error.getDetailMsg() + " in " + error.getFuncName();
+	     throw Rcpp::exception(msg.c_str());
+	}
+}
+
+herr_t group_info(hid_t loc_id, const char *name, void *opdata) {
+	try {
+		H5G_stat_t statbuf;
+		H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
+		if (statbuf.type == H5G_GROUP) {
+			((CharacterVector *) opdata)->push_back(name);
+		}
+		return 0;
+	 } catch (Exception& error) {
+		 return 1;
+	 }
+}
+
+herr_t group_info_recursive(hid_t loc_id, const char *name, void *opdata) {
+	try {
+		H5G_stat_t statbuf;
+		H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
+		if (statbuf.type == H5G_GROUP) {
+			((CharacterVector *) opdata)->push_back(name);
+			H5Giterate(loc_id, name, NULL, group_info_recursive, opdata);
+		}
+		return 0;
+	 } catch (Exception& error) {
+		 return 1;
+	 }
+}
+
+// [[Rcpp::export]]
+CharacterVector GetDataSetNames(XPtr<CommonFG> file, string path) {
+	try {
+		CharacterVector(out);
+		H5Giterate(file->getLocId(), path.c_str(), NULL, dset_info, &out);
+		return out;
+	} catch (Exception& error) {
+		 string msg = error.getDetailMsg() + " in " + error.getFuncName();
+		 throw Rcpp::exception(msg.c_str());
+	}
+}
+
+herr_t dset_info(hid_t loc_id, const char *name, void *opdata) {
+	try {
+		H5G_stat_t statbuf;
+		H5Gget_objinfo(loc_id, name, FALSE, &statbuf);
+		if (statbuf.type == H5G_DATASET) {
+			((CharacterVector *) opdata)->push_back(name);
+		}
+		return 0;
+	 } catch (Exception& error) {
+		 return 1;
+	 }
+}

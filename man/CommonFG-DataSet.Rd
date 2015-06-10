@@ -6,6 +6,8 @@
 \alias{createDataSet}
 \alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
 \alias{createDataSet,CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY-method}
+\alias{list.datasets}
+\alias{list.datasets,CommonFG-method}
 \alias{openDataSet}
 \alias{openDataSet,CommonFG,character-method}
 \title{Functions to Create/Open DataSets in \code{\link{CommonFG}} objects}
@@ -25,6 +27,11 @@ createDataSet(.Object, datasetname, data, type, dimensions,
 openDataSet(.Object, datasetname, type)
 
 \S4method{openDataSet}{CommonFG,character}(.Object, datasetname, type)
+
+list.datasets(.Object, path = "/", full.names = TRUE, recursive = TRUE)
+
+\S4method{list.datasets}{CommonFG}(.Object, path = "/", full.names = TRUE,
+  recursive = TRUE)
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}
@@ -54,6 +61,14 @@ mapped to 'unlimited'.}
 
 \item{size}{integer; Size of data type to be used, only relevant for character
 strings.}
+
+\item{path}{character; Relative path to .Object.}
+
+\item{full.names}{character; Specify if absolute DataSet path names should be
+returned.}
+
+\item{recursive}{logical; Specify DatSets should be retrieved recursively
+from .Object.}
 }
 \description{
 Although \code{\link{DataSet}} objects can implicitly be created using

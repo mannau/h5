@@ -23,7 +23,12 @@
 #' @param compression integer; Default GZIP compression level to be used, from  
 #' 0 (no compression) to 9 (maximum compression), defaults to \code{4}.         
 #' @param size integer; Size of data type to be used, only relevant for character   
-#' strings.                                                                     
+#' strings. 
+#' @param path character; Relative path to .Object.
+#' @param full.names character; Specify if absolute DataSet path names should be
+#' returned.
+#' @param recursive logical; Specify DatSets should be retrieved recursively
+#' from .Object.                                                       
 #' @name CommonFG-DataSet                                                         
 #' @rdname CommonFG-DataSet                                                             
 #' @include CommonFG.R
@@ -141,4 +146,49 @@ setMethod("openDataSet", signature(.Object="CommonFG",
     function(.Object, datasetname, type) {
       dsetptr <- OpenDataset(.Object@pointer, datasetname)
       dset <- new("DataSet", dsetptr, datasetname, GetDataSetType(dsetptr))
+    })
+
+#' @rdname CommonFG-DataSet
+#' @export
+setGeneric("list.datasets", function(.Object, path = "/", 
+        full.names = TRUE, recursive = TRUE)
+      standardGeneric("list.datasets")
+)
+
+#' @rdname CommonFG-DataSet
+#' @export
+setMethod("list.datasets", signature(.Object="CommonFG"), 
+    function(.Object, path, full.names, recursive) {
+      if (!existsGroup(.Object, path)) {
+        stop("Specified path does not exist")
+      }
+      # Set full path
+      path.full <- path
+      if(inherits(.Object, "H5Group")) {
+        path.full <- paste(path.full, .Object@location, sep = "/")
+        path.full <- gsub("/+", "/", path.full)
+      }
+      
+      groups <- path.full
+      if(recursive) {
+        groups <- c(path.full, list.groups(.Object, path, TRUE, recursive = recursive))
+      }
+      
+      dsets <- lapply(groups, function(x) GetDataSetNames(.Object@pointer, x))
+      dsetlen <- sapply(dsets, length)
+      # Filter for groups which contain datasets
+      groups <- groups[dsetlen > 0]
+      dsets <- dsets[dsetlen > 0]
+      
+      if(length(dsets) > 0) {
+        if(full.names) {
+          dsets <- lapply(1:length(groups), 
+                  function(i) paste(groups[i], dsets[[i]], sep = "/"))
+        }
+        dsets <- unlist(dsets)
+        dsets <- gsub("/+", "/", dsets) # just to make sure...
+      } else {
+        dsets <- character(0)
+      }
+      dsets
     })
