@@ -1,6 +1,5 @@
 #include <H5Cpp.h>
 #include <Rcpp.h>
-#include "Helpers.h"
 
 #ifndef __Dataspace_h__
 #define __Dataspace_h__

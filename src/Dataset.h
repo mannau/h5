@@ -1,6 +1,5 @@
 #include <H5Cpp.h>
 #include <Rcpp.h>
-#include "Helpers.h"
 
 #ifndef __Dataset_h__
 #define __Dataset_h__

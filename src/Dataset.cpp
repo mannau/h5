@@ -1,4 +1,5 @@
 #include "Dataset.h"
+#include "Helpers.h"
 
 using namespace H5;
 using namespace Rcpp;
@@ -13,7 +14,9 @@ bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat,
     size_t stsize = dataset->getDataType().getSize();
 
     const void *buf = ConvertBuffer(mat, datatype, stsize);
-    dataset->write(buf, GetDataType(datatype, stsize), *memspace, *dataspace);
+    DataType dtype = GetDataType(datatype, stsize);
+    dataset->write(buf, dtype, *memspace, *dataspace);
+    dtype.close();
     return TRUE;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
@@ -76,8 +79,22 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
         data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
       }
       dataset->read(INTEGER(data), dtype, *memspace, *dataspace);
-    } else if (tchar == 'c') {
-       size_t stsize = dtype.getSize();
+    } else if (tchar == 'l') {
+    	hsize_t n = dataspace->getSelectNpoints();
+        if (ndim == 1) {
+          data = PROTECT(Rf_allocVector(LGLSXP, count[0]));
+        } else if (ndim == 2) {
+          data = PROTECT(Rf_allocMatrix(LGLSXP, count[1], count[0]));
+        } else {//(ndim > 2)
+          data = PROTECT(Rf_allocArray(LGLSXP, (IntegerVector)count_rev));
+        }
+        bool *boolbuf = (bool *)R_alloc(n, sizeof(bool));
+        dataset->read(boolbuf, dtype, *memspace, *dataspace);
+        for(unsigned int i = 0; i < n; i++) {
+		  LOGICAL(data)[i] = boolbuf[i];
+		}
+     } else if (tchar == 'c') {
+        size_t stsize = dtype.getSize();
         hsize_t n = dataspace->getSelectNpoints();
         if (ndim == 1) {
          data = PROTECT(Rf_allocVector(STRSXP, count[0]));
@@ -96,10 +113,9 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
     } else {
       throw Rcpp::exception("Datatype unknown.");
     }
-
-    UNPROTECT(1);
     memspace->close();
     delete memspace;
+    UNPROTECT(1);
     //dataspace.close();
     return data;
   } catch(Exception& error) {

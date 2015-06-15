@@ -1,5 +1,6 @@
 #include "Dataspace.h"
 #include "Dataset.h"
+#include "Helpers.h"
 
 using namespace H5;
 using namespace Rcpp;

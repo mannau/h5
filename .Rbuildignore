@@ -7,6 +7,8 @@ src/*.so
 src/*.dll
 src/symbols.rds
 .settings
+src/.settings
+src/.cproject
 h5.Rcheck
 README.md
 configure.win.cran

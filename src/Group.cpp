@@ -57,7 +57,6 @@ bool ExistsGroup(XPtr<CommonFG> file, string groupname) {
 
 // [[Rcpp::export]]
 void GetFGInfo(XPtr<CommonFG> file, string path) {
-	//Rcout << path << endl;
 	file->iterateElems(path, NULL, file_info, NULL);
 }
 

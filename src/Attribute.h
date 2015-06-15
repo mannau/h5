@@ -1,6 +1,5 @@
 #include <H5Cpp.h>
 #include <Rcpp.h>
-#include "Helpers.h"
 
 #ifndef __Attribute_h__
 #define __Attribute_h__

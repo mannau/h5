@@ -4,7 +4,7 @@
 #ifndef __Helpers_h__
 #define __Helpers_h__
 // Dataset functions
-H5::PredType GetDataType(const char datatype, int size);
+H5::DataType GetDataType(const char datatype, int size);
 char GetTypechar(const H5::DataType &dtype);
 void *ConvertBuffer(const SEXP &mat, char datatype, int stsize);
 H5S_seloper_t GetOperator(std::string opstring);

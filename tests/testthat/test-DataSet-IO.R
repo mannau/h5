@@ -6,7 +6,6 @@ test_that("DataSet-Vector",{
   testvec_n <- rnorm(120)
   testvec_i <- as.integer(runif(120)*10000)
   testvec_l <- as.logical(round(runif(120)))
-  testvec_l <- as.logical(round(runif(120)))
   testvec_c <-rep(paste0(LETTERS[1:3], rev(LETTERS)[1:3]), 120/3)
   testvec_c[1] <- paste0(testvec_c[1], testvec_c[1])
   testvec_c[40] <- paste0(testvec_c[1], testvec_c[1])
@@ -32,8 +31,12 @@ test_that("DataSet-Vector",{
   dset11 <- openDataSet(group, "testvec_n")
   testvec_n_read <- readDataSet(dset11)
   h5close(dset11)
-  
   expect_that(testvec_n, is_identical_to(testvec_n_read))
+  
+  dset12 <- openDataSet(group, "testvec_l")
+  testvec_l_read <- readDataSet(dset12)
+  h5close(dset12)
+  expect_that(testvec_l, is_identical_to(testvec_l_read))
   
   dset13 <- openDataSet(group, "testvec_i")
   testvec_i_read <- readDataSet(dset13)
@@ -44,10 +47,13 @@ test_that("DataSet-Vector",{
   testvec_c_read <- readDataSet(dset14)
   h5close(dset14)
   expect_that(testvec_c, is_identical_to(testvec_c_read))
+
   h5close(group)
   h5close(file)		
   file.remove(fname)
 })
+
+context("DataSet-Vector-boundaries")
 
 test_that("DataSet-Vector-boundaries",{
   
@@ -111,7 +117,6 @@ test_that("datatypes-Matrix",{
   testmat_n <- matrix(rnorm(120), ncol = 3)
   testmat_i <- matrix(as.integer(runif(120)*10000), ncol = 3)
   testmat_l <- matrix(as.logical(round(runif(120))), ncol = 3)
-  testmat_l <- matrix(as.logical(round(runif(120))), ncol = 3)
   testmat_c <- matrix(rep(paste0(LETTERS[1:3], rev(LETTERS)[1:3]), 120/3), ncol = 3)
   testmat_c[1,1] <- paste0(testmat_c[1,1], testmat_c[1,1])
   testmat_c[40,2] <- paste0(testmat_c[1,1], testmat_c[1,1])
@@ -135,10 +140,16 @@ test_that("datatypes-Matrix",{
   ### Check if written data equals input data
   file <- h5file(fname, "r")
   group <- openGroup(file, "/testgroup")
+  
   dset11 <- openDataSet(group, "testmat_n")
   testmat_n_read <- readDataSet(dset11)
   h5close(dset11)
   expect_that(testmat_n, is_identical_to(testmat_n_read))
+  
+  dset12 <- openDataSet(group, "testmat_l", "character")
+  testmat_l_read <- readDataSet(dset12)
+  h5close(dset12)
+  expect_that(testmat_l, is_identical_to(testmat_l_read))
   
   dset13 <- openDataSet(group, "testmat_i", "integer")
   testmat_i_read <- readDataSet(dset13)
@@ -148,8 +159,8 @@ test_that("datatypes-Matrix",{
   dset14 <- openDataSet(group, "testmat_c", "character")
   testmat_c_read <- readDataSet(dset14)
   h5close(dset14)
-  
   expect_that(testmat_c, is_identical_to(testmat_c_read))
+  
   h5close(group)
   h5close(file)
   
@@ -192,6 +203,11 @@ test_that("datatypes-Array",{
   testmat_n_read <- readDataSet(dset11)
   h5close(dset11)
   expect_that(testmat_n, is_identical_to(testmat_n_read))
+  
+  dset12 <- openDataSet(group, "testmat_l")
+  testmat_l_read <- readDataSet(dset12)
+  h5close(dset12)
+  expect_that(testmat_l, is_identical_to(testmat_l_read))
   
   dset13 <- openDataSet(group, "testmat_i")
   testmat_i_read <- readDataSet(dset13)

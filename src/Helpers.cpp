@@ -4,11 +4,19 @@ using namespace H5;
 using namespace Rcpp;
 using namespace std;
 
-PredType GetDataType(const char datatype, int size = -1) {
+#define CPTR(VAR,CONST) ((VAR)=(CONST),&(VAR))
+
+DataType GetDataType(const char datatype, int size = -1) {
   switch(datatype){
     case 'd': return PredType::NATIVE_DOUBLE;
     case 'i': return PredType::NATIVE_INT32;
-    case 'l': return PredType::NATIVE_INT32;
+    case 'l': {
+    	bool val;
+    	EnumType boolenumtype = EnumType(sizeof(bool));
+    	boolenumtype.insert("FALSE", CPTR(val, FALSE));
+    	boolenumtype.insert("TRUE", CPTR(val, TRUE));
+    	return boolenumtype;
+    }
     case 'c': {
      if (size < 0) {
        throw Rcpp::exception("Parameter size has to be defined");
@@ -28,6 +36,8 @@ char GetTypechar(const DataType &dtype) {
     return 'i';
   } else if (dtype == PredType::C_S1 || dtype.getClass() == H5T_STRING) {
     return 'c';
+  } else if (dtype == GetDataType('l')) {
+	return 'l';
   } else {
     throw Rcpp::exception("Datatype unknown.");
   }
@@ -56,9 +66,17 @@ void *ConvertBuffer(const SEXP &mat, char datatype, int stsize) {
   switch(datatype){
        case 'd': return REAL(mat);
        case 'i': return INTEGER(mat);
-       case 'l': return LOGICAL(mat);
+       case 'l': {
+    	   //int logsize = sizeof(LGLSXP);
+           bool *boolbuf = (bool *)R_alloc(LENGTH(mat), sizeof(bool));
+           int z=0;
+           for (int i = 0; i < LENGTH(mat); i++) {
+        	   boolbuf[z++] = LOGICAL(mat)[i];
+           }
+	   return boolbuf;
+       }; break;
        case 'c': {
-         char * strbuf = (char *)R_alloc(LENGTH(mat), stsize);
+         char *strbuf = (char *)R_alloc(LENGTH(mat), stsize);
          int z=0;
          int j;
          for (int i=0; i < LENGTH(mat); i++) {

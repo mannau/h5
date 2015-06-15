@@ -1,4 +1,5 @@
 #include "Attribute.h"
+#include "Helpers.h"
 
 using namespace Rcpp;
 using namespace H5;
@@ -27,7 +28,7 @@ XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 	vector<hsize_t> dims(dimensions.begin(), dimensions.end());
 	DataSpace dataspace (dimensions.length(), &dims[0]);
 
-	PredType dtype = GetDataType(datatype, size);
+	DataType dtype = GetDataType(datatype, size);
 
 	hid_t attrid = H5Acreate(id, attributename.c_str(), dtype.getId(),
 			dataspace.getId(), H5P_DEFAULT, H5P_DEFAULT);
