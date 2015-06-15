@@ -18,7 +18,7 @@ if test -z "${H5CPP}"; then
   	Please install the hdf5 library with C++ interface enabled (--enable-cxx=yes).
   	The required HDF5 library files can be installed as follows:
   	- Debian-based (e.g Ubuntu): 'sudo apt-get install libhdf5-dev'
-        - Old Debian-based: 'sudo apt-get install libhdf5-serial-dev'
+        - Old Debian-based (squeeze, precise): 'sudo apt-get install libhdf5-serial-dev'
         - OS X using Homebrew: 'brew install homebrew/science/hdf5 --enable-cxx'
         - RPM-based (e.g Fedora): 'sudo yum install hdf5-devel'])
 fi

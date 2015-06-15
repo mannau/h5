@@ -9,7 +9,7 @@ library including its C++ API and header files.
 	With Debian-based Linux systems the following commands can be used to 
 	install the dependencies:
 	$ sudo apt-get install libhdf5-dev
-	On older platforms it might be required to install using
+	On older platforms (squeeze, precise) it might be required to install using
 	$ sudo apt-get install libhdf5-serial-dev
 1.2 RPM-BASED, e.g. FEDORA
 	For RPM-BASED platforms the following command can be used:
