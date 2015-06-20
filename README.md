@@ -13,7 +13,7 @@ Using **devtools** you can easily install the latest development version of **h5
 library(devtools)
 install_github("mannau/h5")
 ```
-Please note that this version has been tested with the current hdf5 library 1.8.14 (and 1.8.13 for Mac) - you should therefore install the most current hdf5 library including its C++ API for your platform. This package already ships the library for windows operating systems. For MacOSX and Debian-based Linux systems the library files have to be installed using the commands as described below.
+Please note that this version has been tested with the current hdf5 library 1.8.14 (and 1.8.13 for Mac) - you should therefore install the most current hdf5 library including its C++ API for your platform. This package already ships the library for windows operating systems through (h5-libwin)[https://github.com/mannau/h5-libwin]. For MacOSX and Debian-based Linux systems the library files have to be installed using the commands as described below.
 
 ### MacOSX
 Using MacOSX and Homebrew (http://brew.sh) you can use the following command to install HDF5 library dependencies and headers:
@@ -28,16 +28,45 @@ dependencies:
 sudo apt-get install libhdf5-dev
 ```
 
+For older versions (Debian Squeeze, Ubuntu precise) it is required to install
+```shell
+sudo apt-get install libhdf5-serial-dev
+```
+
+Since **h5** requires the 'new' v18 API version it might be necessary to install
+the dependency libhdf5-serial-dev through the 
+[ppa:marutter/rrutter](https://launchpad.net/~marutter/+archive/ubuntu/rrutter) 
+repository (Ubuntu) or soon directly the **h5** package via 
+[cran2deb](http://debian-r.debian.net) (Debian).
+
 ## Usage
 
+Old style:
 ```python
 library(h5)
 testmat <- matrix(rnorm(120), ncol = 3)
 fname <- "test.h5"
-file <- new( "H5File", fname, "a")
+file <- h5file(fname, "a")
 group <- createGroup(file, "/testgroup")
 dset <- createDataSet(group, "testmat1", testmat)
 h5close(dset)
 h5close(group)
 h5close(file)
 ```
+
+or a bit easier using subsetting operators:
+```
+library(h5)
+testmat <- matrix(rnorm(120), ncol = 3)
+fname <- "test.h5"
+file <- h5file(fname, "a")
+file["/testgroup", "testmat1"] <- testmat
+# extract first 3 rows from file
+dset <- file["/testgroup", "testmat1"][1:3, ]
+h5close(file)
+```
+
+
+
+
+
