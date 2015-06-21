@@ -1,0 +1,5 @@
+site_name: h5
+pages:
+- Home: index.md
+- Quick Start: quickstart.md
+theme: readthedocs

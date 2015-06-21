@@ -3,6 +3,9 @@
 
 **h5** provides an interface to the HDF5 API through S4-objects. It supports fast storage and retrieval of R-objects like vectors, matrices and arrays to binary files in a language independent format. The package can therefore be used as an alternative to R's save/load mechanism. Since h5 is able to access only subsets of stored data it can handle potentially big(ger than memory) data sets.
 
+## Documentation
+Further documentation is available at www.predictingdaemon.com/h5.
+
 ## Notes
 This library is has already been released on [CRAN](http://cran.r-project.org/web/packages/h5/index.html). 
 
@@ -65,6 +68,7 @@ file["/testgroup", "testmat1"] <- testmat
 dset <- file["/testgroup", "testmat1"][1:3, ]
 h5close(file)
 ```
+
 
 
 
