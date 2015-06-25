@@ -1,4 +1,6 @@
 .travis.yml
+mkdocs.yml
+docs
 travis-tool.sh
 Makefile
 src/*.o
