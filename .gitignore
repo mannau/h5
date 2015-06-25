@@ -12,3 +12,5 @@ configure.win.temp
 src/Makevars.win.temp
 src/.settings
 src/.cproject
+src/.project
+src/.externalToolBuilders
