@@ -100,21 +100,21 @@ test_that("DataSet-Select-Subset-read-string", {
           
       if(file.exists(fname)) file.remove(fname)
       file <- h5file(fname)
-      file["test", "testvec"] <- LETTERS[1:9]
-      file["test/testmat", "testmat"] <- mat
-      file["test", "testarray"] <- arr
+      file["test/testvec"] <- LETTERS[1:9]
+      file["test/testmat/testmat"] <- mat
+      file["test/testarray"] <- arr
       h5close(file)
       
       file <- h5file(fname, "r")
-      testvec <- file["test", "testvec"]
+      testvec <- file["test/testvec"]
       expect_that(testvec[1:3], is_identical_to(LETTERS[1:3]))
       h5close(testvec)
       
-      testmat <- file["test/testmat", "testmat"]
+      testmat <- file["test/testmat/testmat"]
       expect_that(testmat[1:2, ], is_identical_to(mat[1:2, ]))
       h5close(testmat)
       
-      testarray <- file["test", "testarray"]
+      testarray <- file["test/testarray"]
       expect_that(testarray[], is_identical_to(arr))
       h5close(testarray)
       h5close(file)

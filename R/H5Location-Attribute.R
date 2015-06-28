@@ -19,8 +19,8 @@
 #' group <- file["testgroup"]
 #' h5attr(group, "groupattrib") <- matrix(1:9, nrow = 3)
 #' h5attr(group, "groupattrib")
-#' group[, "testdataset"] <- 1:10
-#' dset <- group[, "testdataset"]
+#' group["testdataset"] <- 1:10
+#' dset <- group["testdataset"]
 #' h5attr(dset, "dsetattrib") <- LETTERS[1:10]
 #' h5close(dset)
 #' h5close(group)

@@ -89,15 +89,15 @@ test_that("DataSet-list-dataset",{
   
   expect_that(list.datasets(file), is_identical_to(character(0)))
   
-  file["testgroup", "testset"] <- 1:3
+  file["testgroup/testset"] <- 1:3
   expect_that(list.datasets(file), is_identical_to(c("/testgroup/testset")))
   expect_that(list.datasets(file["/testgroup"], recursive = FALSE), 
       is_identical_to(c("/testgroup/testset")))
   expect_that(list.datasets(file, full.names = FALSE), is_identical_to(c("testset")))
 
-  file["testgroup/testgroup1", "testset1"] <- 1:3
-  file["testgroup/testgroup2", "testset2"] <- 1:3
-  file["testgroup3/testgroup3", "testset3"] <- 1:3
+  file["testgroup/testgroup1/testset1"] <- 1:3
+  file["testgroup/testgroup2/testset2"] <- 1:3
+  file["testgroup3/testgroup3/testset3"] <- 1:3
   group <- file["testgroupN"]
   h5close(group)
   
@@ -122,12 +122,12 @@ test_that("DataSet-list-dataset",{
   if(file.exists(fname)) file.remove(fname)
   file <- h5file(fname, "a")
   
-  file["ABC", "1A"] <- 1:3
-  file["ABC", "1B"] <- 1:3
-  file["ABC", "1C"] <- 1:3
-  file["ABC", "1D"] <- 1:3
-  file["ABC", "1E"] <- 1:3
-  file["ABC", "1F"] <- 1:3
+  file["ABC/1A"] <- 1:3
+  file["ABC/1B"] <- 1:3
+  file["ABC/1C"] <- 1:3
+  file["ABC/1D"] <- 1:3
+  file["ABC/1E"] <- 1:3
+  file["ABC/1F"] <- 1:3
   
   ex <- c("/ABC/1A", "/ABC/1B", "/ABC/1C", "/ABC/1D", "/ABC/1E", "/ABC/1F")
   expect_that(list.datasets(file), is_identical_to(ex))

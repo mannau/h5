@@ -4,25 +4,16 @@
 \name{CommonFG}
 \alias{CommonFG}
 \alias{CommonFG-class}
-\alias{[,CommonFG,character,character,ANY-method}
-\alias{[,CommonFG,character,missing,missing-method}
-\alias{[,CommonFG,missing,character,ANY-method}
-\alias{[<-,CommonFG,character,character-method}
-\alias{[<-,CommonFG,missing,character-method}
+\alias{[,CommonFG,character,ANY-method}
+\alias{[<-,CommonFG,character,ANY-method}
 \alias{h5close}
 \title{The CommonFG Class}
 \usage{
 h5close(.Object)
 
-\S4method{[}{CommonFG,character,character,ANY}(x, i, j, ..., drop = TRUE)
+\S4method{[}{CommonFG,character,ANY}(x, i, j, ..., drop = TRUE)
 
-\S4method{[}{CommonFG,character,missing,missing}(x, i, j, ..., drop = TRUE)
-
-\S4method{[}{CommonFG,character,character}(x, i, j, ...) <- value
-
-\S4method{[}{CommonFG,missing,character,ANY}(x, i, j, ..., drop = TRUE)
-
-\S4method{[}{CommonFG,missing,character}(x, i, j, ...) <- value
+\S4method{[}{CommonFG,character,ANY}(x, i, j, ...) <- value
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}
@@ -67,13 +58,13 @@ end using \code{h5close}.
 \examples{
 file <- h5file("test.h5")
 # Create new DataSet 'testset' in H5Group 'testgroup'
-file["testgroup", "testset"] <- matrix(1:9, nrow = 3)
+file["testgroup/testset"] <- matrix(1:9, nrow = 3)
 # Create new DataSet 'testset2' in file root
-file[, "testset2"] <- 1:10
+file["testset2"] <- 1:10
 # Retrieve H5Group 'testgroup'
 group <- file["testgroup"]
-# Retrieve H5Group 'testset'
-dset <- group[,"testset"]
+# Retrieve DataSet 'testset'
+dset <- group["testset"]
 h5close(dset)
 h5close(group)
 h5close(file)

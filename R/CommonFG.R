@@ -36,13 +36,13 @@
 #' @examples
 #' file <- h5file("test.h5")
 #' # Create new DataSet 'testset' in H5Group 'testgroup'
-#' file["testgroup", "testset"] <- matrix(1:9, nrow = 3)
+#' file["testgroup/testset"] <- matrix(1:9, nrow = 3)
 #' # Create new DataSet 'testset2' in file root
-#' file[, "testset2"] <- 1:10
+#' file["testset2"] <- 1:10
 #' # Retrieve H5Group 'testgroup'
 #' group <- file["testgroup"]
-#' # Retrieve H5Group 'testset'
-#' dset <- group[,"testset"]
+#' # Retrieve DataSet 'testset'
+#' dset <- group["testset"]
 #' h5close(dset)
 #' h5close(group)
 #' h5close(file)
@@ -59,45 +59,45 @@ setGeneric("h5close", function(.Object)
 
 #' @rdname CommonFG
 #' @export
-setMethod("[", c("CommonFG", "character", "character", "ANY"),
-    function(x, i, j, ..., drop=TRUE) {
-      group <- getH5Group(x, i)
-      ds <- openDataSet(group, j)
-      h5close(group)
-      ds
-    })
-
-#' @rdname CommonFG
-#' @export
-setMethod("[", c("CommonFG", "character", "missing", "missing"),
-    function(x, i, j, ..., drop=TRUE) {
-      getH5Group(x, i)
+setMethod("[", c("CommonFG", "character", "ANY"),
+    function(x, i, ..., drop=TRUE) { 
+      if(length(i) > 1) {
+        stop("Only one path can be specified.")
+      }
+      res <- NULL
+      if (existsDataSet(x, i)) {
+        gname <- sub("^\\.$", "/", dirname(i))
+        group <- NULL
+        if(gname == "/") {
+          group <- x
+        } else {
+          group <- getH5Group(x, gname)
+          on.exit(h5close(group))
+        }
+        res <- openDataSet(group, basename(i))
+      } else {
+        res <- getH5Group(x, i)
+      }
+      res
     })
 
 #' @param value vector/matrix/array; Value to be assigend to dataset
 #' @rdname CommonFG
 #' @export
-setMethod("[<-", c("CommonFG", "character", "character", "ANY"),
-    function(x, i, j, ..., value) {
-      group <- getH5Group(x, i)
-      ds <- createDataSet(group, j, value, ...)
-      h5close(group)
-      h5close(ds)
-      x
-    })
-
-#' @rdname CommonFG
-#' @export
-setMethod("[", c("CommonFG", "missing", "character", "ANY"),
-    function(x, i, j, ..., drop=TRUE) {
-      openDataSet(x, j)
-    })
-
-#' @rdname CommonFG
-#' @export
-setMethod("[<-", c("CommonFG", "missing", "character", "ANY"),
-    function(x, i, j, ..., value) {
-      ds <- createDataSet(x, j, value, ...)
+setMethod("[<-", c("CommonFG", "character", "ANY"),
+    function(x, i, ..., value) {
+      if(length(i) > 1) {
+        stop("Only one path can be specified.")
+      }
+      gname <- sub("^\\.$", "/", dirname(i))
+      group <- NULL
+      if(gname == "/") {
+        group <- x
+      } else {
+        group <- getH5Group(x, gname)
+        on.exit(h5close(group))
+      }
+      ds <- createDataSet(group, basename(i), value, ...)
       h5close(ds)
       x
     })

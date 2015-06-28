@@ -10,9 +10,9 @@ testarray <- array(paste0(letters1, letters2), c(3, 3, 5))
 
 file <- h5file("test.h5")
 # Save testvec in group 'test' as DataSet 'testvec'
-file["test", "testvec"] <- testvec
-file["test", "testmat"] <- testmat
-file["test", "testarray"] <- testarray
+file["test/testvec"] <- testvec
+file["test/testmat"] <- testmat
+file["test/testarray"] <- testarray
 h5close(file)
 ```
 
@@ -21,7 +21,7 @@ We can now retrieve the data from the file
 
 ```r
 file <- H5File("test.h5")
-dataset_testmat <- file["test", "testmat"]
+dataset_testmat <- file["test/testmat"]
 # We can now retrieve all data from the DataSet object using e.g. the  subsetting operator
 dataset_testmat[]
 ```

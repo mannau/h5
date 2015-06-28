@@ -120,3 +120,7 @@ setMethod("show", "DataSet",
 setMethod("h5close", "DataSet", function(.Object) {
       invisible(CloseDataset(.Object@pointer))
     })
+
+
+
+

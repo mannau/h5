@@ -63,9 +63,9 @@ library(h5)
 testmat <- matrix(rnorm(120), ncol = 3)
 fname <- "test.h5"
 file <- h5file(fname, "a")
-file["/testgroup", "testmat1"] <- testmat
+file["/testgroup/testmat1"] <- testmat
 # extract first 3 rows from file
-dset <- file["/testgroup", "testmat1"][1:3, ]
+dset <- file["/testgroup/testmat1"][1:3, ]
 h5close(file)
 ```
 

@@ -100,15 +100,15 @@ test_that("DataSet-list-groups",{
     
     expect_that(list.groups(file), is_identical_to(character(0)))
     
-    file["testgroup", "testset"] <- 1:3
+    file["testgroup/testset"] <- 1:3
     expect_that(list.groups(file), is_identical_to(c("/testgroup")))
     expect_that(list.groups(file, recursive = FALSE), is_identical_to(c("/testgroup")))
     expect_that(list.groups(file, full.names = FALSE), is_identical_to(c("testgroup")))
     
     
-    file["testgroup/testgroup1", "testset1"] <- 1:3
-    file["testgroup/testgroup2", "testset2"] <- 1:3
-    file["testgroup3/testgroup3", "testset3"] <- 1:3
+    file["testgroup/testgroup1/testset1"] <- 1:3
+    file["testgroup/testgroup2/testset2"] <- 1:3
+    file["testgroup3/testgroup3/testset3"] <- 1:3
     group <- file["testgroupN"]
     h5close(group)
     

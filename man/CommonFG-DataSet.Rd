@@ -6,6 +6,8 @@
 \alias{createDataSet}
 \alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
 \alias{createDataSet,CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY-method}
+\alias{existsDataSet}
+\alias{existsDataSet,CommonFG,character-method}
 \alias{list.datasets}
 \alias{list.datasets,CommonFG-method}
 \alias{openDataSet}
@@ -32,6 +34,10 @@ list.datasets(.Object, path = "/", full.names = TRUE, recursive = TRUE)
 
 \S4method{list.datasets}{CommonFG}(.Object, path = "/", full.names = TRUE,
   recursive = TRUE)
+
+existsDataSet(.Object, datasetname)
+
+\S4method{existsDataSet}{CommonFG,character}(.Object, datasetname)
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}

@@ -28,7 +28,7 @@
 #' @param full.names character; Specify if absolute DataSet path names should be
 #' returned.
 #' @param recursive logical; Specify DatSets should be retrieved recursively
-#' from .Object.                                                       
+#' from .Object.                                                      
 #' @name CommonFG-DataSet                                                         
 #' @rdname CommonFG-DataSet                                                             
 #' @include CommonFG.R
@@ -192,3 +192,23 @@ setMethod("list.datasets", signature(.Object="CommonFG"),
       }
       dsets
     })
+
+#' @rdname CommonFG-DataSet
+#' @export
+setGeneric("existsDataSet", function(.Object, datasetname)
+      standardGeneric("existsDataSet")
+)
+
+#' @rdname CommonFG-DataSet
+#' @export
+setMethod( "existsDataSet", signature(.Object="CommonFG", 
+        datasetname = "character"), 
+    function(.Object, datasetname) {
+      gname <- sub("^\\.$", "/", dirname(datasetname))
+      if(!existsGroup(.Object, gname)) {
+        return(FALSE)
+      }
+      basename(datasetname) %in% 
+      list.datasets(.Object, gname, full.names = FALSE, recursive = FALSE)
+    })
+

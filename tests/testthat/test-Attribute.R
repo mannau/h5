@@ -38,8 +38,8 @@ test_that("Attribute-Errors", {
   expect_that(f(), throws_error("Opening Attribute failed"))    
   h5attr(group, "test") <- c("A", "BE", "BU")
   
-  group[, "testset"] <- 1:10
-  dset <- group[, "testset"] 
+  group["testset"] <- 1:10
+  dset <- group["testset"] 
   f <- function() h5attr(dset, "test")
   expect_that(f(), throws_error("Opening Attribute failed"))    
   h5attr(dset, "test") <- c("A", "BE", "BU")
@@ -51,7 +51,7 @@ test_that("Attribute-Errors", {
   expect_that(h5attr(file, "test"), is_identical_to(c("A", "BE", "BU")))
   group <- file["testgroup"]
   expect_that(h5attr(group, "test"), is_identical_to(c("A", "BE", "BU")))
-  dset <- group[, "testset"] 
+  dset <- group["testset"] 
   expect_that(h5attr(dset, "test"), is_identical_to(c("A", "BE", "BU")))
   h5close(dset)
   h5close(group)
@@ -74,8 +74,8 @@ test_that("Attribute-H5Type-File", {
     h5attr(group, aname) <- testall[[i]]
   }
  
-  file["testgroup", "dset"] <- 1:10
-  dset <- file["testgroup", "dset"]
+  file["testgroup/dset"] <- 1:10
+  dset <- file["testgroup/dset"]
   for(i in 1:length(testall)) {
     aname <- sprintf("attribute_%02d", i)
     h5attr(dset, aname) <- testall[[i]]
@@ -96,7 +96,7 @@ test_that("Attribute-H5Type-File", {
     expect_that(h5attr(group, aname), is_identical_to(testall[[i]]))
   }
   
-  dset <- group[, "dset"]
+  dset <- group["dset"]
   for(i in 1:length(testall)) {
     aname <- sprintf("attribute_%02d", i)
     expect_that(h5attr(dset, aname), is_identical_to(testall[[i]]))
