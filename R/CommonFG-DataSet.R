@@ -55,7 +55,7 @@ setMethod("createDataSet", signature(.Object="CommonFG",
       stopifnot(type %in% c("double", "integer", "logical", "character"))
       typechar <- substr(type, 1, 1)	
       
-      createDataset_internal(.Object@pointer, datasetname, typechar, dimensions,
+      createDataset_internal(.Object, datasetname, typechar, dimensions,
           chunksize, maxdimensions, compression, size) 
     })
 
@@ -73,7 +73,7 @@ setMethod("createDataSet", signature(.Object="CommonFG",
       stopifnot(length(maxdimensions) == length(GetDimensions(data)))
       
       dspace <- GetDataSpace(data)
-      dset <- createDataset_internal(.Object@pointer, datasetname, 
+      dset <- createDataset_internal(.Object, datasetname, 
           dspace$typechar, dspace$dim, chunksize, maxdimensions, compression, 
           dspace$size)
       
@@ -82,7 +82,7 @@ setMethod("createDataSet", signature(.Object="CommonFG",
     })
 
 checkChunksize <- function(chunksize) {
-  if (!(is.numeric(chunksize) | is.integer(chunksize))) {
+  if (!(is.numeric(chunksize) | is.integer(chunksize) | is.na(chunksize))) {
     stop("Parameter chunksize must be of type integer/numeric.")
   }
   if (!all((chunksize > 0) | is.na(chunksize))) {
@@ -115,8 +115,12 @@ checkCompression <- function(compression) {
   
 }
 
-createDataset_internal <- function(loc, datasetname, typechar, dimensions, 
+createDataset_internal <- function(.Object, datasetname, typechar, dimensions, 
     chunksize, maxdimensions, compression, size) {
+  
+  if(existsDataSet(.Object, datasetname)) {
+    stop("Dataset with the same name existing at location.")
+  }
   checkChunksize(chunksize)
   checkMaxDimensions(maxdimensions)
   chunksize <- ifelse(!is.na(maxdimensions) & (is.na(chunksize) | 
@@ -126,8 +130,8 @@ createDataset_internal <- function(loc, datasetname, typechar, dimensions,
     stop("Parameter maxdimensions must be equal or exceed data dimension size.")
   } 
   checkCompression(compression)
-  
-  dsetptr <- CreateDataset(loc, datasetname, typechar, dimensions,
+
+  dsetptr <- CreateDataset(.Object@pointer, datasetname, typechar, dimensions,
       chunksize, maxdimensions, compression, size)
   
   new("DataSet", dsetptr, datasetname, typechar)

@@ -145,29 +145,31 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
 	vector<hsize_t> maxdims(maxshape.begin(), maxshape.end());
 
 	int rank = dimensions.length();
-	for(int i = 0; i < rank; i++) {
-      if (R_IsNA(maxshape[i])) {
-         maxdims[i] = H5S_UNLIMITED;
-      }
-    }
-
-    // Create the data space for the dataset.
-    DataSpace dataspace (dimensions.length(), &dims[0], &maxdims[0]);
-    // Set chunksize
-    vector<hsize_t> chunk_dims(chunksize.begin(), chunksize.end());
 
     DSetCreatPropList prop;
-    prop.setDeflate(compressionlevel);
-    // TODO: set chunk dims appropriately
-    prop.setChunk(rank, &chunk_dims[0]);
-    DataSet dataset = file->createDataSet((H5std_string)datasetname,
-        GetDataType(datatype, size), dataspace, prop);
+    DataSpace dataspace(dimensions.length(), &dims[0]);
+
+    if (!R_IsNA(chunksize[0])) {
+    	for(int i = 0; i < rank; i++) {
+		  if (R_IsNA(maxshape[i])) {
+			 maxdims[i] = H5S_UNLIMITED;
+		  }
+		}
+		// Create the data space for the dataset.
+		dataspace.setExtentSimple(dimensions.length(), &dims[0], &maxdims[0]);
+    	vector<hsize_t> chunk_dims(chunksize.begin(), chunksize.end());
+    	prop.setChunk(rank, &chunk_dims[0]);
+    	prop.setDeflate(compressionlevel);
+    }
+
+    DataSet dataset = file->createDataSet(datasetname.c_str(),
+            GetDataType(datatype, size), dataspace, prop);
 
     if (dataset.getId() == -1) {
       dataset.close();
       prop.close();
       dataspace.close();
-      throw Rcpp::exception("Creation of DataSet failed. Maybe dataset with same name is already existing at location.");
+      throw Rcpp::exception("Creation of DataSet failed.");
     }
     prop.close();
     dataspace.close();
@@ -218,7 +220,7 @@ NumericVector GetDataSetChunksize(XPtr<DataSet> dataset) {
 	  cparms.getChunk( ndim, &chunk_dims[0]);
 	  return NumericVector(chunk_dims.begin(), chunk_dims.end());
   }
-  return NA_REAL;
+  return NumericVector::create(NA_REAL);
 }
 
 // [[Rcpp::export]]

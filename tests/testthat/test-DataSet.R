@@ -27,6 +27,17 @@ test_that("DataSet-createDataset-chunksize",{
   f <- function() dset_c0 <- createDataSet(file, "test_chunk_0", 1:10, chunksize = 0)
   expect_that(f(), throws_error("All elements of chunksize must be greater than zero"))
   
+  ds_nochunk <- createDataSet(file, datasetname = "dset", data = 1:3, chunksize = NA)
+  expect_that(ds_nochunk@chunksize, is_identical_to(NA_real_))
+  expect_that(ds_nochunk@maxdim, is_identical_to(3))
+  expect_that(ds_nochunk@compression, is_identical_to(character(0)))
+  
+  ds_chunk <- createDataSet(file, datasetname = "dset2", data = 1:3)
+  expect_that(ds_chunk@chunksize, is_identical_to(3))
+  expect_that(ds_chunk@maxdim, is_more_than(1e+19))
+  expect_that(ds_chunk@compression , is_identical_to("H5Z_FILTER_DEFLATE"))
+  expect_that(ds_chunk@datatype, is_identical_to("i"))
+
   h5close(file)
 })  
 
@@ -136,5 +147,5 @@ test_that("DataSet-list-dataset",{
   expect_that(list.datasets(file, full.names = FALSE), is_identical_to(ex))
 
   expect_that(list.datasets(file, recursive = FALSE), is_identical_to(character(0)))
-
 })  
+
