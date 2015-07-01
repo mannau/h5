@@ -69,7 +69,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
       } else {//(ndim > 2)
         data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count_rev));
       }
-      dataset->read(REAL(data), dtype, *memspace, *dataspace);
+      dataset->read(REAL(data), PredType::NATIVE_DOUBLE, *memspace, *dataspace);
     } else if (tchar == 'i') {
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(INTSXP, count[0]));
@@ -78,7 +78,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
       } else {//(ndim > 2)
         data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
       }
-      dataset->read(INTEGER(data), dtype, *memspace, *dataspace);
+      dataset->read(INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
     } else if (tchar == 'l') {
     	hsize_t n = dataspace->getSelectNpoints();
         if (ndim == 1) {
