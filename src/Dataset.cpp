@@ -12,9 +12,9 @@ bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat,
     vector<hsize_t> count_t(count.begin(), count.end());
     DataSpace *memspace = new DataSpace(count.length(), &count_t[0]);
     size_t stsize = dataset->getDataType().getSize();
-
-    const void *buf = ConvertBuffer(mat, datatype, stsize);
-    DataType dtype = GetDataType(datatype, stsize);
+    DTYPE type = GetTypechar(datatype);
+    const void *buf = ConvertBuffer(mat, type, stsize);
+    DataType dtype = GetDataType(type, stsize);
     dataset->write(buf, dtype, *memspace, *dataspace);
     dtype.close();
     return TRUE;
@@ -41,7 +41,8 @@ bool ExtendDataset(XPtr<DataSet> dset, NumericVector dimsnew) {
 char GetDataSetType(XPtr<DataSet> dataset) {
   try {
     DataType dtype = dataset->getDataType();
-    return GetTypechar(dtype);
+    DTYPE type = GetTypechar(dtype);
+    return GetTypechar(type);
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
     throw Rcpp::exception(msg.c_str());
@@ -55,13 +56,13 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
     vector<hsize_t> count_t(count.begin(), count.end());
     DataSpace *memspace = new DataSpace(ndim, &count_t[0]);
     DataType dtype = dataset->getDataType();
-    char tchar = GetTypechar(dtype);
+    DTYPE tchar = GetTypechar(dtype);
 
     NumericVector count_rev = clone<NumericVector>(count);
     std::reverse(count_rev.begin(), count_rev.end());
 
     SEXP data;
-    if (tchar == 'd') {
+    if (tchar == T_DOUBLE) {
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(REALSXP, count[0]));
       } else if (ndim == 2) {
@@ -70,7 +71,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
         data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count_rev));
       }
       dataset->read(REAL(data), PredType::NATIVE_DOUBLE, *memspace, *dataspace);
-    } else if (tchar == 'i') {
+    } else if (tchar == T_INTEGER) {
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(INTSXP, count[0]));
       } else if (ndim == 2) {
@@ -79,7 +80,7 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
         data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
       }
       dataset->read(INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
-    } else if (tchar == 'l') {
+    } else if (tchar == T_LOGICAL) {
     	hsize_t n = dataspace->getSelectNpoints();
         if (ndim == 1) {
           data = PROTECT(Rf_allocVector(LGLSXP, count[0]));
@@ -93,24 +94,72 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
         for(unsigned int i = 0; i < n; i++) {
 		  LOGICAL(data)[i] = boolbuf[i];
 		}
-     } else if (tchar == 'c') {
-        size_t stsize = dtype.getSize();
-        hsize_t n = dataspace->getSelectNpoints();
-        if (ndim == 1) {
-         data = PROTECT(Rf_allocVector(STRSXP, count[0]));
-        } else if (ndim == 2) {
-         data = PROTECT(Rf_allocMatrix(STRSXP, count[1], count[0]));
-        } else {//(ndim > 2)
-         data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count_rev));
-        }
-        char *strbuf = (char *)R_alloc(n, stsize);
-        dataset->read(strbuf, dtype, *memspace, *dataspace);
-        for(unsigned int i = 0; i < n; i++) {
-          SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
-          strbuf += stsize;
-        }
-        //delete strbuf; TODO: should R_free be called on strbuf?
-    } else {
+     } else if (tchar == T_CHARACTER) {
+         if (ndim == 1) {
+          data = PROTECT(Rf_allocVector(STRSXP, count[0]));
+         } else if (ndim == 2) {
+          data = PROTECT(Rf_allocMatrix(STRSXP, count[1], count[0]));
+         } else {//(ndim > 2)
+          data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count_rev));
+         }
+         hsize_t n = dataspace->getSelectNpoints();
+         size_t stsize = dtype.getSize();
+
+         if(!H5Tis_variable_str(dtype.getId())) {
+        	 char *strbuf = (char *)R_alloc(n, stsize);
+			 dataset->read(strbuf, dtype, *memspace, *dataspace);
+			 for(unsigned int i = 0; i < n; i++) {
+			   SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
+			   strbuf += stsize;
+			 }
+         } else { // Assume variable-length string
+        	 char ** strbuf = new char *[n];
+        	 dataset->read(strbuf, dtype, *memspace, *dataspace);
+			 for(unsigned int i = 0; i < n; i++) {
+				Rcpp::String readstr(strbuf[i]);
+				SET_STRING_ELT(data, i, readstr.get_sexp());
+			 }
+			 delete [] strbuf;
+         }
+     } else if (tchar == T_VLEN_DOUBLE) {
+    	 hsize_t n = dataspace->getSelectNpoints();
+    	 DataType dtypein = GetDataType(tchar, -1);
+    	 hvl_t * dbuf = (hvl_t *)R_alloc(n, dtypein.getSize());
+    	 dataset->read(dbuf, dtypein, *memspace, *dataspace);
+
+    	 vector<vector<double> > datvec;
+    	 double *ptr;
+    	 for (int i=0; i < n; i++) {
+			 ptr = (double *)dbuf[i].p;
+			 vector<double> rowvec(ptr, ptr + dbuf[i].len);
+			 datvec.push_back(rowvec);
+		 }
+
+    	 data = wrap(datvec);
+    	 delete ptr;
+    	 memspace->close();
+    	 delete memspace;
+    	 return data;
+     } else if (tchar == T_VLEN_INTEGER) {
+		 hsize_t n = dataspace->getSelectNpoints();
+		 DataType dtypein = GetDataType(tchar, -1);
+		 hvl_t * dbuf = (hvl_t *)R_alloc(n, dtypein.getSize());
+		 dataset->read(dbuf, dtypein, *memspace, *dataspace);
+
+		 vector<vector<int> > datvec;
+		 int *ptr;
+		 for (int i=0; i < n; i++) {
+			 ptr = (int *)dbuf[i].p;
+			 vector<int> rowvec(ptr, ptr + dbuf[i].len);
+			 datvec.push_back(rowvec);
+		 }
+
+		 data = wrap(datvec);
+		 delete ptr;
+		 memspace->close();
+		 delete memspace;
+		 return data;
+	  } else {
       throw Rcpp::exception("Datatype unknown.");
     }
     memspace->close();
@@ -163,7 +212,7 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
     }
 
     DataSet dataset = file->createDataSet(datasetname.c_str(),
-            GetDataType(datatype, size), dataspace, prop);
+            GetDataType(GetTypechar(datatype), size), dataspace, prop);
 
     if (dataset.getId() == -1) {
       dataset.close();

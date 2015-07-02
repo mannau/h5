@@ -89,7 +89,7 @@ setMethod( "initialize", "DataSet",
                       compression = GetDataSetCompression(location)) {
 			.Object@pointer = location
       .Object@name = datasetname
-			.Object@datatype = datatype
+      .Object@datatype = datatype
       .Object@dim = dim      
       .Object@maxdim = maxdim   
       .Object@chunksize = chunksize
@@ -100,8 +100,15 @@ setMethod( "initialize", "DataSet",
 setMethod("show", "DataSet",
   function(object) {
       dimstring <- paste(sprintf("%.5g", object@dim), collapse = " x ")
-      typestring <- switch(object@datatype, i = "integer", d = "numeric", 
-          c = "character", "unknown")
+      typestring <- switch(object@datatype, 
+                      i = "integer", 
+                      d = "numeric", 
+                      c = "character", 
+                      l = "logical", 
+                      x = "vlen-double",
+                      y = "vlen-integer",
+                      z = "vlen-logical",
+                      "unknown")
       maxdimstring <- ifelse(object@maxdim >= 1.844674e+19, "UNLIMITED", 
           sprintf("%.5g", object@maxdim))
       if(all(maxdimstring == "UNLIMITED")) maxdimstring <- maxdimstring[1]

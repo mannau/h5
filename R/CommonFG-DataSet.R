@@ -85,7 +85,7 @@ setMethod("createDataSet", signature(.Object="CommonFG",
     })
 
 checkChunksize <- function(chunksize) {
-  if (!(is.numeric(chunksize) | is.integer(chunksize) | is.na(chunksize))) {
+  if (!(is.numeric(chunksize) | is.integer(chunksize) | is.na(chunksize[1]))) {
     stop("Parameter chunksize must be of type integer/numeric.")
   }
   if (!all((chunksize > 0) | is.na(chunksize))) {
@@ -133,7 +133,6 @@ createDataset_internal <- function(.Object, datasetname, typechar, dimensions,
     stop("Parameter maxdimensions must be equal or exceed data dimension size.")
   } 
   checkCompression(compression)
-
   dsetptr <- CreateDataset(.Object@pointer, datasetname, typechar, dimensions,
       chunksize, maxdimensions, compression, size)
   

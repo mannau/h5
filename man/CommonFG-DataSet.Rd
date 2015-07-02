@@ -57,10 +57,13 @@ vector, matrix or array.}
 
 \item{dimensions}{integer; Dimensions of dataset to be created.}
 
-\item{chunksize}{integer; Chunksize to be used for dataset.}
+\item{chunksize}{integer; Chunksize to be used for dataset. If set to
+\code{NA}, chunking is disabled for dataset; \code{maxdimensionions} and
+\code{compression} have no effect and extensions of DataSet (e.g. through
+\code{cbind}, \code{rbind}) are not possible.}
 
-\item{maxdimensions}{integer; Maximum dimensions used for dataset, NA is
-mapped to 'unlimited'.}
+\item{maxdimensions}{integer; Maximum dimensions used for dataset, \code{NA}
+sets maxdimensions to 'unlimited'.}
 
 \item{compression}{integer; Default GZIP compression level to be used, from
 0 (no compression) to 9 (maximum compression), defaults to \code{4}.}

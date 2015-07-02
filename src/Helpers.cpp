@@ -6,18 +6,18 @@ using namespace std;
 
 #define CPTR(VAR,CONST) ((VAR)=(CONST),&(VAR))
 
-DataType GetDataType(const char datatype, int size = -1) {
+DataType GetDataType(const DTYPE datatype, int size = -1) {
   switch(datatype){
-    case 'd': return PredType::NATIVE_DOUBLE;
-    case 'i': return PredType::NATIVE_INT32;
-    case 'l': {
+    case T_DOUBLE: return PredType::NATIVE_DOUBLE;
+    case T_INTEGER: return PredType::NATIVE_INT32;
+    case T_LOGICAL: {
     	bool val;
     	EnumType boolenumtype = EnumType(sizeof(bool));
     	boolenumtype.insert("FALSE", CPTR(val, FALSE));
     	boolenumtype.insert("TRUE", CPTR(val, TRUE));
     	return boolenumtype;
     }
-    case 'c': {
+    case T_CHARACTER: {
      if (size < 0) {
        throw Rcpp::exception("Parameter size has to be defined");
      }
@@ -25,8 +25,24 @@ DataType GetDataType(const char datatype, int size = -1) {
      type.setSize(size);
      return type;
     }
-    default: throw Rcpp::exception("Unknown data type.");
+    case T_VLEN_FLOAT: {
+      DataType type = PredType::NATIVE_DOUBLE;
+	  return VarLenType(&type);
     }
+    case T_VLEN_DOUBLE: {
+      DataType type = PredType::NATIVE_DOUBLE;
+  	  return VarLenType(&type);
+    }
+    case T_VLEN_INTEGER: {
+      DataType type = PredType::NATIVE_INT32;
+	  return VarLenType(&type);
+    }
+    case T_VLEN_LOGICAL: {
+      DataType type = GetDataType(T_VLEN_LOGICAL);
+  	  return VarLenType(&type);
+    }
+    default: throw Rcpp::exception("Unknown data type.");
+  }
 }
 
 struct cmpDataType {
@@ -35,148 +51,78 @@ struct cmpDataType {
     }
 };
 
-char GetTypechar(const DataType &dtype) {
+DTYPE GetTypechar(const DataType &dtype) {
 
-	// old comparison function
-	if(dtype == PredType::NATIVE_DOUBLE) {
-	  return 'd';
+	if ( (dtype == PredType::NATIVE_FLOAT) ||
+		 (dtype == PredType::NATIVE_DOUBLE) ||
+		 (dtype == PredType::NATIVE_INT64) ||
+		 (dtype == PredType::NATIVE_UINT32) ||
+		 (dtype == PredType::NATIVE_UINT64)) {
+	  return T_DOUBLE;
 	}
-	if(dtype == PredType::NATIVE_INT32) {
-	  return 'i';
+
+	if( (dtype == PredType::NATIVE_INT) ||
+		(dtype == PredType::NATIVE_INT8) ||
+		(dtype == PredType::NATIVE_INT16) ||
+		(dtype == PredType::NATIVE_INT32) ||
+		(dtype == PredType::NATIVE_UINT8) ||
+		(dtype == PredType::NATIVE_UINT16) ) {
+	  return T_INTEGER;
 	}
 	if (dtype == PredType::C_S1 || dtype.getClass() == H5T_STRING) {
-	  return 'c';
+	  return T_CHARACTER;
 	}
-	if (dtype == GetDataType('l')) {
-	  return 'l';
+	if (dtype == GetDataType(T_LOGICAL)) {
+	  return T_LOGICAL;
+	}
+	if ( (dtype == VarLenType(&PredType::NATIVE_FLOAT)) ||
+	     (dtype == VarLenType(&PredType::NATIVE_DOUBLE)) ||
+	     (dtype == VarLenType(&PredType::NATIVE_INT64)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_UINT32)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_UINT64))) {
+		return T_VLEN_DOUBLE;
+	}
+	if ( (dtype == VarLenType(&PredType::NATIVE_INT)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_INT8)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_INT16)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_INT32)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_UINT8)) ||
+		 (dtype == VarLenType(&PredType::NATIVE_UINT16)) ) {
+	  return T_VLEN_INTEGER;
 	}
 
-	std::map<hid_t, char, cmpDataType> m;
+	/*
+	if (dtype == GetDataType(T_VLEN_LOGICAL)) {
+	  return T_VLEN_LOGICAL;
+	} */
 
-	m[H5T_STD_I8BE] = 'i';
+	throw Rcpp::exception("Datatype unknown.");
+}
 
-	m[H5T_STD_I8LE] = 'i';
-	m[H5T_STD_I16BE] = 'i';
-	m[H5T_STD_I16LE] = 'i';
-	m[H5T_STD_I32BE] = 'i';
-	m[H5T_STD_I32LE] = 'i';
-	m[H5T_STD_I64BE] = 'd';
-	m[H5T_STD_I64LE] = 'd';
-	m[H5T_STD_U8BE] = 'i';
-	m[H5T_STD_U8LE] = 'i';
-	m[H5T_STD_U16BE] = 'i';
-	m[H5T_STD_U16LE] = 'i';
-	m[H5T_STD_U32BE] = 'd';
-	m[H5T_STD_U32LE] = 'd';
-	m[H5T_STD_U64BE] = 'd';
-	m[H5T_STD_U64LE] = 'd';
-	//m[H5T_STD_B8BE] = 'l';
-	//m[H5T_STD_B8LE] = 'l';
-	//m[H5T_STD_B16BE] = 'l';
-	//m[H5T_STD_B16LE] = 'l';
-	//m[H5T_STD_B32BE] = 'l';
-	//m[H5T_STD_B32LE] = 'l';
-	//m[H5T_STD_B64BE] = 'l';
-	//m[H5T_STD_B64LE] = 'l';
-	//m[H5T_STD_REF_OBJ] = 'l';
-	//m[H5T_STD_REF_DSETREG] = 'l';
-
-	m[H5T_C_S1] = 'c';
-	m[H5T_FORTRAN_S1] = 'c';
-
-	m[H5T_IEEE_F32BE] = 'd';
-	m[H5T_IEEE_F32LE] = 'd';
-	m[H5T_IEEE_F64BE] = 'd';
-	m[H5T_IEEE_F64LE] = 'd';
-
-	m[H5T_UNIX_D32BE] = 'd';
-	m[H5T_UNIX_D32LE] = 'd';
-	m[H5T_UNIX_D64BE] = 'd';
-	m[H5T_UNIX_D64LE] = 'd';
-
-	m[H5T_INTEL_I8] = 'i';
-	m[H5T_INTEL_I16] = 'i';
-	m[H5T_INTEL_I32] = 'i';
-	m[H5T_INTEL_I64] = 'd';
-	m[H5T_INTEL_U8] = 'i';
-	m[H5T_INTEL_U16] = 'i';
-	m[H5T_INTEL_U32] = 'd';
-	m[H5T_INTEL_U64] = 'd';
-	//m[H5T_INTEL_B8] = 'l';
-	//m[H5T_INTEL_B16] = 'l';
-	//m[H5T_INTEL_B32] = 'l';
-	//m[H5T_INTEL_B64] = 'l';
-	m[H5T_INTEL_F32] = 'd';
-	m[H5T_INTEL_F64] = 'd';
-
-	m[H5T_ALPHA_I8] = 'i';
-	m[H5T_ALPHA_I16] = 'i';
-	m[H5T_ALPHA_I32] = 'i';
-	m[H5T_ALPHA_I64] = 'd';
-	m[H5T_ALPHA_U8] = 'i';
-	m[H5T_ALPHA_U16] = 'i';
-	m[H5T_ALPHA_U32] = 'd';
-	m[H5T_ALPHA_U64] = 'd';
-	//m[H5T_ALPHA_B8] = 'l';
-	//m[H5T_ALPHA_B16] = 'l';
-	//m[H5T_ALPHA_B32] = 'l';
-	//m[H5T_ALPHA_B64] = 'l';
-	m[H5T_ALPHA_F32] = 'd';
-	m[H5T_ALPHA_F64] = 'd';
-
-	m[H5T_MIPS_I8] = 'i';
-	m[H5T_MIPS_I16] = 'i';
-	m[H5T_MIPS_I32] = 'i';
-	m[H5T_MIPS_I64] = 'd';
-	m[H5T_MIPS_U8] = 'i';
-	m[H5T_MIPS_U16] = 'i';
-	m[H5T_MIPS_U32] = 'd';
-	m[H5T_MIPS_U64] = 'd';
-	//m[H5T_MIPS_B8] = 'l';
-	//m[H5T_MIPS_B16] = 'l';
-	//m[H5T_MIPS_B32] = 'l';
-	//m[H5T_MIPS_B64] = 'l';
-	m[H5T_MIPS_F32] = 'l';
-	m[H5T_MIPS_F64] = 'l';
-
-	m[H5T_NATIVE_CHAR] = 'c';
-	m[H5T_NATIVE_SCHAR] = 'c';
-	m[H5T_NATIVE_UCHAR] = 'c';
-	m[H5T_NATIVE_SHORT] = 'l';
-	m[H5T_NATIVE_USHORT] = 'l';
-	m[H5T_NATIVE_INT] = 'i';
-	m[H5T_NATIVE_UINT] = 'l';
-	m[H5T_NATIVE_LONG] = 'l';
-	m[H5T_NATIVE_ULONG] = 'l';
-	m[H5T_NATIVE_LLONG] = 'l';
-	m[H5T_NATIVE_ULLONG] = 'l';
-	m[H5T_NATIVE_FLOAT] = 'l';
-	m[H5T_NATIVE_DOUBLE] = 'l';
-	m[H5T_NATIVE_LDOUBLE] = 'l';
-	//m[H5T_NATIVE_B8] = 'l';
-	//m[H5T_NATIVE_B16] = 'l';
-	//m[H5T_NATIVE_B32] = 'l';
-	//m[H5T_NATIVE_B64] = 'l';
-	//m[H5T_NATIVE_OPAQUE] = 'l';
-	m[H5T_NATIVE_HSIZE] = 'l';
-	m[H5T_NATIVE_HSSIZE] = 'l';
-	m[H5T_NATIVE_HERR] = 'i';
-	m[H5T_NATIVE_HBOOL] = 'i';
-
-	m[H5T_NATIVE_INT8] = 'i';
-	m[H5T_NATIVE_UINT8] = 'i';
-	m[H5T_NATIVE_INT16] = 'i';
-	m[H5T_NATIVE_UINT16] = 'i';
-	m[H5T_NATIVE_INT32] = 'i';
-	m[H5T_NATIVE_UINT32] = 'd';
-	m[H5T_NATIVE_INT64] = 'd';
-
-	map<hid_t, char>::const_iterator it = m.find(dtype.getId());
-
-	if (it == m.end()) {
-		throw Rcpp::exception("Datatype unknown.");
+DTYPE GetTypechar(char typechar) {
+	switch(typechar) {
+		case 'd': return T_DOUBLE;
+		case 'i': return T_INTEGER;
+		case 'l': return T_LOGICAL;
+		case 'c': return T_CHARACTER;
+		case 'x': return T_VLEN_DOUBLE;
+		case 'y': return T_VLEN_INTEGER;
+		case 'z': return T_VLEN_LOGICAL;
+		default: throw new Exception("Typechar unknown");
 	}
-	return it->second;
+}
+
+char GetTypechar(DTYPE typechar) {
+	switch(typechar) {
+		case T_DOUBLE: return 'd';
+		case T_INTEGER: return 'i';
+		case T_LOGICAL: return 'l';
+		case T_CHARACTER: return 'c';
+		case T_VLEN_DOUBLE: return 'x';
+		case T_VLEN_INTEGER: return 'y';
+		case T_VLEN_LOGICAL: return 'z';
+		default: throw new Exception("Typechar unknown");
+	}
 }
 
 H5S_seloper_t GetOperator(string opstring) {
@@ -197,11 +143,11 @@ H5S_seloper_t GetOperator(string opstring) {
 }
 
 
-void *ConvertBuffer(const SEXP &mat, char datatype, int stsize) {
+void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize) {
   switch(datatype){
-       case 'd': return REAL(mat);
-       case 'i': return INTEGER(mat);
-       case 'l': {
+       case T_DOUBLE: return REAL(mat);
+       case T_INTEGER: return INTEGER(mat);
+       case T_LOGICAL: {
     	   //int logsize = sizeof(LGLSXP);
            bool *boolbuf = (bool *)R_alloc(LENGTH(mat), sizeof(bool));
            int z=0;
@@ -210,7 +156,7 @@ void *ConvertBuffer(const SEXP &mat, char datatype, int stsize) {
            }
 	   return boolbuf;
        }; break;
-       case 'c': {
+       case T_CHARACTER: {
          char *strbuf = (char *)R_alloc(LENGTH(mat), stsize);
          int z=0;
          int j;

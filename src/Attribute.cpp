@@ -28,7 +28,7 @@ XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 	vector<hsize_t> dims(dimensions.begin(), dimensions.end());
 	DataSpace dataspace (dimensions.length(), &dims[0]);
 
-	DataType dtype = GetDataType(datatype, size);
+	DataType dtype = GetDataType(GetTypechar(datatype), size);
 
 	hid_t attrid = H5Acreate(id, attributename.c_str(), dtype.getId(),
 			dataspace.getId(), H5P_DEFAULT, H5P_DEFAULT);
@@ -50,8 +50,9 @@ bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat,
 		char datatype, NumericVector count) {
   try {
     size_t stsize = attribute->getDataType().getSize();
-    const void *buf = ConvertBuffer(mat, datatype, stsize);
-    attribute->write(GetDataType(datatype, stsize), buf);
+    DTYPE dtype = GetTypechar(datatype);
+    const void *buf = ConvertBuffer(mat, dtype, stsize);
+    attribute->write(GetDataType(dtype, stsize), buf);
     return TRUE;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
@@ -66,13 +67,13 @@ SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count) {
     unsigned int nelem = std::accumulate(count.begin(), count.end(), 1,
     		std::multiplies<unsigned int>());
     DataType dtype = attribute->getDataType();
-    char tchar = GetTypechar(dtype);
+    DTYPE tchar = GetTypechar(dtype);
 
     NumericVector count_rev = clone<NumericVector>(count);
     std::reverse(count_rev.begin(), count_rev.end());
 
     SEXP data;
-    if (tchar == 'd') {
+    if (tchar == T_DOUBLE) {
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(REALSXP, count[0]));
       } else if (ndim == 2) {
@@ -81,7 +82,7 @@ SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count) {
         data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count_rev));
       }
       attribute->read(dtype, REAL(data));
-    } else if (tchar == 'i') {
+    } else if (tchar == T_INTEGER) {
       if (ndim == 1) {
         data = PROTECT(Rf_allocVector(INTSXP, count[0]));
       } else if (ndim == 2) {
@@ -90,7 +91,7 @@ SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count) {
         data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
       }
       attribute->read(dtype, INTEGER(data));
-    } else if (tchar == 'c') {
+    } else if (tchar == T_CHARACTER) {
        size_t stsize = dtype.getSize();
         if (ndim == 1) {
          data = PROTECT(Rf_allocVector(STRSXP, count[0]));
