@@ -17,9 +17,12 @@
 #' 		\item{character}{Variable--length character strings.}                      
 #'  }                                                                           
 #' @param dimensions integer; Dimensions of dataset to be created.              
-#' @param chunksize integer; Chunksize to be used for dataset.                  
-#' @param maxdimensions integer; Maximum dimensions used for dataset, NA is     
-#' mapped to 'unlimited'.                                                       
+#' @param chunksize integer; Chunksize to be used for dataset. If set to 
+#' \code{NA}, chunking is disabled for dataset; \code{maxdimensionions} and 
+#' \code{compression} have no effect and extensions of DataSet (e.g. through 
+#' \code{cbind}, \code{rbind}) are not possible.              
+#' @param maxdimensions integer; Maximum dimensions used for dataset, \code{NA} 
+#' sets maxdimensions to 'unlimited'.                                                       
 #' @param compression integer; Default GZIP compression level to be used, from  
 #' 0 (no compression) to 9 (maximum compression), defaults to \code{4}.         
 #' @param size integer; Size of data type to be used, only relevant for character   
