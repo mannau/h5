@@ -128,8 +128,8 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
     	 dataset->read(dbuf, dtypein, *memspace, *dataspace);
 
     	 vector<vector<double> > datvec;
-    	 double *ptr;
-    	 for (int i=0; i < n; i++) {
+    	 double *ptr = (double *)NULL;
+    	 for (unsigned int i=0; i < n; i++) {
 			 ptr = (double *)dbuf[i].p;
 			 vector<double> rowvec(ptr, ptr + dbuf[i].len);
 			 datvec.push_back(rowvec);
@@ -147,8 +147,8 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
 		 dataset->read(dbuf, dtypein, *memspace, *dataspace);
 
 		 vector<vector<int> > datvec;
-		 int *ptr;
-		 for (int i=0; i < n; i++) {
+		 int *ptr = (int *)NULL;
+		 for (unsigned int i=0; i < n; i++) {
 			 ptr = (int *)dbuf[i].p;
 			 vector<int> rowvec(ptr, ptr + dbuf[i].len);
 			 datvec.push_back(rowvec);
