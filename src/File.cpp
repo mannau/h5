@@ -73,3 +73,17 @@ bool FlushFile(XPtr<H5File> file) {
   }
   return TRUE;
 }
+
+// [[Rcpp::export]]
+bool IsHDF5File(string fname) {
+  try {
+	  return H5Fis_hdf5(fname.c_str());
+  } catch (Exception& error) {
+    Function warning("warning");
+    warning(error.getDetailMsg());
+    return false;
+  }
+  return true;
+}
+
+

@@ -102,3 +102,16 @@ setMethod("show", "H5File",
 setMethod("h5close", "H5File", function(.Object) {
       invisible(CloseFile(.Object@pointer))
     })
+
+#' @rdname H5File
+#' @export
+is.h5file <- function(name) {
+  res <- FALSE
+  if(file.exists(name)) {
+    res <- IsHDF5File(name);
+  } else {
+    warning("File does not exist.")
+  }
+  res
+}
+

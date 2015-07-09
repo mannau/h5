@@ -348,6 +348,17 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// IsHDF5File
+bool IsHDF5File(string fname);
+RcppExport SEXP h5_IsHDF5File(SEXP fnameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< string >::type fname(fnameSEXP);
+    __result = Rcpp::wrap(IsHDF5File(fname));
+    return __result;
+END_RCPP
+}
 // CreateGroup
 XPtr<Group> CreateGroup(XPtr<CommonFG> file, string groupname);
 RcppExport SEXP h5_CreateGroup(SEXP fileSEXP, SEXP groupnameSEXP) {

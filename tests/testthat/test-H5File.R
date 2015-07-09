@@ -128,3 +128,20 @@ test_that("H5File-show",{
   file
   h5close(file)
 })
+
+test_that("H5File-is-h5file",{
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname)
+  group1 <- createGroup(file, "testgroup")
+  h5close(group1)
+  h5close(file)
+  
+  expect_that(is.h5file(fname), is_true())
+  expect_that(is.h5file("abc"), is_false())
+  fnametxt <- "test.txt"
+  writeLines("abc", fnametxt)
+  expect_that(is.h5file(fnametxt), is_false())
+  if(file.exists(fname)) file.remove(fname)
+  if(file.exists(fnametxt)) file.remove(fnametxt)
+})
+

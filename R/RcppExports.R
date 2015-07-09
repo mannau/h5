@@ -113,6 +113,10 @@ FlushFile <- function(file) {
     .Call('h5_FlushFile', PACKAGE = 'h5', file)
 }
 
+IsHDF5File <- function(fname) {
+    .Call('h5_IsHDF5File', PACKAGE = 'h5', fname)
+}
+
 CreateGroup <- function(file, groupname) {
     .Call('h5_CreateGroup', PACKAGE = 'h5', file, groupname)
 }
