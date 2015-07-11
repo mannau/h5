@@ -8,6 +8,7 @@
 \alias{h5file}
 \alias{h5flush}
 \alias{h5flush,H5File-method}
+\alias{is.h5file}
 \title{The H5File Class}
 \usage{
 h5file(name, mode = "a")
@@ -19,6 +20,8 @@ h5flush(.Object)
 \S4method{h5flush}{H5File}(.Object)
 
 \S4method{h5close}{H5File}(.Object)
+
+is.h5file(name)
 }
 \arguments{
 \item{name}{character; File path pointing to H5File.}
