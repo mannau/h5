@@ -7,7 +7,7 @@ test_that("DataSet-createDataset",{
 	file <- h5file(fname, "a")
   
   f <- function() dset1 <- createDataSet(file, "testmat_n")
-  expect_that(f(), throws_error("Parameter data must be specified"))
+  expect_that(f(), throws_error("argument \"data\" is missing, with no default"))
   h5close(file)
 })  
 

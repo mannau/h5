@@ -22,6 +22,10 @@ test_that("DataSet-Vector",{
   
   dset4 <- createDataSet(group, "testvec_c", testvec_c)
   h5close(dset4)
+
+  dset5 <- createDataSet(group, "testvec_c4", testvec_c, size = 9)
+  h5close(dset5)
+  
   h5close(group)
   h5close(file)
   
@@ -48,6 +52,11 @@ test_that("DataSet-Vector",{
   h5close(dset14)
   expect_that(testvec_c, is_identical_to(testvec_c_read))
 
+  dset15 <- openDataSet(group, "testvec_c4")
+  testvec_c_read <- readDataSet(dset15)
+  h5close(dset15)
+  expect_that(testvec_c, is_identical_to(testvec_c_read))
+  
   h5close(group)
   h5close(file)		
   file.remove(fname)
@@ -134,6 +143,10 @@ test_that("datatypes-Matrix",{
   
   dset4 <- createDataSet(group, "testmat_c", testmat_c)
   h5close(dset4)
+  
+  dset5 <- createDataSet(group, "testmat_c4", testmat_c, size = 9)
+  h5close(dset5)
+  
   h5close(group)
   h5close(file)
   
@@ -161,6 +174,11 @@ test_that("datatypes-Matrix",{
   h5close(dset14)
   expect_that(testmat_c, is_identical_to(testmat_c_read))
   
+  dset15 <- openDataSet(group, "testmat_c4", "character")
+  testmat_c4_read <- readDataSet(dset15)
+  h5close(dset15)
+  expect_that(testmat_c, is_identical_to(testmat_c4_read))
+  
   h5close(group)
   h5close(file)
   
@@ -170,7 +188,6 @@ test_that("datatypes-Matrix",{
 context("DataSet-Array")
 
 test_that("datatypes-Array",{
-  
   testmat_n <- array(rnorm(120), c(3,4,10))
   testmat_i <- array(as.integer(runif(120)*10000), c(3,4,2,5))
   testmat_l <- array(as.logical(round(runif(120))), c(3,4,10))
@@ -192,6 +209,10 @@ test_that("datatypes-Array",{
   
   dset4 <- createDataSet(group, "testmat_c", testmat_c)
   h5close(dset4)
+  
+  dset5 <- createDataSet(group, "testmat_c4", testmat_c, size = 9)
+  h5close(dset5)
+  
   h5close(group)
   h5close(file)
   
@@ -218,6 +239,11 @@ test_that("datatypes-Array",{
   testmat_c_read <- readDataSet(dset14)
   h5close(dset14)
   expect_that(testmat_c, is_identical_to(testmat_c_read))
+  
+  dset15 <- openDataSet(group, "testmat_c4")
+  testmat_c4_read <- readDataSet(dset15)
+  h5close(dset15)
+  expect_that(testmat_c, is_identical_to(testmat_c4_read))
   h5close(group)
   h5close(file)
   

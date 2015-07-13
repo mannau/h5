@@ -22,9 +22,9 @@ GetDataSpace <- function(data) {
 	mattype <- typeof(data)
 	stopifnot(mattype %in% c("double", "integer", "logical", "character"))
 	size <- -1
-	if(mattype == "character") {
-		size = max(nchar(data)) + 1
-	}
+#	if(mattype == "character") {
+#		size = max(nchar(data)) + 1
+#	}
 	typechar <- substr(mattype, 1, 1)
 	
 	list(typechar = typechar, dim = GetDimensions(data), size = size)

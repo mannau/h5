@@ -28,6 +28,10 @@ XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 	vector<hsize_t> dims(dimensions.begin(), dimensions.end());
 	DataSpace dataspace (dimensions.length(), &dims[0]);
 
+	if(size > 0) { // Adjust for null-termination character
+	  size += 1;
+	}
+
 	DataType dtype = GetDataType(GetTypechar(datatype), size);
 
 	hid_t attrid = H5Acreate(id, attributename.c_str(), dtype.getId(),
@@ -49,7 +53,11 @@ XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat,
 		char datatype, NumericVector count) {
   try {
-    size_t stsize = attribute->getDataType().getSize();
+	size_t stsize = -1;
+    DataType dsettype = attribute->getDataType();
+    if (!H5Tis_variable_str(dsettype.getId())) {
+	  stsize = dsettype.getSize();
+    }
     DTYPE dtype = GetTypechar(datatype);
     const void *buf = ConvertBuffer(mat, dtype, stsize);
     attribute->write(GetDataType(dtype, stsize), buf);
@@ -63,56 +71,14 @@ bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat,
 // [[Rcpp::export]]
 SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count) {
   try {
-    int ndim = count.length();
-    unsigned int nelem = std::accumulate(count.begin(), count.end(), 1,
-    		std::multiplies<unsigned int>());
     DataType dtype = attribute->getDataType();
     DTYPE tchar = GetTypechar(dtype);
 
     NumericVector count_rev = clone<NumericVector>(count);
     std::reverse(count_rev.begin(), count_rev.end());
 
-    SEXP data;
-    if (tchar == T_DOUBLE) {
-      if (ndim == 1) {
-        data = PROTECT(Rf_allocVector(REALSXP, count[0]));
-      } else if (ndim == 2) {
-        data = PROTECT(Rf_allocMatrix(REALSXP, count[1], count[0]));
-      } else {//(ndim > 2)
-        data = PROTECT(Rf_allocArray(REALSXP, (IntegerVector)count_rev));
-      }
-      attribute->read(dtype, REAL(data));
-    } else if (tchar == T_INTEGER) {
-      if (ndim == 1) {
-        data = PROTECT(Rf_allocVector(INTSXP, count[0]));
-      } else if (ndim == 2) {
-        data = PROTECT(Rf_allocMatrix(INTSXP, count[1], count[0]));
-      } else {//(ndim > 2)
-        data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
-      }
-      attribute->read(dtype, INTEGER(data));
-    } else if (tchar == T_CHARACTER) {
-       size_t stsize = dtype.getSize();
-        if (ndim == 1) {
-         data = PROTECT(Rf_allocVector(STRSXP, count[0]));
-        } else if (ndim == 2) {
-         data = PROTECT(Rf_allocMatrix(STRSXP, count[1], count[0]));
-        } else {//(ndim > 2)
-         data = PROTECT(Rf_allocArray(STRSXP, (IntegerVector)count_rev));
-        }
-        char *strbuf = (char *)R_alloc(nelem, stsize);
-        attribute->read(dtype, strbuf);
-        for(unsigned int i = 0; i < nelem; i++) {
-          SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
-          strbuf += stsize;
-        }
-        //delete strbuf; TODO: should R_free be called on strbuf?
-    } else {
-      throw Rcpp::exception("Datatype unknown.");
-    }
-
-    UNPROTECT(1);
-    //dataspace.close();
+    SEXP data = AllocateRData(tchar, count);
+    data = ReadRDataAttribute(tchar, data, attribute);
     return data;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();

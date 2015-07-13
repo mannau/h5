@@ -25,8 +25,8 @@
 #' sets maxdimensions to 'unlimited'.                                                       
 #' @param compression integer; Default GZIP compression level to be used, from  
 #' 0 (no compression) to 9 (maximum compression), defaults to \code{4}.         
-#' @param size integer; Size of data type to be used, only relevant for character   
-#' strings. 
+#' @param size numeric; Character length for fixed-length string data types.
+#' Default value of -1 creates variable-length strings.
 #' @param path character; Relative path to .Object.
 #' @param full.names character; Specify if absolute DataSet path names should be
 #' returned.
@@ -41,7 +41,7 @@ setGeneric("createDataSet", function(
         .Object, datasetname, data, type, dimensions, 
         chunksize = ChunkSize(data), 
         maxdimensions = rep(NA_integer_, length(GetDimensions(data))), 
-        compression = 4L, size = -1)
+        compression = 4L, size)
       standardGeneric("createDataSet")
 )
 
@@ -66,23 +66,40 @@ setMethod("createDataSet", signature(.Object="CommonFG",
 #' @export
 setMethod("createDataSet", signature(.Object="CommonFG", 
         datasetname = "character", data = "ANY", type = "missing", 
-        dimensions = "missing", chunksize = "ANY",maxdimensions = "ANY", 
-        compression = "ANY", size = "missing"), 
+        dimensions = "missing", chunksize = "ANY", maxdimensions = "ANY", 
+        compression = "ANY", size = "numeric"), 
     function(.Object, datasetname, data, chunksize, maxdimensions, 
-        compression) {
+        compression, size) {
       if(missing(data)) {
         stop("Parameter data must be specified.")
       }
       stopifnot(length(maxdimensions) == length(GetDimensions(data)))
       
       dspace <- GetDataSpace(data)
+
       dset <- createDataset_internal(.Object, datasetname, 
           dspace$typechar, dspace$dim, chunksize, maxdimensions, compression, 
-          dspace$size)
+          size)
       
       writeDataSet(dset, data)
       dset
     })
+
+#' @rdname CommonFG-DataSet
+#' @export
+setMethod("createDataSet", signature(.Object="CommonFG", 
+        datasetname = "character", data = "ANY", type = "missing", 
+        dimensions = "missing", chunksize = "ANY", maxdimensions = "ANY", 
+        compression = "ANY", size = "missing"), 
+    function(.Object, datasetname, data, chunksize, maxdimensions, 
+        compression) {
+      dspace <- GetDataSpace(data)
+      size <- dspace$size
+      createDataSet(.Object, datasetname, data, chunksize = chunksize, 
+          maxdimensions = maxdimensions, compression = compression, size = size)
+      
+    })
+
 
 checkChunksize <- function(chunksize) {
   if (!(is.numeric(chunksize) | is.integer(chunksize) | is.na(chunksize[1]))) {

@@ -12,5 +12,15 @@ DTYPE GetTypechar(char typechar);
 char GetTypechar(DTYPE typechar);
 void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize);
 H5S_seloper_t GetOperator(std::string opstring);
+SEXP AllocateRData(DTYPE tchar, Rcpp::NumericVector count);
+
+SEXP ReadRData(DTYPE tchar, SEXP data,
+			Rcpp::XPtr<H5::DataSet> dataset,
+			Rcpp::XPtr<H5::DataSpace> memspace,
+			Rcpp::XPtr<H5::DataSpace> dataspace);
+
+SEXP ReadRDataAttribute(DTYPE tchar, SEXP data,
+		Rcpp::XPtr<H5::Attribute> attribute);
+
 #endif // __Dataset_h__
 

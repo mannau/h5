@@ -30,17 +30,20 @@
 setClass( "H5Location", representation( pointer = "externalptr" ) )
 
 #' @rdname H5Location-Attribute
+#' @param size numeric; Character length for fixed-length string data types.
+#' Default value of -1 creates variable-length strings.
 #' @export
-setGeneric("createAttribute", function(.Object, attributename, data)
+setGeneric("createAttribute", function(.Object, attributename, data, size = -1)
 			standardGeneric("createAttribute")
 )
 
 #' @rdname H5Location-Attribute
 #' @export
 setMethod("createAttribute", signature(.Object="H5Location", 
-        attributename = "character", data = "ANY"), 
-  function(.Object, attributename, data) {
+        attributename = "character", data = "ANY", size = "ANY"), 
+  function(.Object, attributename, data, size) {
     dspace <- GetDataSpace(data)
+
     FUN <- NULL
     if (inherits(.Object, "DataSet")) {
       FUN <- CreateAttribute_DataSet
@@ -50,12 +53,13 @@ setMethod("createAttribute", signature(.Object="H5Location",
       stop("Object type unknown.")
     }
     attrptr <- FUN(.Object@pointer, attributename, dspace$typechar, dspace$dim, 
-        dspace$size)
+        size)
     attrib <- new("Attribute", attrptr, attributename, dspace$typechar, dspace$dim)
     writeAttribute(attrib, data)
     CloseAttribute(attrib@pointer)
     invisible(TRUE)
   })
+
 
 
 #' @rdname H5Location-Attribute
@@ -100,8 +104,9 @@ setMethod("h5attr", signature(.Object="H5Location", attributename = "character")
 #' @rdname H5Location-Attribute
 #' @param value object; Object to be stored in HDF5 Attribute, can be either of 
 #' type vector, matrix or array.
+#' @param ... Additional parameters passed to \code{\link{createAttribute}}. 
 #' @export                                                                      
-setGeneric("h5attr<-", function(.Object, attributename, value)
+setGeneric("h5attr<-", function(.Object, attributename, ..., value)
       standardGeneric("h5attr<-")
 )
 
@@ -109,7 +114,7 @@ setGeneric("h5attr<-", function(.Object, attributename, value)
 #' @export
 setMethod("h5attr<-", signature(.Object="H5Location", attributename = "character", 
         value = "ANY"),
-  function(.Object, attributename, value) {
-    createAttribute(.Object, attributename, value)
+  function(.Object, attributename, ..., value) {
+    createAttribute(.Object, attributename, value, ...)
     .Object
   })

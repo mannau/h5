@@ -5,6 +5,7 @@
 \alias{CommonFG-DataSet}
 \alias{createDataSet}
 \alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
+\alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,numeric-method}
 \alias{createDataSet,CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY-method}
 \alias{existsDataSet}
 \alias{existsDataSet,CommonFG,character-method}
@@ -16,11 +17,15 @@
 \usage{
 createDataSet(.Object, datasetname, data, type, dimensions,
   chunksize = ChunkSize(data), maxdimensions = rep(NA_integer_,
-  length(GetDimensions(data))), compression = 4L, size = -1)
+  length(GetDimensions(data))), compression = 4L, size)
 
 
   \S4method{createDataSet}{CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY}(.Object,
   datasetname, type, dimensions, chunksize, maxdimensions, compression, size)
+
+
+  \S4method{createDataSet}{CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,numeric}(.Object,
+  datasetname, data, chunksize, maxdimensions, compression, size)
 
 
   \S4method{createDataSet}{CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing}(.Object,
@@ -68,8 +73,8 @@ sets maxdimensions to 'unlimited'.}
 \item{compression}{integer; Default GZIP compression level to be used, from
 0 (no compression) to 9 (maximum compression), defaults to \code{4}.}
 
-\item{size}{integer; Size of data type to be used, only relevant for character
-strings.}
+\item{size}{numeric; Character length for fixed-length string data types.
+Default value of -1 creates variable-length strings.}
 
 \item{path}{character; Relative path to .Object.}
 

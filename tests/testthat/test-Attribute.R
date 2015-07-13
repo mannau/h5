@@ -13,6 +13,8 @@ testarray_n <- array(testvec_n, dim = c(3, 3, 10))
 testvec_s <- paste0(LETTERS[1:90], LETTERS[seq(90, 1)])
 testmat_s <- matrix(testvec_s, ncol = 9)
 testarray_s <- array(testvec_s, dim = c(3, 3, 10))
+maxchar <- max(nchar(testvec_s))
+
 
 testvec_l <- rep(c(TRUE, FALSE), 45)
 testmat_l <- matrix(testvec_l, ncol = 9)
@@ -21,10 +23,12 @@ testarray_l <- array(testvec_l, dim = c(3, 3, 10))
 testall <- list(
     testvec_i, testmat_i, testarray_i,
     testvec_n, testmat_n, testarray_n, 
+    testvec_l, testmat_l, testarray_l,
+    testvec_s, testmat_s, testarray_s,
     testvec_s, testmat_s, testarray_s
-    #testvec_l, testmat_l, testarray_l
     )
 
+    
 test_that("Attribute-Errors", {   
   if(file.exists(fname)) file.remove(fname)
   file <- h5file(fname, "a")
@@ -65,20 +69,29 @@ test_that("Attribute-H5Type-File", {
   
   for(i in 1:length(testall)) {
     aname <- sprintf("attribute_%02d", i)
-    h5attr(file, aname) <- testall[[i]]
+    if(i < length(testall))
+      h5attr(file, aname) <- testall[[i]]
+    else
+      h5attr(file, aname, size = maxchar) <- testall[[i]]
   }
   
   group <- file["testgroup"]
   for(i in 1:length(testall)) {
     aname <- sprintf("attribute_%02d", i)
-    h5attr(group, aname) <- testall[[i]]
+    if(i < length(testall))
+      h5attr(group, aname) <- testall[[i]]
+    else
+      h5attr(group, aname, size = maxchar) <- testall[[i]]
   }
  
   file["testgroup/dset"] <- 1:10
   dset <- file["testgroup/dset"]
   for(i in 1:length(testall)) {
     aname <- sprintf("attribute_%02d", i)
-    h5attr(dset, aname) <- testall[[i]]
+    if(i < length(testall))
+      h5attr(dset, aname) <- testall[[i]]
+    else
+      h5attr(dset, aname, size = maxchar) <- testall[[i]]
   }
   h5close(group)
   h5close(dset)

@@ -119,6 +119,36 @@ test_that("DataSet-Select-Subset-read-string", {
       h5close(testarray)
       h5close(file)
 })
+
+test_that("DataSet-Select-Subset-read-string-fixed", { 
+      vec <- paste0(LETTERS[1:9], c(LETTERS[1:9]))
+      vec[1] <- "AAA"
+      mat <- matrix(LETTERS[1:9], nrow = 3)
+      arr <- array(paste0(LETTERS[rep(1, 45)], c(LETTERS[rep(1, 45)])), 
+          dim = c(3, 3, 5))
+      arr[1, 1, 1] <- "blablabla"
+      
+      if(file.exists(fname)) file.remove(fname)
+      file <- h5file(fname)
+      file["test/testvec", size = 1] <- LETTERS[1:9]
+      file["test/testmat/testmat", size = 1] <- mat
+      file["test/testarray", size = max(nchar(as.vector(arr)))] <- arr
+      h5close(file)
+      
+      file <- h5file(fname, "r")
+      testvec <- file["test/testvec"]
+      expect_that(testvec[1:3], is_identical_to(LETTERS[1:3]))
+      h5close(testvec)
+      
+      testmat <- file["test/testmat/testmat"]
+      expect_that(testmat[1:2, ], is_identical_to(mat[1:2, ]))
+      h5close(testmat)
+      
+      testarray <- file["test/testarray"]
+      expect_that(testarray[], is_identical_to(arr))
+      h5close(testarray)
+      h5close(file)
+    })
       
 test_that("DataSet-Select-Subset-vector-write",{  
   testvec_n <- as.integer(1:90)

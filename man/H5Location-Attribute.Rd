@@ -15,9 +15,10 @@
 \alias{openAttribute,H5Location,character-method}
 \title{Read and Create Attributes for H5Location Objects}
 \usage{
-createAttribute(.Object, attributename, data)
+createAttribute(.Object, attributename, data, size = -1)
 
-\S4method{createAttribute}{H5Location,character}(.Object, attributename, data)
+\S4method{createAttribute}{H5Location,character}(.Object, attributename, data,
+  size = -1)
 
 openAttribute(.Object, attributename)
 
@@ -27,9 +28,9 @@ h5attr(.Object, attributename)
 
 \S4method{h5attr}{H5Location,character}(.Object, attributename)
 
-h5attr(.Object, attributename) <- value
+h5attr(.Object, attributename, ...) <- value
 
-\S4method{h5attr}{H5Location,character}(.Object, attributename) <- value
+\S4method{h5attr}{H5Location,character}(.Object, attributename, ...) <- value
 }
 \arguments{
 \item{.Object}{H5Location; S4 object of class \code{H5Location};}
@@ -38,6 +39,11 @@ h5attr(.Object, attributename) <- value
 
 \item{data}{object; Data object to be used for attribute creation,
 can be either of type vector, matrix or array.}
+
+\item{size}{numeric; Character length for fixed-length string data types.
+Default value of -1 creates variable-length strings.}
+
+\item{...}{Additional parameters passed to \code{\link{createAttribute}}.}
 
 \item{value}{object; Object to be stored in HDF5 Attribute, can be either of
 type vector, matrix or array.}
