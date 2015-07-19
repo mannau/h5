@@ -98,8 +98,6 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
 
 	int rank = dimensions.length();
 
-
-
     DSetCreatPropList prop;
     DataSpace dataspace(dimensions.length(), &dims[0]);
 

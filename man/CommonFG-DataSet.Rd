@@ -6,7 +6,7 @@
 \alias{createDataSet}
 \alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
 \alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,numeric-method}
-\alias{createDataSet,CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY-method}
+\alias{createDataSet,CommonFG,character,missing,character,ANY,ANY,ANY,ANY,ANY-method}
 \alias{existsDataSet}
 \alias{existsDataSet,CommonFG,character-method}
 \alias{list.datasets}
@@ -15,12 +15,11 @@
 \alias{openDataSet,CommonFG,character-method}
 \title{Functions to Create/Open DataSets in \code{\link{CommonFG}} objects}
 \usage{
-createDataSet(.Object, datasetname, data, type, dimensions,
-  chunksize = ChunkSize(data), maxdimensions = rep(NA_integer_,
-  length(GetDimensions(data))), compression = 4L, size)
+createDataSet(.Object, datasetname, data, type, dimensions, chunksize = -1,
+  maxdimensions = NA_integer_, compression = 4L, size = -1)
 
 
-  \S4method{createDataSet}{CommonFG,character,missing,character,integer,ANY,ANY,ANY,ANY}(.Object,
+  \S4method{createDataSet}{CommonFG,character,missing,character,ANY,ANY,ANY,ANY,ANY}(.Object,
   datasetname, type, dimensions, chunksize, maxdimensions, compression, size)
 
 

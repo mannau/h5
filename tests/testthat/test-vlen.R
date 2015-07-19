@@ -1,0 +1,70 @@
+context("DataSet-VLEN-Vector")
+
+fname <- "test.h5"
+
+test_that("DataSet-VLEN-Vector-create",{
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname, "a")
+  group <- createGroup(file, "/testgroup")
+  
+  dset1 <- createDataSet(group, "testvec_n", type = "vlen-double", dimensions = 30L)
+  expect_that(dset1@datatype, is_identical_to("x"))
+  h5close(dset1)
+  
+  f <- function() createDataSet(group, "testvec_l", type = "vlen-logical", dimensions = 30L)
+  expect_that(f(), throws_error("Type 'vlen-logical' not supported yet"))
+  
+  dset3 <- createDataSet(group, "testvec_i", type = "vlen-integer", dimensions = 30L)
+  expect_that(dset3@datatype, is_identical_to("y"))
+  h5close(dset3)
+  
+  f <- function() createDataSet(group, "testvec_c", type = "vlen-character", dimensions = 30L)
+  expect_that(f(), throws_error("Type 'vlen-character' not supported yet"))
+  
+  f <- function() createDataSet(group, "testvec_c4", type = "vlen-character", dimensions = 30L, size = 9)
+  expect_that(f(), throws_error("Type 'vlen-character' not supported yet"))
+
+  h5close(group)
+  h5close(file)
+ 
+  file.remove(fname)
+})
+
+test_that("DataSet-VLEN-Vector",{
+  testvec_n <- rnorm(120)
+  testvec_i <- as.integer(runif(120)*10000)
+  testvec_l <- as.logical(round(runif(120)))
+  testvec_c <-rep(paste0(LETTERS[1:3], rev(LETTERS)[1:3]), 120/3)
+  testvec_c[1] <- paste0(testvec_c[1], testvec_c[1])
+  testvec_c[40] <- paste0(testvec_c[1], testvec_c[1])
+  
+  testlist_n <- list(testvec_n[1:10], testvec_n[11:30], testvec_n[31:120])
+  testlist_i <- list(testvec_i[1:10], testvec_i[11:30], testvec_i[31:120])
+  testlist_l <- list(testvec_l[1:10], testvec_l[11:30], testvec_l[31:120])
+  testlist_c <- list(testvec_c[1:10], testvec_c[11:30], testvec_c[31:120])
+  
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname, "a")
+  group <- createGroup(file, "/testgroup")
+  
+  dset1 <- createDataSet(group, "testlist_n", testlist_n)
+  h5close(dset1)
+  
+  dset2 <- createDataSet(group, "testlist_i", testlist_i)
+  h5close(dset2)
+  
+  f <- function() createDataSet(group, "testlist_l", testlist_l)
+  expect_that(f(), throws_error("Type 'vlen-logical' not supported yet"))
+  
+  f <- function() createDataSet(group, "testlist_c", testlist_c)
+  expect_that(f(), throws_error("Type 'vlen-character' not supported yet"))
+  
+  h5close(group)
+  h5close(file)
+  
+  file <- h5file(fname, "a")
+  expect_that(file["/testgroup/testlist_n"][], is_identical_to(testlist_n))
+  expect_that(file["/testgroup/testlist_i"][], is_identical_to(testlist_i))
+  h5close(file)
+  
+})

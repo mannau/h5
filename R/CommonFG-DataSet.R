@@ -39,9 +39,9 @@
 #' @export                                                                      
 setGeneric("createDataSet", function(
         .Object, datasetname, data, type, dimensions, 
-        chunksize = ChunkSize(data), 
-        maxdimensions = rep(NA_integer_, length(GetDimensions(data))), 
-        compression = 4L, size)
+        chunksize = -1, 
+        maxdimensions = NA_integer_, 
+        compression = 4L, size = -1)
       standardGeneric("createDataSet")
 )
 
@@ -49,14 +49,31 @@ setGeneric("createDataSet", function(
 #' @export
 setMethod("createDataSet", signature(.Object="CommonFG", 
         datasetname = "character", 
-        data = "missing", type = "character", dimensions = "integer", 
+        data = "missing", type = "character", dimensions = "ANY", 
         chunksize = "ANY", maxdimensions = "ANY", 
         compression = "ANY", size = "ANY"), 
     function(.Object, datasetname, type, dimensions, chunksize, maxdimensions, 
         compression, size) {
       
-      stopifnot(type %in% c("double", "integer", "logical", "character"))
-      typechar <- substr(type, 1, 1)	
+      stopifnot(!missing(dimensions))
+      stopifnot(type %in% c("double", "integer", "logical", "character", 
+              "vlen-double", "vlen-integer", "vlen-logical", "vlen-character"))
+      typechar <- if(type == "vlen-double") {
+        "x"
+      } else if (type == "vlen-integer") {
+        "y"
+      } else if (type == "vlen-logical") {
+        stop("Type 'vlen-logical' not supported yet.")
+      } else if (type == "vlen-character") {
+        stop("Type 'vlen-character' not supported yet.")
+      } else {
+        substr(type, 1, 1)	
+      }
+
+      # Set ChunkSize to default
+      if(!is.na(chunksize)[1] & chunksize[1] == -1 & length(chunksize) == 1) {
+        chunksize = dimensions
+      }
       
       createDataset_internal(.Object, datasetname, typechar, dimensions,
           chunksize, maxdimensions, compression, size) 
@@ -73,6 +90,18 @@ setMethod("createDataSet", signature(.Object="CommonFG",
       if(missing(data)) {
         stop("Parameter data must be specified.")
       }
+      # Set Maxdimensions to default
+      if(is.na(maxdimensions)[1] && length(maxdimensions) == 1) {
+        maxdimensions = rep(NA_integer_, length(GetDimensions(data)))
+      }
+      # Set ChunkSize to default
+      if(!is.na(chunksize)[1]) {
+        
+      }
+      if(!is.na(chunksize)[1] & chunksize[1] == -1 & length(chunksize) == 1) {
+        chunksize = ChunkSize(data)
+      }
+
       stopifnot(length(maxdimensions) == length(GetDimensions(data)))
       
       dspace <- GetDataSpace(data)

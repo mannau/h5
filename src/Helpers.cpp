@@ -147,17 +147,20 @@ H5S_seloper_t GetOperator(string opstring) {
 
 void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize) {
   switch(datatype){
-       case T_DOUBLE: return REAL(mat);
-       case T_INTEGER: return INTEGER(mat);
+       case T_DOUBLE: {
+    	   return REAL(mat);
+       }
+       case T_INTEGER: {
+    	   return INTEGER(mat);
+       }
        case T_LOGICAL: {
-    	   //int logsize = sizeof(LGLSXP);
            bool *boolbuf = (bool *)R_alloc(LENGTH(mat), sizeof(bool));
            int z=0;
            for (int i = 0; i < LENGTH(mat); i++) {
         	   boolbuf[z++] = LOGICAL(mat)[i];
            }
-	   return boolbuf;
-       }; break;
+           return boolbuf;
+       }
        case T_CHARACTER: {
     	 if(stsize < 0 || (stsize == H5T_VARIABLE)) { // Assume variable string size
     	   char ** strbuf = (char **)R_alloc(LENGTH(mat), sizeof(char *));
@@ -182,8 +185,39 @@ void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize) {
 				 return strbuf;
          }
          break; // Never reached
-         };
-       default: throw Rcpp::exception("Unknown data type.");
+       }
+       case T_VLEN_DOUBLE: {
+    	   DataType dtypein = GetDataType(datatype, stsize);
+    	   int n = LENGTH(mat);
+    	   hvl_t * dbuf = (hvl_t *)R_alloc(n, dtypein.getSize());
+    	   List listvlen(mat);
+    	   for (int i = 0; i < listvlen.length(); i++) {
+    		  Rcpp::NumericVector vecvlen(listvlen[i]);
+    		  dbuf[i].p = vecvlen.begin();
+    		  dbuf[i].len = vecvlen.length();
+		   }
+    	   return dbuf;
+       }
+       case T_VLEN_INTEGER: {
+    	   DataType dtypein = GetDataType(datatype, stsize);
+		   int n = LENGTH(mat);
+		   hvl_t * dbuf = (hvl_t *)R_alloc(n, dtypein.getSize());
+		   List listvlen(mat);
+		   for (int i = 0; i < listvlen.length(); i++) {
+			  Rcpp::IntegerVector vecvlen(listvlen[i]);
+			  dbuf[i].p = vecvlen.begin();
+			  dbuf[i].len = vecvlen.length();
+		   }
+		   return dbuf;
+       }
+       /* case T_VLEN_LOGICAL:
+		   bool ** lvlenbuf = (bool **)R_alloc(LENGTH(mat), sizeof(bool *));
+		   for (int i = 0; i < LENGTH(mat); i++) {
+			   lvlenbuf[i] = LOGICAL(VECTOR_ELT(mat, i));
+		   }
+		   return lvlenbuf; */
+       default:
+    	   throw Rcpp::exception("Unknown data type.");
      }
 }
 

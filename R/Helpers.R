@@ -19,15 +19,38 @@ ChunkSize <- function(data) {
 }
 
 GetDataSpace <- function(data) {
-	mattype <- typeof(data)
-	stopifnot(mattype %in% c("double", "integer", "logical", "character"))
-	size <- -1
-#	if(mattype == "character") {
-#		size = max(nchar(data)) + 1
-#	}
-	typechar <- substr(mattype, 1, 1)
-	
-	list(typechar = typechar, dim = GetDimensions(data), size = size)
+  size <- -1
+	list(typechar = GetTypechar(data), dim = GetDimensions(data), size = size)
+}
+
+GetTypechar <- function(data) {
+  mattype <- typeof(data)
+  stopifnot(mattype %in% c("double", "integer", "logical", "character", "list"))	
+  typechar = NA_character_
+  if(mattype == "list") {
+    elems <- unique(sapply(data, typeof))
+    if(length(elems) > 1 & 
+        all(sapply(data, function(x) length(GetDimensions(x))) == 1)) {
+      stop("All elements of list must be vectors of the same data type.")
+    }
+    typechar <- substr(typeof(data[[1]]), 1, 1)
+    typechar <- 
+        if (typechar == 'd') {
+          "x"
+        } else if (typechar == 'i') {
+          "y"
+        } else if (typechar == 'l') {
+          stop("Type 'vlen-logical' not supported yet.")
+        } else if (typechar == 'c') {
+          stop("Type 'vlen-character' not supported yet.")
+        } else {
+          stop("Data type unknown.")
+        }
+    
+  } else {
+    typechar <- substr(mattype, 1, 1)
+  }
+  typechar
 }
 
 transpose_data <- function(dset) {
