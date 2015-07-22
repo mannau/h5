@@ -3,6 +3,7 @@ language: r
 env:
   global:
     - PKG_CXXFLAGS="-pedantic"
+    - _R_CHECK_CRAN_INCOMING_=FALSE
 
 # Be strict when checking our package
 warnings_are_errors: true
@@ -11,3 +12,7 @@ cran: http://cran.us.r-project.org
 # System dependencies for HTTP calling
 apt_packages:
  - libhdf5-serial-dev libhdf5-dev libhdf5-7
+r_github_packages:
+  - jimhester/covr
+after_success:
+  - R --slave --vanilla -e 'library(covr); pc <- package_coverage(); pc; codecov(coverage = pc)'
