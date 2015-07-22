@@ -2,7 +2,7 @@ Package: h5
 Type: Package
 Title: Interface to the 'HDF5' Library
 Version: 0.9.2
-Date: 2015-06-20
+Date: 2015-07-23
 Authors@R: c(person("Mario", "Annau", role = c("aut", "cre"),
          email = "mario.annau@gmail.com"))
 Copyright: See COPYRIGHTS file.
