@@ -25,7 +25,10 @@ setMethod( "initialize", "H5Group",
 setMethod("show", "H5Group",
     function(object) {
       cat(sprintf("H5Group '%s'\n", object@location))
-      GetFGInfo(object@pointer, object@location)
+      out <- paste(	c(sprintf("+ %s", sort(list.groups(object, object@location, recursive = FALSE))), 
+              sprintf("D %s", sort(list.datasets(object, object@location, recursive = FALSE))),
+              sprintf("A %s", sort(list.attributes(object)))), collapse = "\n")
+      cat(out)
     })
 
 #' @rdname H5Group

@@ -18,7 +18,7 @@ DataType GetDataType(const DTYPE datatype, int size = -1) {
     	return boolenumtype;
     }
     case T_CHARACTER: {
-    	if ( (size < 0) || ((unsigned int)size == H5T_VARIABLE) ) { // Assume Variable string size
+    	if ( (size_t)size == H5T_VARIABLE ) { // Assume Variable string size
     		StrType datatype(0, H5T_VARIABLE);
     		return datatype;
     	} else {
@@ -162,7 +162,7 @@ void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize) {
            return boolbuf;
        }
        case T_CHARACTER: {
-    	 if( (stsize < 0) || ((unsigned int)stsize == H5T_VARIABLE) ) { // Assume variable string size
+    	 if( (size_t)stsize == H5T_VARIABLE ) { // Assume variable string size
     	   char ** strbuf = (char **)R_alloc(LENGTH(mat), sizeof(char *));
     	   for (int i = 0; i < LENGTH(mat); i++) {
 		     strbuf[i] = (char *)CHAR(STRING_ELT(mat, i));

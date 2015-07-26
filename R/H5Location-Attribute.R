@@ -43,7 +43,6 @@ setMethod("createAttribute", signature(.Object="H5Location",
         attributename = "character", data = "ANY", size = "ANY"), 
   function(.Object, attributename, data, size) {
     dspace <- GetDataSpace(data)
-
     FUN <- NULL
     if (inherits(.Object, "DataSet")) {
       FUN <- CreateAttribute_DataSet
@@ -54,6 +53,7 @@ setMethod("createAttribute", signature(.Object="H5Location",
     }
     attrptr <- FUN(.Object@pointer, attributename, dspace$typechar, dspace$dim, 
         size)
+    
     attrib <- new("Attribute", attrptr, attributename, dspace$typechar, dspace$dim)
     writeAttribute(attrib, data)
     CloseAttribute(attrib@pointer)
@@ -118,3 +118,19 @@ setMethod("h5attr<-", signature(.Object="H5Location", attributename = "character
     createAttribute(.Object, attributename, value, ...)
     .Object
   })
+
+#' @rdname H5Location-Attribute
+#' @export
+setGeneric("list.attributes", function(.Object)
+      standardGeneric("list.attributes")
+)
+
+#' @rdname H5Location-Attribute
+#' @export
+setMethod( "list.attributes", c("H5Location"), 
+    function(.Object) {
+      res <- GetAttributeNames(.Object@pointer)
+      res
+    })    
+
+

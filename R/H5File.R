@@ -90,12 +90,14 @@ setMethod("h5flush", signature(.Object="H5File"), function(.Object) {
     })
 
 setMethod("show", "H5File",
-    function(object) {
-      dimstring <- 
-      cat(sprintf("H5File '%s' (mode '%s')\n", basename(object@location), 
-              object@mode))
-      GetFGInfo(object@pointer, "/")
-    })
+  function(object) {
+    cat(sprintf("H5File '%s' (mode '%s')\n", basename(object@location), 
+            object@mode))
+    out <- paste(	c(sprintf("+ %s", sort(list.groups(object, recursive = FALSE))), 
+            sprintf("D %s", sort(list.datasets(object, recursive = FALSE))),
+            sprintf("A %s", sort(list.attributes(object)))), collapse = "\n")
+    cat(out)
+  })
 
 #' @rdname H5File
 #' @export

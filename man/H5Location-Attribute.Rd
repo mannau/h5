@@ -11,6 +11,8 @@
 \alias{h5attr,H5Location,character-method}
 \alias{h5attr<-}
 \alias{h5attr<-,H5Location,character-method}
+\alias{list.attributes}
+\alias{list.attributes,H5Location-method}
 \alias{openAttribute}
 \alias{openAttribute,H5Location,character-method}
 \title{Read and Create Attributes for H5Location Objects}
@@ -31,6 +33,10 @@ h5attr(.Object, attributename)
 h5attr(.Object, attributename, ...) <- value
 
 \S4method{h5attr}{H5Location,character}(.Object, attributename, ...) <- value
+
+list.attributes(.Object)
+
+\S4method{list.attributes}{H5Location}(.Object)
 }
 \arguments{
 \item{.Object}{H5Location; S4 object of class \code{H5Location};}

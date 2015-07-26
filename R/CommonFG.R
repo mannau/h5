@@ -60,35 +60,12 @@ setGeneric("h5close", function(.Object)
 #' @rdname CommonFG
 #' @export
 setMethod("[", c("CommonFG", "character", "ANY"),
-    function(x, i, ..., drop=TRUE) { 
-      if(length(i) > 1) {
-        stop("Only one path can be specified.")
-      }
-      res <- NULL
-      if (existsDataSet(x, i)) {
-        gname <- sub("^\\.$", "/", dirname(i))
-        group <- NULL
-        if(gname == "/") {
-          group <- x
-        } else {
-          group <- getH5Group(x, gname)
-          on.exit(h5close(group))
-        }
-        res <- openDataSet(group, basename(i))
-      } else {
-        res <- getH5Group(x, i)
-      }
-      res
-    })
-
-#' @param value vector/matrix/array; Value to be assigend to dataset
-#' @rdname CommonFG
-#' @export
-setMethod("[<-", c("CommonFG", "character", "ANY"),
-    function(x, i, ..., value) {
-      if(length(i) > 1) {
-        stop("Only one path can be specified.")
-      }
+  function(x, i, ..., drop=TRUE) { 
+    if(length(i) > 1) {
+      stop("Only one path can be specified.")
+    }
+    res <- NULL
+    if (existsDataSet(x, i)) {
       gname <- sub("^\\.$", "/", dirname(i))
       group <- NULL
       if(gname == "/") {
@@ -97,7 +74,32 @@ setMethod("[<-", c("CommonFG", "character", "ANY"),
         group <- getH5Group(x, gname)
         on.exit(h5close(group))
       }
-      ds <- createDataSet(group, basename(i), value, ...)
-      h5close(ds)
-      x
-    })
+      res <- openDataSet(group, basename(i))
+    } else {
+      res <- getH5Group(x, i)
+    }
+    res
+  })
+
+#' @param value vector/matrix/array; Value to be assigend to dataset
+#' @rdname CommonFG
+#' @export
+setMethod("[<-", c("CommonFG", "character", "ANY"),
+  function(x, i, ..., value) {
+    if(length(i) > 1) {
+      stop("Only one path can be specified.")
+    }
+    gname <- sub("^\\.$", "/", dirname(i))
+    group <- NULL
+    if(gname == "/") {
+      group <- x
+    } else {
+      group <- getH5Group(x, gname)
+      on.exit(h5close(group))
+    }
+    ds <- createDataSet(group, basename(i), value, ...)
+    h5close(ds)
+    x
+  })
+
+    

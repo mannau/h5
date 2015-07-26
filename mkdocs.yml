@@ -1,6 +1,6 @@
 site_name: h5
 site_description: Documentation for the h5 R package
-repo_url: https://github.com/mannau/h5/docs
+repo_url: https://github.com/mannau/h5/tree/master/docs
 include_search: true
 
 pages:

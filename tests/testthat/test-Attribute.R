@@ -118,4 +118,18 @@ test_that("Attribute-H5Type-File", {
   h5close(dset)
   h5close(file) 
 })    
-   
+
+test_that("Bug_AttributeGroupSubset", {      
+  require(h5)    
+  fname <- "test.h5"
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(name = "test.h5")
+  file["testdataset"] <- 1:10
+  h5attr(file, "testattrib") <- LETTERS[1:10]
+  file["testgroup/testdataset2"] <- 1:10
+
+  h5attr(file["testdataset"], "test") <- 1:10
+  
+  # file["testdataset"] <- tmp
+  
+})

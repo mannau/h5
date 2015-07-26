@@ -85,34 +85,36 @@ setMethod("createDataSet", signature(.Object="CommonFG",
         datasetname = "character", data = "ANY", type = "missing", 
         dimensions = "missing", chunksize = "ANY", maxdimensions = "ANY", 
         compression = "ANY", size = "numeric"), 
-    function(.Object, datasetname, data, chunksize, maxdimensions, 
-        compression, size) {
-      if(missing(data)) {
-        stop("Parameter data must be specified.")
-      }
-      # Set Maxdimensions to default
-      if(is.na(maxdimensions)[1] && length(maxdimensions) == 1) {
-        maxdimensions = rep(NA_integer_, length(GetDimensions(data)))
-      }
-      # Set ChunkSize to default
-      if(!is.na(chunksize)[1]) {
-        
-      }
-      if(!is.na(chunksize)[1] & chunksize[1] == -1 & length(chunksize) == 1) {
-        chunksize = ChunkSize(data)
-      }
+  function(.Object, datasetname, data, chunksize, maxdimensions, 
+      compression, size) {
+    if(missing(data)) {
+      stop("Parameter data must be specified.")
+    }
+    # workaround for Bug_AttributeGroupSubset
+    if( inherits(data, "DataSet")) {
+      return(data)
+    }
 
-      stopifnot(length(maxdimensions) == length(GetDimensions(data)))
-      
-      dspace <- GetDataSpace(data)
+    # Set Maxdimensions to default
+    if(is.na(maxdimensions)[1] && length(maxdimensions) == 1) {
+      maxdimensions = rep(NA_integer_, length(GetDimensions(data)))
+    }
+    # Set ChunkSize to default
+    if(!is.na(chunksize)[1] & chunksize[1] == -1 & length(chunksize) == 1) {
+      chunksize = ChunkSize(data)
+    }
 
-      dset <- createDataset_internal(.Object, datasetname, 
-          dspace$typechar, dspace$dim, chunksize, maxdimensions, compression, 
-          size)
-      
-      writeDataSet(dset, data)
-      dset
-    })
+    stopifnot(length(maxdimensions) == length(GetDimensions(data)))
+    
+    dspace <- GetDataSpace(data)
+
+    dset <- createDataset_internal(.Object, datasetname, 
+        dspace$typechar, dspace$dim, chunksize, maxdimensions, compression, 
+        size)
+    
+    writeDataSet(dset, data)
+    dset
+  })
 
 #' @rdname CommonFG-DataSet
 #' @export
@@ -120,14 +122,19 @@ setMethod("createDataSet", signature(.Object="CommonFG",
         datasetname = "character", data = "ANY", type = "missing", 
         dimensions = "missing", chunksize = "ANY", maxdimensions = "ANY", 
         compression = "ANY", size = "missing"), 
-    function(.Object, datasetname, data, chunksize, maxdimensions, 
-        compression) {
-      dspace <- GetDataSpace(data)
-      size <- dspace$size
-      createDataSet(.Object, datasetname, data, chunksize = chunksize, 
-          maxdimensions = maxdimensions, compression = compression, size = size)
-      
-    })
+  function(.Object, datasetname, data, chunksize, maxdimensions, 
+      compression) {
+    
+    # workaround for Bug_AttributeGroupSubset
+    if( inherits(data, "DataSet")) {
+      return(data)
+    }
+    dspace <- GetDataSpace(data)
+    size <- dspace$size
+    createDataSet(.Object, datasetname, data, chunksize = chunksize, 
+        maxdimensions = maxdimensions, compression = compression, size = size)
+    
+  })
 
 
 checkChunksize <- function(chunksize) {
@@ -210,40 +217,40 @@ setGeneric("list.datasets", function(.Object, path = "/",
 #' @rdname CommonFG-DataSet
 #' @export
 setMethod("list.datasets", signature(.Object="CommonFG"), 
-    function(.Object, path, full.names, recursive) {
-      if (!existsGroup(.Object, path)) {
-        stop("Specified path does not exist")
+  function(.Object, path, full.names, recursive) {
+    if (!existsGroup(.Object, path)) {
+      stop("Specified path does not exist")
+    }
+    # Set full path
+    path.full <- path
+    if(inherits(.Object, "H5Group")) {
+      path.full <- paste(path.full, .Object@location, sep = "/")
+      path.full <- gsub("/+", "/", path.full)
+    }
+    
+    groups <- path.full
+    if(recursive) {
+      groups <- c(path.full, list.groups(.Object, path, TRUE, recursive = recursive))
+    }
+    
+    dsets <- lapply(groups, function(x) GetDataSetNames(.Object@pointer, x))
+    dsetlen <- sapply(dsets, length)
+    # Filter for groups which contain datasets
+    groups <- groups[dsetlen > 0]
+    dsets <- dsets[dsetlen > 0]
+    
+    if(length(dsets) > 0) {
+      if(full.names) {
+        dsets <- lapply(1:length(groups), 
+                function(i) paste(groups[i], dsets[[i]], sep = "/"))
       }
-      # Set full path
-      path.full <- path
-      if(inherits(.Object, "H5Group")) {
-        path.full <- paste(path.full, .Object@location, sep = "/")
-        path.full <- gsub("/+", "/", path.full)
-      }
-      
-      groups <- path.full
-      if(recursive) {
-        groups <- c(path.full, list.groups(.Object, path, TRUE, recursive = recursive))
-      }
-      
-      dsets <- lapply(groups, function(x) GetDataSetNames(.Object@pointer, x))
-      dsetlen <- sapply(dsets, length)
-      # Filter for groups which contain datasets
-      groups <- groups[dsetlen > 0]
-      dsets <- dsets[dsetlen > 0]
-      
-      if(length(dsets) > 0) {
-        if(full.names) {
-          dsets <- lapply(1:length(groups), 
-                  function(i) paste(groups[i], dsets[[i]], sep = "/"))
-        }
-        dsets <- unlist(dsets)
-        dsets <- gsub("/+", "/", dsets) # just to make sure...
-      } else {
-        dsets <- character(0)
-      }
-      dsets
-    })
+      dsets <- unlist(dsets)
+      dsets <- gsub("/+", "/", dsets) # just to make sure...
+    } else {
+      dsets <- character(0)
+    }
+    dsets
+  })
 
 #' @rdname CommonFG-DataSet
 #' @export
@@ -255,12 +262,12 @@ setGeneric("existsDataSet", function(.Object, datasetname)
 #' @export
 setMethod( "existsDataSet", signature(.Object="CommonFG", 
         datasetname = "character"), 
-    function(.Object, datasetname) {
-      gname <- sub("^\\.$", "/", dirname(datasetname))
-      if(!existsGroup(.Object, gname)) {
-        return(FALSE)
-      }
-      basename(datasetname) %in% 
-      list.datasets(.Object, gname, full.names = FALSE, recursive = FALSE)
-    })
+  function(.Object, datasetname) {
+    gname <- sub("^\\.$", "/", dirname(datasetname))
+    if(!existsGroup(.Object, gname)) {
+      return(FALSE)
+    }
+    basename(datasetname) %in% 
+    list.datasets(.Object, gname, full.names = FALSE, recursive = FALSE)
+  })
 

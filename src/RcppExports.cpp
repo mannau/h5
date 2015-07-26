@@ -406,17 +406,6 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// GetFGInfo
-void GetFGInfo(XPtr<CommonFG> file, string path);
-RcppExport SEXP h5_GetFGInfo(SEXP fileSEXP, SEXP pathSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
-    Rcpp::traits::input_parameter< string >::type path(pathSEXP);
-    GetFGInfo(file, path);
-    return R_NilValue;
-END_RCPP
-}
 // GetGroupNames
 CharacterVector GetGroupNames(XPtr<CommonFG> file, string path, bool recursive);
 RcppExport SEXP h5_GetGroupNames(SEXP fileSEXP, SEXP pathSEXP, SEXP recursiveSEXP) {
@@ -439,6 +428,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
     Rcpp::traits::input_parameter< string >::type path(pathSEXP);
     __result = Rcpp::wrap(GetDataSetNames(file, path));
+    return __result;
+END_RCPP
+}
+// GetAttributeNames
+CharacterVector GetAttributeNames(XPtr<CommonFG> file);
+RcppExport SEXP h5_GetAttributeNames(SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    __result = Rcpp::wrap(GetAttributeNames(file));
     return __result;
 END_RCPP
 }

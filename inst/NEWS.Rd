@@ -14,6 +14,8 @@
     \item Fix bug for non-chunked datasets.
     \item Fix issue \href{https://github.com/mannau/h5/issues/6}{#6}: Support variable length datatypes and variable length strings. 
     \item Include Code coverage through \url{http://codecov.io}
+    \item Include \fkt{list.attributes}.
+    \item Fix \fkt{show} methods.
   }
 }
 \section{Changes in h5 version 0.9.1 (2015-07-26)}{
