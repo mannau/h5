@@ -14,7 +14,8 @@ Description: S4 Interface to the 'HDF5' library supporting fast storage and
     memory.
 License: BSD_2_clause + file LICENSE
 BugReports: https://github.com/mannau/h5/issues
-URL: http://www.predictingdaemon.com/h5 https://github.com/mannau/h5
+URL: http://www.predictingdaemon.com/h5 http://h5.readthedocs.org 
+    https://github.com/mannau/h5
 SystemRequirements: libhdf5 (>= 1.8.x, v18 API) with C++ interface enabled
     (--enable-cxx=yes) and v18 API
 Depends:

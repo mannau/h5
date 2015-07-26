@@ -1,5 +1,18 @@
 site_name: h5
+site_description: Documentation for the h5 R package
+repo_url: https://github.com/mannau/h5/docs
+include_search: true
+
 pages:
-- Home: index.md
-- Quick Start: quickstart.md
+- [index.md, Home]
+- [quickstart.md, Quick Start] 
+- [install.md, Installation] 
+- [h5file.md, HDF5 File] 
+- [h5group.md, HDF5 Group] 
+- [datatypes.md, Datatypes] 
+- [dataset/create.md, HDF5 Dataset, Create] 
+- [dataset/readwrite.md, HDF5 Dataset, Read/Write]
+- [dataset/subsetting.md, HDF5 Dataset, Subsetting]
+- [dataset/resize.md, HDF5 Dataset, Resizing]
+- [dataset/chunking.md, HDF5 Dataset, Chunking]
 theme: readthedocs
