@@ -41,3 +41,22 @@ the dependency libhdf5-serial-dev through the
 [ppa:marutter/rrutter](https://launchpad.net/~marutter/+archive/ubuntu/rrutter) 
 repository (Ubuntu) or soon directly the **h5** package via 
 [cran2deb](http://debian-r.debian.net) (Debian).
+
+## Custom Install Parameters
+If the hdf5 library is not located in a standard directory recognized by the configure script the parameters CPPFLAGS and LIBS may need to be set manually. 
+This can be done using the --configure-vars option for R CMD INSTALL in the command line, e.g
+```shell
+R CMD INSTALL h5_<version>.tar.gz --configure-vars='LIBS=<LIBS> CPPFLAGS=<CPPFLAGS>'
+```
+
+The most recent version with required paramters can also be directly installed from github using **devtools** in R:
+```shell
+require(devtools)
+install_github("mannau/h5", args = "--configure-vars='LIBS=<LIBS> CPPFLAGS=<CPPFLAGS>'")
+```
+
+A concrete OS X example setting could look like this:
+```shell
+R CMD INSTALL h5_0.9.2.tar.gz --configure-vars='LIBS=-L/usr/local/Cellar/hdf5/1.8.13/lib -L/usr/local/opt/szip/lib  -L. -lhdf5_cpp -lhdf5 -lz -lm CPPFLAGS=-I/usr/local/include -I/usr/local/include/freetype2 -I/opt/X11/include'
+```
+

@@ -7,11 +7,6 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
-CC=`"${R_HOME}/bin/R" CMD config CC`
-CPP=`"${R_HOME}/bin/R" CMD config CPP`
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-
 AC_CHECK_PROG(H5CPP,h5c++,`which h5c++`)
 if test -z "${H5CPP}"; then
   AC_MSG_ERROR(['h5c++' does not seem to be installed on your platform.
@@ -23,28 +18,34 @@ if test -z "${H5CPP}"; then
         - RPM-based (e.g Fedora): 'sudo yum install hdf5-devel'])
 fi
 
+if test -z "${LIBS}"; then
+  dnl prefer ggrep if installed
+  AC_CHECK_PROG(GREP,ggrep,`which ggrep`, `which grep`)
+  
+  dnl check if $GREP supports option -o
+  AC_MSG_CHECKING([whether ${GREP} accepts -o])
+  if `echo '' | ${GREP} -o '' >/dev/null 2>&1`
+  then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([${GREP} does not support option -o])
+  fi
+  [
+  LIBS=`${H5CPP} -show | ${GREP} -o "\-L[^[:space:]]\+" | tr "\n" " "` 
+  ]
+  
+  dnl Fix for newer Debian versions
+  LIBS="${LIBS} -L. -lhdf5_cpp -lhdf5 -lz -lm"
 
-dnl prefer ggrep if installed
-AC_CHECK_PROG(GREP,ggrep,`which ggrep`, `which grep`)
-
-dnl check if $GREP supports option -o
-AC_MSG_CHECKING([whether ${GREP} accepts -o])
-if `echo '' | ${GREP} -o '' >/dev/null 2>&1`
-then
-	AC_MSG_RESULT([yes])
-else
-	AC_MSG_RESULT([no])
-	AC_MSG_ERROR([${GREP} does not support option -o])
 fi
 
-[
-LIBS=`${H5CPP} -show | ${GREP} -o "\-L[^[:space:]]\+" | tr "\n" " "` 
-]
-
-dnl Fix for newer Debian versions
-LIBS="${LIBS} -L. -lhdf5_cpp -lhdf5 -lz -lm"
-if test -d /usr/include/hdf5/serial; then
+if test -z "${CPPFLAGS}"; then
+  CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+  dnl Fix for newer Debian versions
+  if test -d /usr/include/hdf5/serial; then
     CPPFLAGS="${CPPFLAGS} -I/usr/include/hdf5/serial"
+  fi
 fi
 
 dnl substitute CPPFLAGS and LIBS
