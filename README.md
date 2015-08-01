@@ -4,13 +4,13 @@
 **h5** provides an interface to the HDF5 API through S4-objects. It supports fast storage and retrieval of R-objects like vectors, matrices and arrays to binary files in a language independent format. The package can therefore be used as an alternative to R's save/load mechanism. Since h5 is able to access only subsets of stored data it can handle potentially big(ger than memory) data sets.
 
 ## Documentation
-Further documentation is available at http://h5.readthedocs.org.
+Further documentation is available at http://h5.readthedocs.org/en/latest.
 
 ## Notes
 This library is has already been released on [CRAN](http://cran.r-project.org/web/packages/h5/index.html). 
 
 ## Install
-See http://h5.readthedocs.org/install for installation notes.
+See http://h5.readthedocs.org/en/latest/install/ for installation notes.
 
 ## Usage
 
@@ -28,7 +28,7 @@ h5close(file)
 ```
 
 or a bit easier using subsetting operators:
-```
+```python
 library(h5)
 testmat <- matrix(rnorm(120), ncol = 3)
 fname <- "test.h5"
