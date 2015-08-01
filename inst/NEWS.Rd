@@ -3,7 +3,7 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\fkt}{\code{#1()}}
 
-\section{Changes in h5 version 0.9.2 (2015-07-26)}{
+\section{Changes in h5 version 0.9.2 (2015-08-01)}{
   \itemize{
     \item Improve/speedup selection of multiple contiguous hyperslabs
     \item Fix Bug in DataSet \fkt{show} method
@@ -16,6 +16,7 @@
     \item Include Code coverage through \url{http://codecov.io}
     \item Include \fkt{list.attributes}.
     \item Fix \fkt{show} methods.
+    \item Fix configuration script to support custom parameters for CPPFLAGS and LIBS
   }
 }
 \section{Changes in h5 version 0.9.1 (2015-07-26)}{
