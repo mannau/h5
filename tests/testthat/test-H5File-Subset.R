@@ -31,15 +31,12 @@ test_that("H5File-Subset-Group",{
   expect_that(group5@location, is_identical_to("/test1/test2/test3/test4/test5"))
   h5close(group5)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("H5File-Subset-DataSet",{
   if(file.exists(fname)) file.remove(fname)
   file <- h5file(fname, "a")
-     
-  # TODO: should actually work
-  #f <- file["/testgroup3", "test"]
-  #expect_that(f(), throws_error("DataSet 'test' does not exist")) 
   
   file["test/test1/test2/test3/dset1"] <- 1:10
   file["test/test1/test2/test3/dset2"] <- matrix(1:9, nrow = 3)

@@ -59,7 +59,7 @@ test_that("DataSet-Vector",{
   
   h5close(group)
   h5close(file)		
-  file.remove(fname)
+  expect_that(file.remove(fname), is_true())
 })
 
 context("DataSet-Vector-boundaries")
@@ -116,7 +116,8 @@ test_that("DataSet-Vector-boundaries",{
 #  h5close(dsetmax_1)
 #  expect_that(testvec_i_max_1, is_identical_to(testvec_i_max_1_read))
   
-  h5close(file)		
+  h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 context("DataSet-Matrix")
@@ -182,7 +183,7 @@ test_that("datatypes-Matrix",{
   h5close(group)
   h5close(file)
   
-  file.remove(fname)
+  expect_that(file.remove(fname), is_true())
 })
 
 context("DataSet-Array")
@@ -247,7 +248,7 @@ test_that("datatypes-Array",{
   h5close(group)
   h5close(file)
   
-  file.remove(fname)		
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("datatypes-Array-BugWithChunksize",{
@@ -260,4 +261,5 @@ test_that("datatypes-Array-BugWithChunksize",{
 	h5close(dset1)
 	h5close(group)
 	h5close(file)
+  expect_that(file.remove(fname), is_true())
 })

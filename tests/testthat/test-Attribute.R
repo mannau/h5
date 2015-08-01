@@ -60,7 +60,7 @@ test_that("Attribute-Errors", {
   h5close(dset)
   h5close(group)
   h5close(file)
-  
+  expect_that(file.remove(fname), is_true())
 })      
       
 test_that("Attribute-H5Type-File", {      
@@ -117,10 +117,10 @@ test_that("Attribute-H5Type-File", {
   h5close(group)
   h5close(dset)
   h5close(file) 
+  expect_that(file.remove(fname), is_true())
 })    
 
-test_that("Bug_AttributeGroupSubset", {      
-  require(h5)    
+test_that("Bug_AttributeGroupSubset", {        
   fname <- "test.h5"
   if(file.exists(fname)) file.remove(fname)
   file <- h5file(name = "test.h5")
@@ -129,7 +129,6 @@ test_that("Bug_AttributeGroupSubset", {
   file["testgroup/testdataset2"] <- 1:10
 
   h5attr(file["testdataset"], "test") <- 1:10
-  
-  # file["testdataset"] <- tmp
-  
+  h5close(file) 
+  expect_that(file.remove(fname), is_true())
 })

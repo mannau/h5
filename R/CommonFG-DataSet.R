@@ -125,6 +125,10 @@ setMethod("createDataSet", signature(.Object="CommonFG",
   function(.Object, datasetname, data, chunksize, maxdimensions, 
       compression) {
     
+    if(missing(data)) {
+      stop("Parameter data must be specified.")
+    }
+    
     # workaround for Bug_AttributeGroupSubset
     if( inherits(data, "DataSet")) {
       return(data)

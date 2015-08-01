@@ -43,7 +43,7 @@ test_that("DataSet-Select-Subset-params",{
   h5close(dset1)
   h5close(group)
   h5close(file)
-  
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-vector-read",{  
@@ -88,6 +88,7 @@ test_that("DataSet-Select-Subset-vector-read",{
   h5close(dset2)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-read-string", { 
@@ -118,6 +119,7 @@ test_that("DataSet-Select-Subset-read-string", {
       expect_that(testarray[], is_identical_to(arr))
       h5close(testarray)
       h5close(file)
+      expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-read-string-fixed", { 
@@ -148,6 +150,7 @@ test_that("DataSet-Select-Subset-read-string-fixed", {
       expect_that(testarray[], is_identical_to(arr))
       h5close(testarray)
       h5close(file)
+      expect_that(file.remove(fname), is_true())
     })
       
 test_that("DataSet-Select-Subset-vector-write",{  
@@ -203,6 +206,7 @@ test_that("DataSet-Select-Subset-vector-write",{
   h5close(dset2)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-matrix-read",{  
@@ -255,6 +259,7 @@ test_that("DataSet-Select-Subset-matrix-read",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-matrix-write",{  
@@ -338,6 +343,7 @@ test_that("DataSet-Select-Subset-matrix-write",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-array-read",{  
@@ -407,6 +413,7 @@ test_that("DataSet-Select-Subset-array-read",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Subset-array-write",{  
@@ -497,4 +504,5 @@ test_that("DataSet-Select-Subset-array-write",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })

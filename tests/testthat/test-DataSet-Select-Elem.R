@@ -45,6 +45,7 @@ test_that("DataSet-Select-Elem-params",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Elem-vector",{  
@@ -92,6 +93,7 @@ test_that("DataSet-Select-Elem-vector",{
   h5close(dset2)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 
@@ -139,6 +141,7 @@ test_that("DataSet-Select-Elem-matrix",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Elem-array",{  
@@ -191,4 +194,5 @@ test_that("DataSet-Select-Elem-array",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })

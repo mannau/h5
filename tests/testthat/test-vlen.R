@@ -27,7 +27,7 @@ test_that("DataSet-VLEN-Vector-create",{
   h5close(group)
   h5close(file)
  
-  file.remove(fname)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-VLEN-Vector",{
@@ -63,8 +63,12 @@ test_that("DataSet-VLEN-Vector",{
   h5close(file)
   
   file <- h5file(fname, "a")
-  expect_that(file["/testgroup/testlist_n"][], is_identical_to(testlist_n))
-  expect_that(file["/testgroup/testlist_i"][], is_identical_to(testlist_i))
+  testlist_n_in <- file["/testgroup/testlist_n"] 
+  expect_that(testlist_n_in[], is_identical_to(testlist_n))
+  h5close(testlist_n_in)
+  testlist_i_in <- file["/testgroup/testlist_i"] 
+  expect_that(testlist_i_in[], is_identical_to(testlist_i))
+  h5close(testlist_i_in)
   h5close(file)
-  
+  expect_that(file.remove(fname), is_true())
 })

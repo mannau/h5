@@ -79,7 +79,7 @@ test_that("H5File-FileMode-param-w",{
   expect_that(basename(file@location), is_identical_to(fname))
   expect_that(existsGroup(file, "testgroup1"), is_false())
   h5close(file)
-  #expect_that(file.remove(fname), is_true())		
+  
 })
 			
 test_that("H5File-FileMode-param-r",{
@@ -90,8 +90,7 @@ test_that("H5File-FileMode-param-r",{
 	#expect_that(existsGroup(file, "testgroup1"), is_true())
 	h5close(file)
   
-  file.remove(fname)
-  expect_that(file.exists(fname), is_false())
+  expect_that(file.remove(fname), is_true())		
   f <- function() file <- h5file(fname, "r")
   expect_that(f(), throws_error("H5Fopen failed"))
 })
@@ -112,7 +111,7 @@ test_that("H5File-FileMode-param-r+",{
   expect_that(group1, is_a("H5Group"))
   h5close(group1)
   h5close(file)
-  file.remove(fname) 
+  expect_that(file.remove(fname), is_true())
 })
 
 
@@ -127,6 +126,7 @@ test_that("H5File-show",{
   h5close(group3)
   file
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("H5File-is-h5file",{
@@ -137,11 +137,11 @@ test_that("H5File-is-h5file",{
   h5close(file)
   
   expect_that(is.h5file(fname), is_true())
-  expect_that(is.h5file("abc"), is_false())
+  expect_warning(expect_that(is.h5file("abc"), is_false()))
   fnametxt <- "test.txt"
   writeLines("abc", fnametxt)
   expect_that(is.h5file(fnametxt), is_false())
-  if(file.exists(fname)) file.remove(fname)
-  if(file.exists(fnametxt)) file.remove(fnametxt)
+  expect_that(file.remove(fname), is_true())
+  expect_that(file.remove(fnametxt), is_true())
 })
 

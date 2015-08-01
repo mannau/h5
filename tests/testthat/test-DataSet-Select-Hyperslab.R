@@ -66,7 +66,7 @@ test_that("DataSet-Select-Hyperslab-params",{
   h5close(dset1)
   h5close(group)
   h5close(file)
-  
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Hyperslab-vector",{  
@@ -117,6 +117,7 @@ test_that("DataSet-Select-Hyperslab-vector",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 
@@ -167,6 +168,7 @@ test_that("DataSet-Select-Hyperslab-matrix",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-Select-Hyperslab-array",{  
@@ -225,4 +227,5 @@ test_that("DataSet-Select-Hyperslab-array",{
   h5close(dset1)
   h5close(group)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })

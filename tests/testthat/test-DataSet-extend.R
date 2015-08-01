@@ -42,6 +42,7 @@ test_that("DataSet-extend",{
 
   h5close(dset2)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-extend-matrix-rbind",{  
@@ -76,6 +77,7 @@ test_that("DataSet-extend-matrix-rbind",{
   expect_that(readDataSet(dset2), is_identical_to(rbind(testmat_n, testmat_n)))
   h5close(dset2)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-extend-matrix-cbind",{  
@@ -111,29 +113,31 @@ test_that("DataSet-extend-matrix-cbind",{
   expect_that(readDataSet(dset2), is_identical_to(cbind(testmat_n, testmat_n)))
   h5close(dset2)
   h5close(file)
+  expect_that(file.remove(fname), is_true())
 })
 
 test_that("DataSet-extend-vector-c",{  
-    testmat_n <- as.integer(1:90)
-    
-    # Test normal usecase with unlimited dset
-    if(file.exists(fname)) file.remove(fname)
-    file <- h5file(fname, "a")
-    dset1 <- createDataSet(file, "testmat_1", testmat_n)
-    
-    f <- function() c(dset1, integer(0))
-    expect_that(f(), throws_error("Elements of parameter count must be greater than zero"))
-    
-    dset1 <- c(dset1, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
-    h5close(dset1)
-    h5close(file)
-    
-    file <- h5file(fname, "r")
-    dset1 <- openDataSet(file, "testmat_1")
-    testmat_n_extend <- c(testmat_n, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
-    expect_that(readDataSet(dset1), is_identical_to(testmat_n_extend))
-    h5close(dset1)
-    h5close(file)
-  })
+  testmat_n <- as.integer(1:90)
+  
+  # Test normal usecase with unlimited dset
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname, "a")
+  dset1 <- createDataSet(file, "testmat_1", testmat_n)
+  
+  f <- function() c(dset1, integer(0))
+  expect_that(f(), throws_error("Elements of parameter count must be greater than zero"))
+  
+  dset1 <- c(dset1, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
+  h5close(dset1)
+  h5close(file)
+  
+  file <- h5file(fname, "r")
+  dset1 <- openDataSet(file, "testmat_1")
+  testmat_n_extend <- c(testmat_n, rep(1L, length(testmat_n)), rep(2L, length(testmat_n)))
+  expect_that(readDataSet(dset1), is_identical_to(testmat_n_extend))
+  h5close(dset1)
+  h5close(file)
+  expect_that(file.remove(fname), is_true())
+})
 
 
