@@ -49,6 +49,7 @@ setGeneric("selectDataSpace", function(.Object,
 )
 
 #' @rdname DataSpace   
+#' @importFrom methods new
 #' @export 
 setMethod("selectDataSpace", signature(.Object = "DataSet", 
         offset = "missing", count = "missing", elem = "missing"), 
@@ -59,6 +60,7 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
     })
 
 #' @rdname DataSpace
+#' @importFrom methods new
 #' @export 
 setMethod("selectDataSpace", signature(.Object = "DataSet", 
         offset = "ANY", count = "ANY", elem = "missing"), 
@@ -72,6 +74,7 @@ setMethod("selectDataSpace", signature(.Object = "DataSet",
     })
 
 #' @rdname DataSpace
+#' @importFrom methods new
 #' @export 
 setMethod("selectDataSpace", signature(.Object = "DataSet", 
         offset = "missing", count = "missing", elem = "matrix"), 

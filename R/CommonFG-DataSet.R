@@ -171,6 +171,7 @@ checkCompression <- function(compression) {
   
 }
 
+#' @importFrom methods new
 createDataset_internal <- function(.Object, datasetname, typechar, dimensions, 
     chunksize, maxdimensions, compression, size) {
   
@@ -199,6 +200,7 @@ setGeneric("openDataSet", function(.Object, datasetname, type)
 )
 
 #' @rdname CommonFG-DataSet
+#' @importFrom methods new
 #' @export
 setMethod("openDataSet", signature(.Object="CommonFG", 
         datasetname = "character"), 

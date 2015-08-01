@@ -64,12 +64,14 @@ function(.Object, name, mode = "a") {
 })
 
 #' @rdname H5File
+#' @importFrom methods new
 #' @export
 h5file <- function(name, mode = "a") {
   new("H5File", name, mode)
 }
 
 #' @rdname H5File
+#' @importFrom methods new
 #' @export
 H5File <- function(name, mode = "a") {
   warning("This function is deprecated, use h5file instead")

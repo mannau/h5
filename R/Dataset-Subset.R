@@ -257,6 +257,7 @@ setMethod("[<-", c("DataSet", "ANY", "ANY", "ANY"),
       writeSubsetDataSet(x, i = i, j = j, ..., value = value)
     })
 
+#' @importFrom methods new
 dataSpaceFromIndex <- function(dset, indices, maxspaces = 100) {
   stopifnot(inherits(dset, "DataSet"))
   stopifnot(is.list(indices))

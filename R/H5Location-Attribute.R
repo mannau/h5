@@ -38,6 +38,7 @@ setGeneric("createAttribute", function(.Object, attributename, data, size = -1)
 )
 
 #' @rdname H5Location-Attribute
+#' @importFrom methods new
 #' @export
 setMethod("createAttribute", signature(.Object="H5Location", 
         attributename = "character", data = "ANY", size = "ANY"), 
@@ -69,6 +70,7 @@ setGeneric("openAttribute", function(.Object, attributename)
 )
 
 #' @rdname H5Location-Attribute
+#' @importFrom methods new
 #' @export
 setMethod("openAttribute", signature(.Object="H5Location", attributename = "character"), 
   function(.Object, attributename) {

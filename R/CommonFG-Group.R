@@ -30,6 +30,7 @@ getGroupLocation <- function(x, groupname) {
 }
 
 #' @rdname CommonFG-Group
+#' @importFrom methods new
 #' @export
 setMethod( "createGroup", signature(.Object="CommonFG", 
         groupname = "character"), 
@@ -45,6 +46,7 @@ setGeneric("openGroup", function(.Object, groupname)
 )
 
 #' @rdname CommonFG-Group
+#' @importFrom methods new
 #' @export
 setMethod( "openGroup", signature(.Object="CommonFG", groupname = "character"), 
     function(.Object, groupname) {
