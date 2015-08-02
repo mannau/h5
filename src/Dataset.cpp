@@ -21,7 +21,7 @@ bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat,
     const void *buf = ConvertBuffer(mat, type, stsize);
     DataType dtype = GetDataType(type, stsize);
     dataset->write(buf, dtype, *memspace, *dataspace);
-    //R_Free(buf);
+    delete memspace;
     dtype.close();
     return TRUE;
   } catch(Exception& error) {
