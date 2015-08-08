@@ -1787,6 +1787,8 @@ if test -z "${CPPFLAGS}"; then
   fi
 fi
 
+CPPFLAGS="${CPPFLAGS} -fsanitize=address -fno-omit-frame-pointer"
+
 
 
 ac_config_files="$ac_config_files src/Makevars"

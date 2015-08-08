@@ -4,6 +4,7 @@ env:
   global:
     - PKG_CXXFLAGS="-pedantic"
     - _R_CHECK_CRAN_INCOMING_=FALSE
+    - ASAN="-fsanitize=address -fno-omit-frame-pointer"
 
 # Be strict when checking our package
 warnings_are_errors: true
