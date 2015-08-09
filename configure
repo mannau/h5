@@ -1787,7 +1787,10 @@ if test -z "${CPPFLAGS}"; then
   fi
 fi
 
-CPPFLAGS="${CPPFLAGS} -fsanitize=address -fno-omit-frame-pointer"
+if test -n "${ASAN}"; then
+  CPPFLAGS="${CPPFLAGS} -fsanitize=address -fno-omit-frame-pointer"
+  LIBS="${LIBS} -lasan -lubsan}"
+fi
 
 
 

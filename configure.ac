@@ -48,10 +48,6 @@ if test -z "${CPPFLAGS}"; then
   fi
 fi
 
-dnl if test -n "${ASAN}"; then
-CPPFLAGS="${CPPFLAGS} -fsanitize=address -fno-omit-frame-pointer"
-dnl fi
-
 dnl substitute CPPFLAGS and LIBS
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LIBS)
