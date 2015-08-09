@@ -1787,11 +1787,6 @@ if test -z "${CPPFLAGS}"; then
   fi
 fi
 
-if test -n "${ASAN}"; then
-  CPPFLAGS="${CPPFLAGS} -fsanitize=address -fno-omit-frame-pointer"
-  LIBS="${LIBS} -lasan -lubsan}"
-fi
-
 
 
 ac_config_files="$ac_config_files src/Makevars"

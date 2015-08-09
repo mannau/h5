@@ -18,6 +18,7 @@ PKG_FILES := DESCRIPTION $(ROXYGENFILES) $(R_FILES) $(SRC_FILES) \
 OBJECTS := $(wildcard src/*.o) $(wildcard src/*.o-*) $(wildcard src/*.dll) $(wildcard src/*.so) $(wildcard src/*.rds)
 CHECKPATH := $(PKG_NAME).Rcheck
 CHECKLOG := `cat $(CHECKPATH)/00check.log`
+CURRENT_DIR := $(shell pwd)
 
 .PHONY: all build check manual install clean compileAttributes \
 	build-cran check-cran
@@ -57,10 +58,26 @@ check: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	@rm -rf $(CHECKPATH)
 	$(R) CMD check --no-manual --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
+check-valgrind: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
+	@rm -rf $(CHECKPATH)
+	$(R) CMD check --no-manual --no-clean --use-valgrind $(PKG_NAME)_$(PKG_VERSION).tar.gz
+
 check-cran: 
 	@make build-cran
 	@rm -rf $(CHECKPATH)
 	$(R) CMD check --no-manual --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
+
+check-ubsan-clang: $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	@boot2docker up
+	$(shell boot2docker shellinit)
+	@docker run -v "$(CURRENT_DIR):/mnt" rocker/r-devel-ubsan-clang /bin/bash -c \
+		"cd /mnt; check.r --deb-pkgs libhdf5-dev --install-deps $(PKG_NAME)_$(PKG_VERSION).tar.gz"
+
+check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	@boot2docker up
+	$(shell boot2docker shellinit)
+	@docker run -v "$(CURRENT_DIR):/mnt" mannau/r-devel-san /bin/bash -c \
+		"cd /mnt; check.r --deb-pkgs libhdf5-dev --install-deps $(PKG_NAME)_$(PKG_VERSION).tar.gz"
 
 00check.log: check
 	@mv $(CHECKPATH)\\00check.log .
