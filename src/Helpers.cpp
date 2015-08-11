@@ -339,7 +339,6 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
 				 }
 
 				 data = wrap(datvec);
-				 delete ptr;
 				 memspace->close();
 				 return data;
 			}
@@ -358,7 +357,6 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
 				 }
 
 				 data = wrap(datvec);
-				 delete ptr;
 				 return data;
 			}
 			default:

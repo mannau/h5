@@ -3,6 +3,13 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\fkt}{\code{#1()}}
 
+\section{Changes in h5 version 0.9.3 (2015-08-11)}{
+  \itemize{
+    \item Fix ASAN Bug in ReadRData for VLEN Datasets
+    \item Add Makefile targets check-ubsan-clang, check-asan-gcc using Docker
+  }
+}
+
 \section{Changes in h5 version 0.9.2 (2015-08-01)}{
   \itemize{
     \item Improve/speedup selection of multiple contiguous hyperslabs
