@@ -11,10 +11,11 @@ DataType GetDataType(const DTYPE datatype, int size = -1) {
     case T_DOUBLE: return PredType::NATIVE_DOUBLE;
     case T_INTEGER: return PredType::NATIVE_INT32;
     case T_LOGICAL: {
-    	bool val;
-    	EnumType boolenumtype = EnumType(sizeof(bool));
+    	int val;
+    	EnumType boolenumtype = EnumType(sizeof(char));
     	boolenumtype.insert("FALSE", CPTR(val, FALSE));
     	boolenumtype.insert("TRUE", CPTR(val, TRUE));
+    	boolenumtype.insert("NA", CPTR(val, -1));
     	return boolenumtype;
     }
     case T_CHARACTER: {
@@ -154,10 +155,14 @@ void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize) {
     	   return INTEGER(mat);
        }
        case T_LOGICAL: {
-           bool *boolbuf = (bool *)R_alloc(LENGTH(mat), sizeof(bool));
+    	   char *boolbuf = (char *)R_alloc(LENGTH(mat), sizeof(char));
            int z=0;
            for (int i = 0; i < LENGTH(mat); i++) {
-        	   boolbuf[z++] = LOGICAL(mat)[i];
+        	   if(LOGICAL(mat)[i] == NA_LOGICAL) {
+        		   boolbuf[z++] = -1;
+        	   } else {
+        		   boolbuf[z++] = LOGICAL(mat)[i];
+        	   }
            }
            return boolbuf;
        }
@@ -228,8 +233,6 @@ SEXP AllocateRData(DTYPE tchar, NumericVector count) {
 	NumericVector count_rev = clone<NumericVector>(count);
 	std::reverse(count_rev.begin(), count_rev.end());
 
-
-
 	switch(tchar) {
 		case T_DOUBLE:
 			if (ndim == 1) {
@@ -293,10 +296,14 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
 				break;
 			case T_LOGICAL: {
 				hsize_t n = dataspace->getSelectNpoints();
-				bool *boolbuf = (bool *)R_alloc(n, sizeof(bool));
+				char *boolbuf = (char *)R_alloc(n, sizeof(char));
 				dataset->read(boolbuf, GetDataType(T_LOGICAL), *memspace, *dataspace);
 				for(unsigned int i = 0; i < n; i++) {
-				  LOGICAL(data)[i] = boolbuf[i];
+					if(boolbuf[i] == -1) {
+						LOGICAL(data)[i] = NA_LOGICAL;
+					} else {
+						LOGICAL(data)[i] = boolbuf[i];
+					}
 				}
 				break;
 			}
@@ -309,7 +316,12 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
 					char *strbuf = (char *)R_alloc(n, stsize);
 					dataset->read(strbuf, dtype, *memspace, *dataspace);
 					for(unsigned int i = 0; i < n; i++) {
-					  SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
+					  Rcpp::String readstr(strbuf);
+					  if(readstr == "NA") {
+						  SET_STRING_ELT(data, i, NA_STRING);
+					  } else {
+						  SET_STRING_ELT(data, i, readstr.get_sexp());
+					  }
 					  strbuf += stsize;
 					}
 				} else { // Assume variable-length string
@@ -318,7 +330,11 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
 					dataset->read(strbuf, dtype, *memspace, *dataspace);
 					for(unsigned int i = 0; i < n; i++) {
 					  Rcpp::String readstr(strbuf[i]);
-					  SET_STRING_ELT(data, i, readstr.get_sexp());
+					  if(readstr == "NA") {
+						  SET_STRING_ELT(data, i, NA_STRING);
+					  } else {
+						  SET_STRING_ELT(data, i, readstr.get_sexp());
+					  }
 					}
 				}
 				dtype.close();
