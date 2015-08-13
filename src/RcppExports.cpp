@@ -119,6 +119,28 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// GetAttributeNames_CommonFG
+CharacterVector GetAttributeNames_CommonFG(XPtr<CommonFG> file);
+RcppExport SEXP h5_GetAttributeNames_CommonFG(SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    __result = Rcpp::wrap(GetAttributeNames_CommonFG(file));
+    return __result;
+END_RCPP
+}
+// GetAttributeNames_DataSet
+CharacterVector GetAttributeNames_DataSet(XPtr<DataSet> file);
+RcppExport SEXP h5_GetAttributeNames_DataSet(SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<DataSet> >::type file(fileSEXP);
+    __result = Rcpp::wrap(GetAttributeNames_DataSet(file));
+    return __result;
+END_RCPP
+}
 // WriteDataset
 bool WriteDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, SEXP mat, char datatype, NumericVector count);
 RcppExport SEXP h5_WriteDataset(SEXP datasetSEXP, SEXP dataspaceSEXP, SEXP matSEXP, SEXP datatypeSEXP, SEXP countSEXP) {
@@ -428,17 +450,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
     Rcpp::traits::input_parameter< string >::type path(pathSEXP);
     __result = Rcpp::wrap(GetDataSetNames(file, path));
-    return __result;
-END_RCPP
-}
-// GetAttributeNames
-CharacterVector GetAttributeNames(XPtr<CommonFG> file);
-RcppExport SEXP h5_GetAttributeNames(SEXP fileSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
-    __result = Rcpp::wrap(GetAttributeNames(file));
     return __result;
 END_RCPP
 }

@@ -145,3 +145,11 @@ test_that("H5File-is-h5file",{
   expect_that(file.remove(fnametxt), is_true())
 })
 
+test_that("H5File-flush",{
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname)
+  file["testgroup/testset"] <- 1:100
+  expect_that(h5flush(file), is_true())
+  h5close(file)
+})
+

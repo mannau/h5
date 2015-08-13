@@ -122,26 +122,3 @@ herr_t dset_info(hid_t loc_id, const char *name, void *opdata) {
 		 return 1;
 	 }
 }
-
-// [[Rcpp::export]]
-CharacterVector GetAttributeNames(XPtr<CommonFG> file) {
-	try {
-		CharacterVector(out);
-		H5Aiterate2(file->getLocId(), H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &out);
-
-		return out;
-	} catch (Exception& error) {
-		 string msg = error.getDetailMsg() + " in " + error.getFuncName();
-		 throw Rcpp::exception(msg.c_str());
-	}
-}
-
-herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata) {
-//attr_info(hid_t loc_id, const char *name, void *opdata) {
-	try {
-		((CharacterVector *) opdata)->push_back(name);
-		return 0;
-	 } catch (Exception& error) {
-		 return 1;
-	 }
-}

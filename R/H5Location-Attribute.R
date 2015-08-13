@@ -130,9 +130,15 @@ setGeneric("list.attributes", function(.Object)
 #' @rdname H5Location-Attribute
 #' @export
 setMethod( "list.attributes", c("H5Location"), 
-    function(.Object) {
-      res <- GetAttributeNames(.Object@pointer)
-      res
-    })    
+  function(.Object) {
+    if (inherits(.Object, "CommonFG")) {
+      res <- GetAttributeNames_CommonFG(.Object@pointer)
+    } else if (inherits(.Object, "DataSet")) {
+      res <- GetAttributeNames_DataSet(.Object@pointer)
+    } else {
+      stop("Object does not inherit H5File, H5Group or DataSet.")
+    }
+    res
+  })    
 
 

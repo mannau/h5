@@ -72,3 +72,41 @@ test_that("DataSet-VLEN-Vector",{
   h5close(file)
   expect_that(file.remove(fname), is_true())
 })
+
+test_that("DataSet-VLEN-Vector-Attribute",{
+  testvec_n <- rnorm(120)
+  testvec_i <- as.integer(runif(120)*10000)
+  testvec_l <- as.logical(round(runif(120)))
+  testvec_c <-rep(paste0(LETTERS[1:3], rev(LETTERS)[1:3]), 120/3)
+  testvec_c[1] <- paste0(testvec_c[1], testvec_c[1])
+  testvec_c[40] <- paste0(testvec_c[1], testvec_c[1])
+  
+  testlist_n <- list(testvec_n[1:10], testvec_n[11:30], testvec_n[31:120])
+  testlist_i <- list(testvec_i[1:10], testvec_i[11:30], testvec_i[31:120])
+  testlist_l <- list(testvec_l[1:10], testvec_l[11:30], testvec_l[31:120])
+  testlist_c <- list(testvec_c[1:10], testvec_c[11:30], testvec_c[31:120])
+  
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname, "a")
+  group <- createGroup(file, "/testgroup")
+  
+  h5attr(group, "testlist_n") <- testlist_n
+  h5attr(group, "testlist_i") <- testlist_i
+
+  f <- function() h5attr(group, "testlist_l") <- testlist_l
+  expect_that(f(), throws_error("Type 'vlen-logical' not supported yet"))
+  
+  f <- function() h5attr(group, "testlist_c") <- testlist_c
+  expect_that(f(), throws_error("Type 'vlen-character' not supported yet"))
+  
+  h5close(group)
+  h5close(file)
+  
+  file <- h5file(fname, "a")
+  testlist_n_in <- h5attr(file["/testgroup"], "testlist_n") 
+  expect_that(testlist_n_in, is_identical_to(testlist_n))
+  testlist_i_in <- h5attr(file["/testgroup"], "testlist_i") 
+  expect_that(testlist_i_in[], is_identical_to(testlist_i))
+  h5close(file)
+  expect_that(file.remove(fname), is_true())
+})

@@ -37,6 +37,9 @@ test_that("Attribute-Errors", {
   expect_that(f(), throws_error("Opening Attribute failed"))    
   h5attr(file, "test") <- c("A", "BE", "BU")
   
+  f <- function() h5attr(file, "test") <- c("a", "be", "bu")
+  expect_that(f(), throws_error("Creation of Attribute failed"))    
+  
   group <- file["testgroup"]
   f <- function() h5attr(group, "test")
   expect_that(f(), throws_error("Opening Attribute failed"))    
@@ -119,6 +122,31 @@ test_that("Attribute-H5Type-File", {
   h5close(file) 
   expect_that(file.remove(fname), is_true())
 })    
+
+test_that("Attribute-list-attributes", {      
+  if(file.exists(fname)) file.remove(fname)
+  file <- h5file(fname)
+  file["testgroup/testset"] <- 1:10
+  h5attr(file, "fileattr1") <- 1:10
+  h5attr(file, "fileattr2") <- 1:10
+  h5attr(file, "fileattr3") <- 1:10
+  h5attr(file["testgroup/testset"], "dsteattr1") <- 1:10
+  h5attr(file["testgroup/testset"], "dsteattr2") <- 1:10
+  h5attr(file["testgroup/testset"], "dsteattr3") <- 1:10
+  expect_that(list.attributes(file), 
+      is_identical_to(c("fileattr1", "fileattr2", "fileattr3")))
+  expect_that(list.attributes(file["testgroup/testset"]), 
+      is_identical_to(c("dsteattr1", "dsteattr2", "dsteattr3")))
+# TODO: check why  Attribute-list-attributes not working for file subset
+# h5attr(file["testgroup"], "groupattr1") <- 1:10
+# h5attr(file["testgroup"], "groupattr2") <- 1:10
+# h5attr(file["testgroup"], "groupattr3") <- 1:10
+#  expect_that(list.attributes(file["testgroup"]), 
+#      is_identical_to(c("groupattr1", "groupattr2", "groupattr3")))
+
+  h5close(file) 
+  expect_that(file.remove(fname), is_true())
+})
 
 test_that("Bug_AttributeGroupSubset", {        
   fname <- "test.h5"
