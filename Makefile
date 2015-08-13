@@ -1,6 +1,7 @@
 R_HOME := $(shell R RHOME)
 Rscript := '$(R_HOME)/bin/Rscript' --vanilla -e
 R := "${R_HOME}/bin/R"
+DOCDIR := 'docs'
 
 PKG_VERSION := $(shell grep -i ^version DESCRIPTION | cut -d : -d \  -f 2)
 PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
@@ -9,6 +10,8 @@ PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
 R_FILES := $(wildcard R/*.R)
 TEST_FILES := $(wildcard tests/*.R) $(wildcard tests/testthat/*.R)
 ALL_SRC_FILES := $(wildcard src/*.cpp) $(wildcard src/*.h) src/Makevars.in
+RMD_FILES := $(shell find $(DOCDIR) -name '*.Rmd')
+MD_FILES := $(RMD_FILES:.Rmd=.md)
 SRC_FILES := $(filter-out src/RcppExports.cpp, $(ALL_SRC_FILES))
 HEADER_FILES := $(wildcard src/*.h)
 RCPPEXPORTS := src/RcppExports.cpp R/RcppExports.R
@@ -98,3 +101,8 @@ clean:
 	@rm -f $(wildcard *.tar.gz)
 	@rm -f $(wildcard *.pdf)
 	@echo '*** PACKAGE CLEANUP COMPLETE ***'
+
+docs: $(MD_FILES)
+	
+$(MD_FILES): $(RMD_FILES)
+	echo "library(knitr); library(h5); setwd('docs'); sapply(list.files(pattern = '*.Rmd'), knit)" | $(R) --slave --vanilla
