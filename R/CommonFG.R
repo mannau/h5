@@ -102,4 +102,30 @@ setMethod("[<-", c("CommonFG", "character", "ANY"),
     x
   })
 
-    
+#' @rdname CommonFG
+#' @param path character; Path to be deleted, either specifying group or dataset.
+#' @export
+setGeneric("h5unlink", function(.Object, path)
+      standardGeneric("h5unlink")
+)
+
+#' @rdname CommonFG
+#' @export
+setMethod( "h5unlink", signature(.Object="CommonFG", path="character"), 
+  function(.Object, path) {
+    sapply(path, function(cpath) {
+      res <- FALSE
+      exds <- existsDataSet(.Object, cpath)
+      exgr <- existsGroup(.Object, cpath)
+      
+      if (!(exds || exgr)) {
+        res <- FALSE
+        warning(sprintf("cannot remove '%s', reason 'No such dataset or group'", 
+                cpath))
+      } else {
+        res <- Unlink(.Object@pointer, cpath)
+      }
+      res   
+    }, USE.NAMES = FALSE)
+})
+

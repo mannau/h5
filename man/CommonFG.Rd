@@ -7,6 +7,8 @@
 \alias{[,CommonFG,character,ANY-method}
 \alias{[<-,CommonFG,character,ANY-method}
 \alias{h5close}
+\alias{h5unlink}
+\alias{h5unlink,CommonFG,character-method}
 \title{The CommonFG Class}
 \usage{
 h5close(.Object)
@@ -14,6 +16,10 @@ h5close(.Object)
 \S4method{[}{CommonFG,character,ANY}(x, i, j, ..., drop = TRUE)
 
 \S4method{[}{CommonFG,character,ANY}(x, i, j, ...) <- value
+
+h5unlink(.Object, path)
+
+\S4method{h5unlink}{CommonFG,character}(.Object, path)
 }
 \arguments{
 \item{.Object}{CommonFG; S4 object of class \code{CommonFG};}
@@ -31,6 +37,8 @@ relevant for assignment operator.}
 implemented yet).}
 
 \item{value}{vector/matrix/array; Value to be assigend to dataset}
+
+\item{path}{character; Path to be deleted, either specifying group or dataset.}
 }
 \description{
 \code{CommonFG} is the base class of \code{\link{H5File}} and \code{\link{H5Group}}

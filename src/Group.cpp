@@ -122,3 +122,15 @@ herr_t dset_info(hid_t loc_id, const char *name, void *opdata) {
 		 return 1;
 	 }
 }
+
+// [[Rcpp::export]]
+bool Unlink(XPtr<CommonFG> file, string path) {
+  try {
+	  file->unlink(path.c_str());
+  } catch (Exception& error) {
+    Function warning("warning");
+    warning(error.getDetailMsg());
+    return false;
+  }
+  return true;
+}

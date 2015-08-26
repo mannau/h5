@@ -92,7 +92,7 @@ test_that("H5Group-existsGroup",{
   expect_that(file.remove(fname), is_true())
 })
 
-test_that("DataSet-list-groups",{	
+test_that("CommonFG-list-groups",{	
   if(file.exists(fname)) file.remove(fname)
   file <- h5file(fname, "a")
   
@@ -132,3 +132,59 @@ test_that("DataSet-list-groups",{
   expect_that(file.remove(fname), is_true())
 })  
 
+test_that("CommonFG-unlink",{	
+  if(file.exists(fname)) file.remove(fname)
+  
+  file <- h5file(fname)
+  
+  file["testgroup/testset"] <- 1:3
+  file["testgroup/testset2"] <- 1:3
+  file["testgroup2/testset"] <- 1:3
+  
+  h5close(file)
+
+  file <- h5file(fname)
+  
+  # unlink group
+  ex <- c("/testgroup/testset",  "/testgroup/testset2", "/testgroup2/testset")
+  expect_that(list.datasets(file, recursive = TRUE, full.names = TRUE), 
+      is_identical_to(ex))
+  
+  # unlink dataset
+  expect_that(h5unlink(file, "testgroup"), is_true())
+  expect_that(h5unlink(file, "testgroup2/testset"), is_true())
+  expect_that(list.datasets(file, recursive = TRUE, full.names = TRUE), 
+      is_identical_to(character(0)))
+  expect_that(list.groups(file, recursive = TRUE, full.names = TRUE), 
+      is_identical_to("/testgroup2"))
+  
+  # remove last group
+  expect_that(h5unlink(file, "testgroup2"), is_true())
+  expect_that(list.groups(file, recursive = TRUE, full.names = TRUE), 
+      is_identical_to(character(0)))
+  
+  # remove non-existing
+  # expect_that(h5unlink(file, "testgroup2"), is_false())
+  # expect_that(h5unlink(file, "testgroup2/testset"), is_false())
+  
+  # add data sets again
+  file["testgroup/testset"] <- 5:6
+  file["testgroup/testset2"] <- 5:6
+  file["testgroup2/testset"] <- 5:6
+  h5close(file)
+  
+  file <- h5file(fname, "a")
+  expect_that(file["testgroup/testset"][], is_identical_to(5:6))
+  expect_that(file["testgroup/testset2"][], is_identical_to(5:6))
+  expect_that(file["testgroup2/testset"][], is_identical_to(5:6))
+  
+  # remove multiple datasets, 1 missing
+  # TODO: check if file is read-only mode
+  expect_warning(res <- h5unlink(file, c("/testgroup/testset", "/testgroup/testset2", 
+          "/testgroup2/testset", "/testgroup2/missing")))
+  expect_that(res, is_identical_to(c(TRUE, TRUE, TRUE, FALSE)))
+
+  h5close(file)
+  
+  expect_that(file.remove(fname), is_true())
+})  
