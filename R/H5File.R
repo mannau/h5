@@ -95,10 +95,10 @@ setMethod("show", "H5File",
   function(object) {
     cat(sprintf("H5File '%s' (mode '%s')\n", basename(object@location), 
             object@mode))
-    out <- paste(	c(sprintf("+ %s", sort(list.groups(object, recursive = FALSE))), 
-            sprintf("D %s", sort(list.datasets(object, recursive = FALSE))),
+    out <- paste(	c(sprintf("+ %s", sort(list.groups(object, full.names = FALSE, recursive = FALSE))), 
+            sprintf("D %s", sort(list.datasets(object, full.names = FALSE, recursive = FALSE))),
             sprintf("A %s", sort(list.attributes(object)))), collapse = "\n")
-    cat(out)
+    cat(out, "\n")
   })
 
 #' @rdname H5File
