@@ -10,7 +10,21 @@ Further documentation is available at http://h5.readthedocs.org/en/latest.
 This library is has already been released on [CRAN](http://cran.r-project.org/web/packages/h5/index.html). 
 
 ## Install
-See http://h5.readthedocs.org/en/latest/install/ for installation notes.
+**h5** has already been released on [CRAN](https://cran.r-project.org/web/packages/h5/index.html), and can therefore be installed using
+
+```python
+install.packages("h5")
+```
+
+The most recent development version can be installed from [Github](https://github.com/mannau/h5) using [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html):
+
+```python
+library(devtools)
+install_github("mannau/h5")
+```
+Please note that this version has been tested with the current hdf5 library 1.8.14 (and 1.8.13 for OS X) - you should therefore install the most current hdf5 library including its C++ API for your platform. 
+
+See http://h5.readthedocs.org/en/latest/install/ for further installation notes.
 
 ## Usage
 
