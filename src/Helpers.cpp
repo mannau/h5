@@ -55,12 +55,16 @@ struct cmpDataType {
 };
 
 DTYPE GetTypechar(const DataType &dtype) {
-
 	if ( (dtype == PredType::NATIVE_FLOAT) ||
 		 (dtype == PredType::NATIVE_DOUBLE) ||
 		 (dtype == PredType::NATIVE_INT64) ||
 		 (dtype == PredType::NATIVE_UINT32) ||
-		 (dtype == PredType::NATIVE_UINT64)) {
+		 (dtype == PredType::NATIVE_UINT64) ||
+		 (dtype == PredType::IEEE_F32BE) ||
+		 (dtype == PredType::IEEE_F32LE) ||
+		 (dtype == PredType::IEEE_F64BE) ||
+		 (dtype == PredType::IEEE_F64LE)
+	) {
 	  return T_DOUBLE;
 	}
 

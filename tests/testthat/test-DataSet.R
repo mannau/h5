@@ -182,3 +182,11 @@ test_that("DataSet-list-dataset",{
 
 })  
 
+test_that("DataSet-Bug-F32-Issue10",{	
+  fname <- system.file("test-f32.h5", package = "h5", mustWork = TRUE)
+  
+  file <- h5file(fname, "r")
+  expect_that(file["floats"][], is_identical_to(c(1, 2, 3)))
+  h5close(file)
+})
+
