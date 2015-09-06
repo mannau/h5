@@ -160,3 +160,10 @@ test_that("Bug_AttributeGroupSubset", {
   h5close(file) 
   expect_that(file.remove(fname), is_true())
 })
+
+test_that("Attribute-Bug-Scalar-Issue09",{	
+  fname <- system.file("test-f32.h5", package = "h5", mustWork = TRUE)
+  file <- h5file(fname, "r")
+  expect_that(substr(h5attr(file["floats"], "scalar"), 1, 5), is_identical_to("Hello"))
+  h5close(file)
+})

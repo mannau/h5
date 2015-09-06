@@ -129,11 +129,24 @@ char GetAttributeType(XPtr<Attribute> attribute) {
 
 // [[Rcpp::export]]
 NumericVector GetAttributeDimensions(XPtr<Attribute> attribute) {
-  DataSpace dataspace = attribute->getSpace();
-  int ndim = dataspace.getSimpleExtentNdims();
-  vector<hsize_t> dims_out(ndim);
-  dataspace.getSimpleExtentDims(&dims_out[0], NULL);
-  return NumericVector(dims_out.begin(), dims_out.end());
+	try {
+	  DataSpace dataspace = attribute->getSpace();
+	  int ndim = dataspace.getSimpleExtentNdims();
+
+	  NumericVector out;
+	  if(ndim > 0) {
+		vector<hsize_t> dims_out(ndim);
+		dataspace.getSimpleExtentDims(&dims_out[0], NULL);
+		out = NumericVector(dims_out.begin(), dims_out.end());
+	  } else { // Assume scalar Attribute
+		out = NumericVector(1);
+		out[0] = 1;
+	  }
+	  return out;
+	} catch (Exception& error) {
+		 string msg = error.getDetailMsg() + " in " + error.getFuncName();
+		 throw Rcpp::exception(msg.c_str());
+	}
 }
 
 // [[Rcpp::export]]
