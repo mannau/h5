@@ -26,6 +26,7 @@ LinkingTo: Rcpp
 Suggests:
     testthat,
     roxygen2,
+    RCurl
 Collate:
     'H5Location-Attribute.R'
     'Attribute.R'
