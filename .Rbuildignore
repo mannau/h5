@@ -19,3 +19,4 @@ src/.settings
 src/.cproject
 src/.project
 src/.externalToolBuilders
+appveyor.yml

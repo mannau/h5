@@ -1,5 +1,6 @@
 # h5
-[![Build Status](https://travis-ci.org/mannau/h5.svg?branch=master)](https://travis-ci.org/mannau/h5) [![codecov.io](http://codecov.io/github/mannau/h5/coverage.svg?branch=master)](http://codecov.io/github/mannau/h5?branch=master) [![License](https://img.shields.io/badge/license-BSD%202%20clause-blue.svg?style=flat)](http://opensource.org/licenses/BSD-2-Clause)
+[![Build Status](https://travis-ci.org/mannau/h5.svg?branch=master)](https://travis-ci.org/mannau/h5) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/mannau/h5?branch=master&svg=true)](https://ci.appveyor.com/project/mannau/h5)
+[![codecov.io](http://codecov.io/github/mannau/h5/coverage.svg?branch=master)](http://codecov.io/github/mannau/h5?branch=master) [![License](https://img.shields.io/badge/license-BSD%202%20clause-blue.svg?style=flat)](http://opensource.org/licenses/BSD-2-Clause)
 
 **h5** provides an interface to the HDF5 API through S4-objects. It supports fast storage and retrieval of R-objects like vectors, matrices and arrays to binary files in a language independent format. The package can therefore be used as an alternative to R's save/load mechanism. Since h5 is able to access only subsets of stored data it can handle potentially big(ger than memory) data sets.
 
