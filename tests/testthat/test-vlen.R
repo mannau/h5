@@ -103,10 +103,19 @@ test_that("DataSet-VLEN-Vector-Attribute",{
   h5close(file)
   
   file <- h5file(fname, "a")
-  testlist_n_in <- h5attr(file["/testgroup"], "testlist_n") 
+# TODO: check why this leaves open file handle
+#  testlist_n_in <- h5attr(file["/testgroup"], "testlist_n") 
+#  expect_that(testlist_n_in, is_identical_to(testlist_n))
+#  testlist_i_in <- h5attr(file["/testgroup"], "testlist_i") 
+#  expect_that(testlist_i_in[], is_identical_to(testlist_i))
+  
+  testgroup <- file["/testgroup"]
+  testlist_n_in <- h5attr(testgroup, "testlist_n") 
   expect_that(testlist_n_in, is_identical_to(testlist_n))
-  testlist_i_in <- h5attr(file["/testgroup"], "testlist_i") 
+  testlist_i_in <- h5attr(testgroup, "testlist_i") 
   expect_that(testlist_i_in[], is_identical_to(testlist_i))
+  
+  h5close(testgroup)
   h5close(file)
   expect_that(file.remove(fname), is_true())
 })

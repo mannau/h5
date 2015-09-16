@@ -174,9 +174,20 @@ test_that("CommonFG-unlink",{
   h5close(file)
   
   file <- h5file(fname, "a")
-  expect_that(file["testgroup/testset"][], is_identical_to(5:6))
-  expect_that(file["testgroup/testset2"][], is_identical_to(5:6))
-  expect_that(file["testgroup2/testset"][], is_identical_to(5:6))
+#  TODO: check why this still leaves an open file handle
+#  expect_that(file["testgroup/testset"][], is_identical_to(5:6))
+#  expect_that(file["testgroup/testset2"][], is_identical_to(5:6))
+#  expect_that(file["testgroup2/testset"][], is_identical_to(5:6))
+
+  testset <- file["testgroup/testset"]
+  expect_that(testset[], is_identical_to(5:6))
+  h5close(testset)
+  testset2 <- file["testgroup/testset2"]
+  expect_that(testset2[], is_identical_to(5:6))
+  h5close(testset2)
+  testset3 <- file["testgroup2/testset"]
+  expect_that(testset3[], is_identical_to(5:6))
+  h5close(testset3)
   
   # remove multiple datasets, 1 missing
   # TODO: check if file is read-only mode
