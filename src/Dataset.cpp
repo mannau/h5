@@ -122,15 +122,14 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
     DataSet dataset = file->createDataSet(datasetname.c_str(),
     		dsettype, dataspace, prop);
 
-    if (dataset.getId() == -1) {
-      dataset.close();
-      prop.close();
-      dataspace.close();
-      throw Rcpp::exception("Creation of DataSet failed.");
-    }
     dsettype.close();
     prop.close();
     dataspace.close();
+
+    if (dataset.getId() == -1) {
+      dataset.close();
+      throw Rcpp::exception("Creation of DataSet failed.");
+    }
     return XPtr<DataSet>(new DataSet(dataset));
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
