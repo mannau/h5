@@ -1,7 +1,6 @@
 R_HOME := $(shell R RHOME)
 Rscript := '$(R_HOME)/bin/Rscript' --vanilla -e
 R := "${R_HOME}/bin/R"
-DOCDIR := 'docs'
 
 PKG_VERSION := $(shell grep -i ^version DESCRIPTION | cut -d : -d \  -f 2)
 PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
@@ -10,7 +9,7 @@ PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
 R_FILES := $(wildcard R/*.R)
 TEST_FILES := $(wildcard tests/*.R) $(wildcard tests/testthat/*.R)
 ALL_SRC_FILES := $(wildcard src/*.cpp) $(wildcard src/*.h) src/Makevars.in
-RMD_FILES := $(shell find $(DOCDIR) -name '*.Rmd')
+RMD_FILES := README.Rmd
 MD_FILES := $(RMD_FILES:.Rmd=.md)
 SRC_FILES := $(filter-out src/RcppExports.cpp, $(ALL_SRC_FILES))
 HEADER_FILES := $(wildcard src/*.h)
@@ -24,7 +23,7 @@ CHECKLOG := `cat $(CHECKPATH)/00check.log`
 CURRENT_DIR := $(shell pwd)
 
 .PHONY: all build check manual install clean compileAttributes \
-	build-cran check-cran
+	build-cran check-cran doc
 
 all: 
 	install
@@ -102,7 +101,10 @@ clean:
 	@rm -f $(wildcard *.pdf)
 	@echo '*** PACKAGE CLEANUP COMPLETE ***'
 
-docs: $(MD_FILES)
-	
+doc: $(MD_FILES)
+  $(R) -e 'staticdocs::build_site(examples = TRUE)'
+	$(Rscript) 'file.copy(list.files("inst/staticdocs", pattern = "*.css", full.names = TRUE), "inst/web/css")'
+	$(Rscript) 'file.copy(list.files("inst/staticdocs", pattern = "*.js", full.names = TRUE), "inst/web/js")'
+
 $(MD_FILES): $(RMD_FILES)
-	echo "library(knitr); library(h5); setwd('docs'); sapply(list.files(pattern = '*.Rmd'), knit)" | $(R) --slave --vanilla
+	echo "library(knitr); library(h5); sapply(list.files(pattern = '*.Rmd'), knit);if(file.exists('test.h5')) file.remove('test.h5')" | $(R) --slave --vanilla

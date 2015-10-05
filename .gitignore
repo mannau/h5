@@ -14,3 +14,4 @@ src/.settings
 src/.cproject
 src/.project
 src/.externalToolBuilders
+inst/web

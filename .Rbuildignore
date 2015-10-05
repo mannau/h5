@@ -11,6 +11,7 @@ src/symbols.rds
 .settings
 h5.Rcheck
 README.md
+README.Rmd
 configure.win.cran
 src/Makevars.win.cran
 configure.win.temp
@@ -20,3 +21,5 @@ src/.cproject
 src/.project
 src/.externalToolBuilders
 appveyor.yml
+inst/web
+inst/staticdocs
