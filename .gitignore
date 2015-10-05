@@ -3,6 +3,7 @@
 *.o
 *.so
 .project
+.pydevproject
 *.DS_Store
 *.Rcheck/
 *.tar.gz
