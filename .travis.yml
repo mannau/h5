@@ -1,35 +1,33 @@
 language: r
-
 env:
   global:
-    - PKG_CXXFLAGS="-pedantic"
-    - _R_CHECK_CRAN_INCOMING_=FALSE
-    - ASAN="-fsanitize=address -fno-omit-frame-pointer"
-
-# Be strict when checking our package
+  - PKG_CXXFLAGS="-pedantic"
+  - _R_CHECK_CRAN_INCOMING_=FALSE
+  - ASAN="-fsanitize=address -fno-omit-frame-pointer"
 warnings_are_errors: true
 cran: http://cran.us.r-project.org
-
-# System dependencies for HTTP calling
 apt_packages:
- - libhdf5-serial-dev libhdf5-dev libhdf5-7
+- libhdf5-serial-dev libhdf5-dev libhdf5-7
 r_github_packages:
-  - jimhester/covr
-  - hadley/staticdocs
+- jimhester/covr
+- hadley/staticdocs
 after_success:
-  - R --slave --vanilla -e 'library(covr); pc <- package_coverage(); pc; codecov(coverage = pc)'
-before_deploy: 
-  - R -e "staticdocs::build_site(examples = TRUE)" 
-  
-#deploy: 
-#  edge: true
-#   
-#  provider: s3 
-#  access_key_id: AKIAJDM6KGIZ6LSGAK4Q 
-#  secret_access_key: 
-#    secure: "r3vSpvVNcpvIcjWFyk+GhYG55iuhfmy3mwuQHQS2EqjT3Skd3mOojnZuRIqy60XXElK5/nfa3qt7KH0GCSd4Is28cqPwh+1PtQ0ZVXfeKefAk2whTPDI4P+rgOA+srUxZraLALap9QGmvlzJyXbqBCRdDmXUjtXKi2ONE9PrUk4=" 
-#  bucket: docs.ggplot2.org 
-#  skip_cleanup: true 
-#  local-dir: inst/web 
-#  upload-dir: dev 
-  
+- R --slave --vanilla -e 'library(covr); pc <- package_coverage(); pc; codecov(coverage
+  = pc)'
+before_deploy:
+- R -e "staticdocs::build_site(examples = TRUE)"
+- R -e 'file.copy(list.files("inst/staticdocs", pattern = "*.css", full.names = TRUE),
+  "inst/web/css")'
+- R -e 'file.copy(list.files("inst/staticdocs", pattern = "*.js", full.names = TRUE),
+  "inst/web/js")'
+deploy:
+  provider: s3
+  access_key_id: AKIAIBC6RSTRCE2FLHXA
+  secret_access_key:
+    secure: Qeuuw37nQ6fxhZWVHQZLkPPy99EPtA+4JqXLAhnRqPejJFAs6V4BfSB2KpN5Nvjnv0v2qL8ZKwq7w9yFgHSNjqwKQLcBEEYsknSQSGJcTsJ2dEafuQh5BNtKgfm69nL3ja3HCOzVx40IfBmHccL+H6OaAvi1zAQR86N660gVPOY=
+  bucket: h5.predictingdaemon.com
+  skip_cleanup: true
+  local-dir: inst/web
+  acl: public_read
+  on:
+    repo: mannau/h5
