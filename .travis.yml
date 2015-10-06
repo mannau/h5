@@ -24,8 +24,9 @@ deploy:
   provider: s3
   access_key_id: AKIAIBC6RSTRCE2FLHXA
   secret_access_key:
-    secure: Qeuuw37nQ6fxhZWVHQZLkPPy99EPtA+4JqXLAhnRqPejJFAs6V4BfSB2KpN5Nvjnv0v2qL8ZKwq7w9yFgHSNjqwKQLcBEEYsknSQSGJcTsJ2dEafuQh5BNtKgfm69nL3ja3HCOzVx40IfBmHccL+H6OaAvi1zAQR86N660gVPOY=
+    secure: aSh+Qgv/u/A/B5T4FTuH2fjJPwjzIi5cIpQ5Rpa8eLyLEocsr/tidCDDQJ0KCkoQ370ffeTarKP1ZnF/ZNihuNmA8VQGXExv9KLYAMxb1ihQLIWw7oarQLQdJascNBUlZXUGxqDVcNd8VBE00xQj5pYuySXnOuYe2AmKGmo8RGE=
   bucket: h5.predictingdaemon.com
+  region: eu-central-1
   skip_cleanup: true
   local-dir: inst/web
   acl: public_read
