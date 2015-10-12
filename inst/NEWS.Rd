@@ -3,6 +3,19 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\fkt}{\code{#1()}}
 
+\section{Changes in h5 version 0.9.4 (2015-10-12)}{
+  \itemize{
+    \item Support NA values for character and logical datasets
+    \item Extend installation instructions in README
+    \item Fix show method, removing relative paths
+    \item Implement h5unlink
+    \item Fix issue \href{https://github.com/mannau/h5/issues/10}{#10}: Support 32Bit Big Endian floats
+    \item Fix issue \href{https://github.com/mannau/h5/issues/9}{#9}: Support Scalar Attributes
+    \item Close ressources properly if dataset creation fails
+    \item Update doc using staticdocs, available at \url{h5.predictingdaemon.com}
+  }
+}
+
 \section{Changes in h5 version 0.9.3 (2015-08-11)}{
   \itemize{
     \item Fix ASAN Bug in ReadRData for VLEN Datasets
