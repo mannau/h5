@@ -103,7 +103,8 @@ The following functions are defined to extract HDF5 file contents:
 }
 }
 \examples{
-# The following examples generates a HDF5 file with the different HDF5 Objects and shows its contents:
+# The following examples generates a HDF5 file with the different HDF5
+# Objects and shows its contents:
 file <- h5file(name = "test1.h5", mode = "a")
 file["testdataset"] <- 1:10
 h5attr(file, "testattrib") <- LETTERS[1:10]
