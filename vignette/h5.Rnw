@@ -1,0 +1,358 @@
+% !Rnw driver = highlight::HighlightWeaveLatex()
+\documentclass[11pt]{article}
+%\VignetteIndexEntry{h5-paper}
+%\VignetteEngine{highlight::highlight}
+%\VignetteKeywords{h5, HDF5}
+%\VignetteDepends{h5}
+%\VignetteDepends{zoo}
+
+\usepackage[USletter]{vmargin}
+\setmargrb{1.25in}{1.25in}{1.25in}{1.25in}
+\usepackage{color}
+
+\usepackage{textcomp}
+\usepackage{color, alltt}
+\usepackage[authoryear,round,longnamesfirst]{natbib}
+\usepackage[colorlinks]{hyperref}
+\definecolor{link}{rgb}{0,0,0.3}	%% next few lines courtesy of RJournal.sty
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,%
+    citecolor=link,%
+    filecolor=link,%
+    linkcolor=link,%
+    urlcolor=link
+}
+
+\usepackage{microtype} %% cf http://www.khirevich.com/latex/microtype/
+\usepackage[T1]{fontenc} %% cf http://www.khirevich.com/latex/font/
+\usepackage[bitstream-charter]{mathdesign} %% cf http://www.khirevich.com/latex/font/
+
+\newcommand{\proglang}[1]{\textsf{#1}}
+\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\fkt}[1]{\emph{#1}()}
+\newcommand{\red}[1]{\color{red}{#1}}
+\newcommand{\green}[1]{\color{green}{#1}}
+
+%% This corresponds to setting boxes=TRUE for highlight
+\newsavebox{\hlbox}
+\definecolor{hlBg}{rgb}{0.949019607843137,0.949019607843137,0.949019607843137}
+\definecolor{hlBd}{rgb}{0.9,0.9,0.9} % border
+\renewenvironment{Hchunk}{\vspace{0.5em}\noindent\begin{lrbox}{\hlbox}\begin{minipage}[b]{.98\linewidth}}%
+    {\end{minipage}\end{lrbox}\fcolorbox{hlBd}{hlBg}{\usebox{\hlbox}}\vspace{0.5em}}
+
+
+<<echo=FALSE,print=FALSE>>=
+prettyVersion <- packageDescription("h5")$Version
+prettyDate <- format(Sys.Date(), "%B %e, %Y")
+@
+
+\author{Mario Annau\\Raiffeisen Centrobank Vienna}
+\title{\pkg{h5} - An Object Oriented Interface to HDF5}
+\date{\Sexpr{prettyDate}}
+
+\begin{document}
+\maketitle
+
+\abstract{
+  \noindent
+  \pkg{h5} provides a flexible object--oriented interface to
+  HDF5 and facilitates fast storage and retrieval of \proglang{R} objects to
+  binary files in a language independent data--format. HDF5 files
+  support partial and parallel I/O and can handle data sets of multiple
+  terrabytes. Using HDF5 to serialize large time series objects can lead to
+  significant I/O speedups compared to binary \proglang{R} files. Additional
+  examples show how time series created from \proglang{Matlab} and
+  \proglang{Python} (\pkg{PyTables}) can be read using \pkg{h5}.}
+
+\section{Introduction}
+The Hierarchical Data Format 5 (HDF5) is a binary data format and API
+created by the \cite{hdf5} to better meet ever--increasing data storage demands
+of the scientific computing community. HDF5 files store homogeneous,
+multidimensional data sets organized in groups similar to the folder structure
+of a file system. As a self--describing file format HDF5 objects can be annotated with
+meta data using attributes.
+Compared to \proglang{R}'s integrated binary format HDF5 has various advantages.
+
+\begin{description}
+  \item[Language Independence]{HDF5 is implemented
+  in \proglang{C} and includes APIs for a wide range of programming languages
+  like e.g. \proglang{C++}, \proglang{Fortran}, \proglang{Python} and
+  \proglang{Matlab}.}
+  \item[Partial I/O]{HDF5 files support direct access to parts of the
+  file without first parsing the entire contents, thus can process data
+  sets not fitting into memory.}
+  \item[Optimization]{Access performance to parts of the HDF5 file
+  can be further tuned by specifying the memory layout. The defined chunks can be cached
+  in memory to further improve access times for subsequent queries.
+  }
+\end{description}
+
+\begin{table}[tb]
+\begin{center}
+\begin{tabular}{llll}
+\textbf{Package} & \textbf{Repository} & \textbf{First Release} &
+\textbf{Status}\\
+\hline
+\pkg{h5r}   & CRAN & 2011-10-23  & \red{Archived} \\
+\pkg{ncdf4} & CRAN & 2010-02-24  & Active\\
+\pkg{rgdal} & CRAN & 2003-11-24  & Active \\
+\pkg{hdf5}  & CRAN & 2000-02-02  & \red{Archived} \\
+\pkg{rhdf5} & BioC & >10.5 Years & Active \\
+\end{tabular}
+\caption {\small{Packages on CRAN and Bioconductor supporting the HDF5 file
+format.}}
+\label{table:packages}
+\end{center}
+\end{table}
+
+\nocite{CRAN:h5r}
+\nocite{CRAN:ncdf4}
+\nocite{CRAN:rgdal}
+\nocite{CRAN:hdf5}
+\nocite{BIOC:rhdf5}
+
+
+\subsection{Related Work}
+
+The CRAN and Bioconductor repositories host three actively maintained packages
+supporting HDF5 files as shown in Table~\ref{table:packages}. However, only the 
+\pkg{rhdf5} directly supports HDF5 files\footnote{\pkg{ncdf4} supports the
+NetCDF 4 format which specifies a layer on top of HDF5; \pkg{rgdal} needs to be
+compiled accordingly and is optimized for geospacial data.}. Although
+\pkg{rhdf5} supports reading/writing of datasets it is lacking various features
+like direct exposure of HDF5 objects, subsetting data sets using
+operators or CRAN availability. \pkg{h5} fills that gap and provides an
+easy--to--use object oriented interface to HDF5.
+It uses the HDF5 \pkg{C++} API through \pkg{Rcpp} (~\cite{CRAN:Rcpp})
+and represents objects like Files, Groups, Datasets and Attributes as S4-classes.
+
+\section{The \pkg{h5} Package}
+
+\subsection{Overview}
+
+All relevant objects exposed by the HDF5 \proglang{C++} API are direcly
+represented in \pkg{h5} through S4 classes. The most important ones are H5File,
+H5Group, DataSet and Attribute.
+
+\begin{description}
+  \item[H5File]{holds a reference to the binary HDF5 file.}
+  \item[H5Group]{can hold various HDF5 objects like \code{DataSets} and
+  other \code{H5Group}s.}
+  \item[DataSet]{stores homogeneous data like vectors, matrices and arrays.}
+  \item[Attribute]{stores metadata about other HDF5 objects.}
+\end{description}
+\code{H5File}s and \code{H5Group}s can be accessed using the subset operator and
+a path in a POSIX--like syntax. Applying the subset operator with integer
+indices on a \code{DataSet} returns/sets specified parts. \code{Attributes} are
+accessed using \fkt{h5attr}.
+The following example shows how all these objects are
+created using \pkg{h5}. It creates a file in \textbf{a}ppend mode, creates a
+Group and Dataset holding a numeric vector and closes the file.
+
+<<>>=
+f <- h5file("test.h5")
+f["testgroup/testset"] <- rnorm(100)
+testattr <- LETTERS[round(runif(100, max=26))]
+h5attr(f["testgroup/testset"], "testattr") <- testattr
+f["testgroup/testset"]
+h5close(f)
+@
+
+\subsection{Data Types}
+Storing and retrieving data using \pkg{h5} requires a mapping of available data
+types from \proglang{R} to HDF5. Except for the \code{complex} and
+\code{raw} type all basic data types are mapped to HDF5. 
+Although most mappings should be intuitive, the following decisions have been
+made:
+\begin{enumerate}
+  \item 64Bit Integers are converted to double (numeric).
+  \item Logical values are mapped to an Enumeration Type to save space and
+  support NA values
+  \item Variable Length (VLen) data types are stored and retrieved as lists of
+  lists.
+\end{enumerate}
+
+
+In addition to data type mappings the representation of \code{NA} values has
+been considered.
+In the case \code{numeric} types the ANSI/IEEE 754 Floating-Point
+Standard is applied which is used by \proglang{R} and HDF5.
+For \code{integer} the default minimum integer value is
+used\footnote{The minimum value equals to \code{-.Machine\$integer.max-1}
+or -2147483648 for 32Bit integers.}. Since \code{logical} values are stored as
+an Enumeration Type NA values are directly represented and retrieved through the
+type. For \code{character} we simply use the string \code{"NA"}.
+\nocite{IEEE754wiki}
+
+\subsection{Supported \proglang{R} Objects}
+\pkg{h5} currently supports storage and retrieval of homogeneous
+Datasets consisting of only one data type like vectors, matrices and arrays.
+\pkg{HDF5} also supports compound data types which could be used for
+\code{data.frame} objects. Support for compound types is planned in the near
+future.
+
+\section{Examples}
+This Section shows the functionality of \pkg{h5} with a
+focus on time series. It covers basic HDF5 dataset manipulations of a datasets
+and the serialization of \pkg{zoo} objects. Finally, we describe how to read
+time series created from \proglang{Matlab} and \proglang{Python}.
+
+\subsection{Manipulate Matrix}
+This example shows how HDF5 data sets can be created, altered,
+extended and removed\footnote{Note, that \fkt{h5unlink} does not remove the
+actual data from the file. To reduce file size the command line tool h5repack
+is required.}. The resulting matrix contains the replaced values in the second
+column and a third column as a result of \fkt{cbind}.
+
+<<>>=
+f <- h5file("test.h5")
+f["testmat"] <- matrix(rep(1L, 6), nrow=3)
+f["testmat"][c(1, 3), 2] <- rep(2L, 2)
+cbind(f["testmat"], matrix(7:9, nrow=3))
+f["testmat"][]
+h5unlink(f, "testmat")
+h5close(f)
+@
+
+\subsection{Time Series and Chunking}
+\label{sec:Examples:timeSeriesChunking}
+This example shows how to store and retrieve \pkg{zoo} time series with
+\pkg{h5} and the speedup achieved through partial I/O and chunking. For an
+introduction to chunking see also~\cite{hdf5chunk}.
+
+We generate a \pkg{zoo} object with three series covering one year
+and a constant interval of one second. The resulting object has 31.5M rows and 4
+columns (including the datetime index). The chunk size is chosen so that each
+chunk covers one day for each series. Only the first day for
+one instrument (including the datetime index) is retrieved, thus there is no
+overhead through chunking. Compared to an
+approach using serialized \proglang{R} objects which needs to read all data
+elements into memory a speedup of 30 is achieved (see also the benchmark results
+in Section~\ref{sec:Appendix:benchmarkTimeSeriesChunking}). Note, that the
+chunksize has been finely tuned to match the access pattern and speedups are probably
+lower in real--world examples.
+
+<<>>=
+library(zoo)
+datevec <- seq(as.POSIXct("2015-12-01"), as.POSIXct("2016-01-01"), by = "secs")
+tsdat <- zoo(matrix(rnorm(length(datevec) * 3), ncol=3), order.by=datevec)
+f <- h5file("test.h5", "a")
+f["testseries", chunksize=c(86400, 1)] <- cbind(index(tsdat), coredata(tsdat))
+h5flush(f)
+tssub <- zoo(f["testseries"][1:86400, 2], order.by=as.POSIXct(f["testseries"][1:86400, 1], origin="1970-01-01"))
+identical(tssub, tsdat[1:86400, 1, drop=FALSE])
+h5close(f)
+@
+
+\subsection{Read Times Series from \proglang{Matlab}}
+As of version 7.3 \proglang{Matlab} uses an HDF5 based format per
+default to store data to \code{.mat} files. Using \pkg{h5} we can therefore read
+any new mat--file. However, we need to transpose any multidimensional data since
+\proglang{Matlab} reads and writes data directly in column--major order (HDF5
+is row--major)\footnote{Since \proglang{R} also stores data in
+column--major--order \pkg{h5} transposes higher dimensional data (matrices,
+arrays) per default}.
+
+This small example shows how to read a time series data matrix created in
+\proglang{Matlab} using \pkg{h5}. First we need to create and save the
+matrix in \proglang{Matlab}. Finally, the data set is read and required
+conversions for the data matrix (transpose) and the time vector (subtraction) is
+applied.
+
+<<lang=cpp>>=
+tstart = datenum(2010, 1, 1);
+tend = datenum(2016, 1, 1);
+td = (tstart:tend)';
+tseries = [td, randn(length(td), 3)];
+save('ex-matlab.mat', 'tseries', '-v7.3');
+@
+
+<<>>=
+f <- h5file("ex-matlab.mat", "r")
+dates <- as.Date(f["tseries"][1, 1:3] - 719529)
+zoo(t(f["tseries"][2:4, 1:3]), order.by=dates)
+@
+
+\subsection{Read Times Series from \proglang{Python}}
+This example shows how to read time series created from \pkg{PyTables} using
+\pkg{pandas}. The \proglang{Python} code below generates the dataset of
+interest.
+\nocite{pytables}
+\nocite{mckinney-proc-scipy-2010}
+
+<<lang=cpp>>=
+from pandas import date_range, DataFrame
+from numpy import random
+t = date_range('2010-01-01', '2016-01-01', freq='D').date
+df = DataFrame(random.standard_normal((len(t), 3)), index=t)
+df.to_hdf("ex-pandas.h5", "testset")
+@
+
+Objects serialized using \pkg{pandas} and \pkg{Pytables} have a more
+complicated structure and dataset names can vary for different
+\code{DataFrames}. In this example we read the first three rows including
+the time index from \code{axis1} and actual data from \code{block0\_values}.
+
+<<>>=
+f <- h5file("ex-pandas.h5", "r")
+dates <- as.Date(f["testset/axis1"][1:3] - 719163, origin="1970-01-01")
+zoo(f["testset/block0_values"][1:3, ], order.by=dates)
+@
+
+\section{Conclusion}
+\pkg{h5} provides a flexible interface to handle HDF5 files. It directly exposes
+HDF5 objects and implements subset operators for easy data handling. In
+addition to \proglang{R} objects like vectors, matrices and arrays we also
+showed examples to store and retrieve time series objects. Depending on the
+use case and chunk size significant speedups can be achieved through partial
+I/O. Examples showed that \pkg{h5} can also be used to exchange data with
+other programming languages like \proglang{Matlab} and \proglang{Python}.
+
+\newpage
+
+\section{Appendix}
+
+\subsection{Benchmark Example Time Series and Chunking}
+\label{sec:Appendix:benchmarkTimeSeriesChunking}
+Code to produce benchmark results for the example in 
+Section~\ref{sec:Examples:timeSeriesChunking}. To compare raw I/O performance
+the conversion to \code{POSIXct} has been omitted.
+
+<<>>=
+library(zoo)
+library(microbenchmark)
+# Create data files
+datevec <- seq(as.POSIXct("2015-12-01"), as.POSIXct("2016-01-01"), by = "secs")
+tsdat <- zoo(matrix(rnorm(length(datevec) * 3), ncol=3), order.by=datevec)
+f <- h5file("testbm.h5", "a")
+f["testseries", chunksize=c(86400, 1)] <- cbind(index(tsdat), coredata(tsdat))
+h5close(f)
+save(tsdat, file="test.rda")
+
+readRda <- function() {
+  load("test.rda")
+  tsdat[1:86400, 1:2]
+}
+readH5 <- function() {
+  f <- h5file("test.h5", "r")
+  f["testseries"][1:86400, 1:2]
+  h5close(f)
+}
+bm <- microbenchmark(readRda(), readH5(), times = 10L)
+summary(bm)$median[1] / summary(bm)$median[2]
+@
+
+<<echo=FALSE,print=FALSE>>=
+dummy <- file.remove(c("test.h5", "test.rda", "testbm.h5"))
+@
+
+\newpage
+\nocite{CRAN:h5}
+\nocite{Github:h5}
+\bibliographystyle{plainnat}
+\bibliography{h5}
+
+\end{document}
+

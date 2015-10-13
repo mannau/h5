@@ -1,8 +1,8 @@
 Package: h5
 Type: Package
 Title: Interface to the 'HDF5' Library
-Version: 0.9.4
-Date: 2015-10-12
+Version: 0.9.5
+Date: 2016-02-17
 Authors@R: c(person("Mario", "Annau", role = c("aut", "cre"),
          email = "mario.annau@gmail.com"))
 Copyright: See COPYRIGHTS file.
@@ -26,7 +26,8 @@ LinkingTo: Rcpp
 Suggests:
     testthat,
     roxygen2,
-    RCurl
+    RCurl, 
+    highlight
 Collate:
     'H5Location-Attribute.R'
     'Attribute.R'
