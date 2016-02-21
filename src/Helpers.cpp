@@ -320,7 +320,7 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
 					char *strbuf = (char *)R_alloc(n, stsize);
 					dataset->read(strbuf, dtype, *memspace, *dataspace);
 					for(unsigned int i = 0; i < n; i++) {
-					  Rcpp::String readstr(strbuf);
+					  Rcpp::String readstr(std::string(strbuf, stsize));
 					  if(readstr == "NA") {
 						  SET_STRING_ELT(data, i, NA_STRING);
 					  } else {

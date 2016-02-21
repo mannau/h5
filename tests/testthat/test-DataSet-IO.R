@@ -263,3 +263,16 @@ test_that("datatypes-Array-BugWithChunksize",{
 	h5close(file)
   expect_that(file.remove(fname), is_true())
 })
+
+test_that("datatypes-Array-BugWithASCII",{
+  fname <- system.file("test-ascii-length-bug.h5", package = "h5", mustWork = TRUE)
+  file <- h5file(fname, "r")
+  
+  varlength = c("mar231-21y", "ha131d", "a", "litt321le", "lamb", "its", 
+      "Fleece", "As", "Wh31ite", "as", "snow")
+  expect_that(file["test/ascii"][], is_identical_to(varlength))
+  expect_that( file["test/randomalpha"][], 
+      is_identical_to(file["test/randomalphashort"][]))
+
+  h5close(file)
+})
