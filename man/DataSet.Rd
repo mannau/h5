@@ -18,13 +18,9 @@ writeDataSet(.Object, data, dspace = selectDataSpace(.Object, rep(NA_integer_,
   dspace = selectDataSpace(.Object, rep(NA_integer_, length(.Object@dim)),
   GetDimensions(data)), transpose = TRUE)
 
-readDataSet(.Object, dspace = selectDataSpace(.Object, offset =
-  rep(NA_integer_, length(.Object@dim)), count = rep(NA_integer_,
-  length(.Object@dim))))
+readDataSet(.Object, dspace = selectDataSpace(.Object))
 
-\S4method{readDataSet}{DataSet}(.Object, dspace = selectDataSpace(.Object,
-  offset = rep(NA_integer_, length(.Object@dim)), count = rep(NA_integer_,
-  length(.Object@dim))))
+\S4method{readDataSet}{DataSet}(.Object, dspace = selectDataSpace(.Object))
 
 \S4method{h5close}{DataSet}(.Object)
 }
@@ -38,10 +34,6 @@ vector, matrix or array.}
 
 \item{transpose}{logical; Determine if data object (if is array) should be
 transposed.}
-
-\item{offset}{numeric; Offset to be selected from Hyperslab.}
-
-\item{count}{numeric; Count to be selected from Hyperslab.}
 
 \item{...}{additional arguments passed to \code{\link{c}}.}
 }

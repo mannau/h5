@@ -12,8 +12,6 @@
 #' @param .Object DataSet; S4 object of class \code{DataSet};
 #' @param data object; Object to be stored in HDF5 file, can be either of type 
 #' vector, matrix or array.
-#' @param offset numeric; Offset to be selected from Hyperslab.
-#' @param count numeric; Count to be selected from Hyperslab.
 #' @param dspace DataSpace; Data space object used for data selection.
 #' @param ... additional arguments passed to \code{\link{c}}.
 #' @aliases DataSet-class
@@ -62,9 +60,7 @@ setMethod("writeDataSet", signature(.Object="DataSet", data = "ANY", dspace = "A
 #' @rdname DataSet
 #' @export
 setGeneric("readDataSet", function(.Object, 
-        dspace = selectDataSpace(.Object, 
-          offset = rep(NA_integer_, length(.Object@dim)), 
-          count = rep(NA_integer_, length(.Object@dim))))
+        dspace = selectDataSpace(.Object))
 			standardGeneric("readDataSet")
 )
 
