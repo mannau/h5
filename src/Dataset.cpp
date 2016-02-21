@@ -151,6 +151,9 @@ XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname) {
 // [[Rcpp::export]]
 NumericVector GetDataSetDimensions(XPtr<DataSet> dataset) {
   DataSpace dataspace = dataset->getSpace();
+  if(dataspace.getSimpleExtentType() == H5S_SCALAR) {
+	  return NumericVector(1, 1.0);
+  }
   int ndim = dataspace.getSimpleExtentNdims();
   vector<hsize_t> dims_out(ndim);
   dataspace.getSimpleExtentDims( &dims_out[0], NULL);
