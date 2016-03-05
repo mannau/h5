@@ -113,7 +113,7 @@ test_that("DataSet-list-dataset",{
   file <- h5file(fname, "a")
   
   f <- function() list.datasets(file, path = "a/be/bu")
-  expect_that(f(), throws_error("Specified path does not exist."))
+  expect_that(f(), throws_error("Specified path does not exist"))
   
   expect_that(list.datasets(file), is_identical_to(character(0)))
   
