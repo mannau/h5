@@ -33,3 +33,7 @@ deploy:
   acl: public_read
   on:
     repo: mannau/h5
+notifications:
+  email:
+    - mario.annau@gmail.com
+
