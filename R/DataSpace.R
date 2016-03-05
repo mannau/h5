@@ -22,7 +22,6 @@
 #' @name DataSpace
 #' @aliases DataSpace-class
 #' @include DataSet.R
-#' @references \url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame12Dataspaces.html}
 #' @export
 setClass( "DataSpace", representation( pointer = "externalptr", count = "numeric"))
 

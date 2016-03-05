@@ -18,7 +18,7 @@
 #' @rdname DataSet
 #' @name DataSet
 #' @include H5Location-Attribute.R
-#' @references \url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame10Datasets.html}
+#' @references \url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-ODatasets}
 #' @export
 setClass( "DataSet", representation( name = "character",
                                      datatype = "character",

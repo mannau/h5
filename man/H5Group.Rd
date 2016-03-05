@@ -22,6 +22,6 @@ In addition to Group--specific capabilities listed below H5Group
 shares common functionality with H5File through the CommonFG base class.
 }
 \references{
-\url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html}
+\url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-OGroups}
 }
 

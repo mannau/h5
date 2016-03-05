@@ -49,6 +49,6 @@ for big \code{DataSet}s it can be advantageous to use these methods with
 \code{\link{DataSpace}} objects including hyperslab selections.
 }
 \references{
-\url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame10Datasets.html}
+\url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-ODatasets}
 }
 

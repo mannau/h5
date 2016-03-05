@@ -48,7 +48,4 @@ objects. DataSpace objects can be generated using the S4--method
     data points.}
 }
 }
-\references{
-\url{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame12Dataspaces.html}
-}
 

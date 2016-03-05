@@ -20,7 +20,7 @@
 #' @aliases Attribute-class
 #' @include H5Location-Attribute.R
 #' @seealso \code{\link{H5Location-Attribute}} 
-#' @references \url{http://www.hdfgroup.org/HDF5/doc/UG/13_Attributes.html}
+#' @references \url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-OAttributes}
 #' @export
 setClass( "Attribute", representation( name = "character", 
         datatype = "character", dim = "numeric"), 
