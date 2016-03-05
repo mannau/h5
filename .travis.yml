@@ -11,6 +11,7 @@ apt_packages:
 r_github_packages:
 - jimhester/covr
 - hadley/staticdocs
+- hadley/testthat
 after_success:
 - R --slave --vanilla -e 'library(covr); pc <- package_coverage(); pc; codecov(coverage
   = pc)'
