@@ -32,7 +32,7 @@ build: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	
 $(PKG_NAME)_$(PKG_VERSION).tar.gz: $(PKG_FILES)
 	@make roxygen
-	$(R) CMD build --resave-data --no-build-vignettes .
+	$(R) CMD build --resave-data .
 
 build-cran:
 	@make clean
@@ -41,7 +41,7 @@ build-cran:
 	@cp src/Makevars.win src/Makevars.win.temp
 	@cp configure.win.cran configure.win
 	@cp src/Makevars.win.cran src/Makevars.win
-	$(R) CMD build --resave-data --no-build-vignettes .
+	$(R) CMD build --resave-data .
 	@cp configure.win.temp configure.win 
 	@cp src/Makevars.win.temp src/Makevars.win
 	@rm configure.win.temp
@@ -58,16 +58,16 @@ compileAttributes: $(SRC_FILES)
 	
 check: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-manual --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	$(R) CMD check --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 check-valgrind: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-manual --no-clean --use-valgrind $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	$(R) CMD check --no-clean --use-valgrind $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 check-cran: 
 	@make build-cran
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-manual --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	$(R) CMD check --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	@boot2docker up
@@ -75,7 +75,7 @@ check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	@docker run -v "$(CURRENT_DIR):/mnt" rocker/r-devel-san /bin/bash -c \
 		"cd /mnt; apt-get update; apt-get install -y libhdf5-dev; \
 		R -e \"install.packages(c('Rcpp', 'testthat', 'roxygen2', 'RCurl', 'highlight'))\"; \
-		R CMD check --no-manual $(PKG_NAME)_$(PKG_VERSION).tar.gz"
+		R CMD check $(PKG_NAME)_$(PKG_VERSION).tar.gz"
 
 00check.log: check
 	@mv $(CHECKPATH)\\00check.log .
