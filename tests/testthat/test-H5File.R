@@ -3,22 +3,22 @@ fname <- "test.h5"
 
 test_that("H5File-param",{
 	f <- function() file <- h5file(1, "a")
-	expect_that(f(), throws_error("Error : is.character.*", perl = TRUE))
+	expect_that(f(), throws_error("is.character\\(name\\) is not TRUE"))
 	
 	f <- function() file <- h5file(c("a", "a"), "a")
-	expect_that(f(), throws_error("Error : length.*", perl = TRUE))
+	expect_that(f(), throws_error("length\\(name\\) == 1 is not TRUE"))
 	
 	f <- function() file <- h5file("a", 1)
-  expect_that(f(), throws_error("Error : is.character.*", perl = TRUE))
+  expect_that(f(), throws_error("is.character\\(mode\\) is not TRUE"))
 	
 	f <- function() file <- h5file("a", c("a", "a"))
-	expect_that(f(), throws_error("Error : length.*", perl = TRUE))
+	expect_that(f(), throws_error("length\\(mode\\) == 1 is not TRUE"))
 	
 	f <- function() file <- h5file("a", c("a", "a"))
-  expect_that(f(), throws_error("Error : length.*", perl = TRUE))
+  expect_that(f(), throws_error("length\\(mode\\) == 1 is not TRUE"))
 	
 	f <- function() file <- h5file("path", "w--")
-	expect_that(f(), throws_error("Parameter mode must be either"))
+	expect_that(f(), throws_error("Parameter mode must be either.*"))
 })
 
 test_that("H5File-FileMode-param",{
