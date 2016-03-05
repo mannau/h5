@@ -3,6 +3,16 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\fkt}{\code{#1()}}
 
+\section{Changes in h5 version 0.9.5 (2016-03-05)}{
+  \itemize{
+    \item Add package vignette with a focus on time series storage
+    \item Fix issue \href{https://github.com/mannau/h5/issues/22}{#22}: Support non-null terminated ascii strings
+    \item Fix issue \href{https://github.com/mannau/h5/issues/9}{#25}: Support Scalar Datasets
+    \item Simplify dataset reading
+    \item Support upcoming version of testthat 0.11.0.9000+.
+  }
+}
+
 \section{Changes in h5 version 0.9.4 (2015-10-12)}{
   \itemize{
     \item Support NA values for character and logical datasets
