@@ -234,23 +234,16 @@ setMethod("list.datasets", signature(.Object="CommonFG"),
       path.full <- gsub("/+", "/", path.full)
     }
     
-    groups <- path.full
-    if(recursive) {
-      groups <- c(path.full, list.groups(.Object, path, TRUE, recursive = recursive))
-    }
-    
-    dsets <- lapply(groups, function(x) GetDataSetNames(.Object@pointer, x))
-    dsetlen <- sapply(dsets, length)
-    # Filter for groups which contain datasets
-    groups <- groups[dsetlen > 0]
-    dsets <- dsets[dsetlen > 0]
-    
+    dsets = GetDataSetNames(.Object@pointer, path.full, recursive)
     if(length(dsets) > 0) {
-      if(full.names) {
-        dsets <- lapply(1:length(groups), 
-                function(i) paste(groups[i], dsets[[i]], sep = "/"))
+      if(full.names)
+      {
+        dsets=paste(path.full, dsets, sep="/")
       }
-      dsets <- unlist(dsets)
+      else
+      {
+        dsets=gsub(".*/(.*)$", "\\1" , dsets)
+      }
       dsets <- gsub("/+", "/", dsets) # just to make sure...
     } else {
       dsets <- character(0)
