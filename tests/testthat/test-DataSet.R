@@ -135,22 +135,22 @@ test_that("DataSet-list-dataset",{
   group <- file["testgroupN"]
   h5close(group)
   
-  ex <- c("/testgroup/testset", "/testgroup/testgroup1/testset1", 
-      "/testgroup/testgroup2/testset2", "/testgroup3/testgroup3/testset3")
+  ex <- c("/testgroup/testgroup1/testset1", "/testgroup/testgroup2/testset2",
+          "/testgroup/testset", "/testgroup3/testgroup3/testset3")
   expect_that(list.datasets(file), is_identical_to(ex))
   
-  ex <- c("testset", "testset1", "testset2", "testset3")
+  ex <- c("testset1", "testset2", "testset", "testset3")
   expect_that(list.datasets(file, full.names = FALSE), is_identical_to(ex))
   
-  ex <- c("/testgroup/testset", "/testgroup/testgroup1/testset1", 
-      "/testgroup/testgroup2/testset2")
+  ex <- c("/testgroup/testgroup1/testset1", "/testgroup/testgroup2/testset2",
+          "/testgroup/testset")
   testgroup <- file["testgroup"]
   
   # TODO: Fix Bug implicit group extract/create
   #expect_that(list.datasets(file["testgroup"]), is_identical_to(ex))
   expect_that(list.datasets(testgroup), is_identical_to(ex))
      
-  ex <- c("testset", "testset1", "testset2")
+  ex <- c("testset1", "testset2", "testset")
   #expect_that(list.datasets(file["testgroup"], full.names = FALSE), is_identical_to(ex))
   expect_that(list.datasets(testgroup, full.names = FALSE), is_identical_to(ex))
   h5close(testgroup)
