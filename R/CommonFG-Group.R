@@ -115,22 +115,22 @@ setMethod( "list.groups", signature(.Object="CommonFG"),
     if(inherits(.Object, "H5Group")) {
       path <- paste(path, .Object@location, sep = "/")
       path <- gsub("/+", "/", path)
-      }
- 
-      res <- character(0)
-      if(full.names) {
-        res <- paste(path, GetGroupNames(.Object@pointer, path, 
-                recursive = FALSE), sep = "/")
-      res <- unlist(gsub("/+", "/", res))
-      res <- sub("/+$", "", res)
-      res <- res[!res %in% c(path, "")]
-      if(recursive & length(res) > 0) {
-        res <- c(res, do.call(c, lapply(res, 
-                function(x) list.groups(.Object, x, full.names, recursive))))
-      }
-    } else {
-      res <- GetGroupNames(.Object@pointer, path, recursive)
     }
+ 
+    res <- character(0)
+    if(full.names) {
+      res <- paste(path, GetGroupNames(.Object@pointer, path, recursive), sep = "/")
+    }
+    else
+    {
+      res <- GetGroupNames(.Object@pointer, path, recursive)
+      res <- sub("/+$", "", res)
+      res <- gsub(".*/(.*)$", "\\1" , res)
+    }
+    res <- unlist(gsub("/+", "/", res))
+    res <- sub("/+$", "", res)
+    res <- res[!res %in% c(path, "")]
     res
-  })
+  }
+)
 
