@@ -113,8 +113,8 @@ test_that("CommonFG-list-groups",{
   group <- file["testgroupN"]
   h5close(group)
   
-  ex <- c("/testgroup", "/testgroup3", "/testgroupN", "/testgroup/testgroup1", 
-      "/testgroup/testgroup2", "/testgroup3/testgroup3")
+  ex <- c("/testgroup", "/testgroup/testgroup1", "/testgroup/testgroup2",
+ 	"/testgroup3", "/testgroup3/testgroup3", "/testgroupN")
   expect_that(list.groups(file), is_identical_to(ex))
   
   ex <- c("testgroup", "testgroup1", "testgroup2", "testgroup3", "testgroup3", "testgroupN")
