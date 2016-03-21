@@ -44,6 +44,10 @@ DataType GetDataType(const DTYPE datatype, int size = -1) {
       DataType type = GetDataType(T_VLEN_LOGICAL);
   	  return VarLenType(&type);
     }
+    case T_COMPOUND:
+      throw Rcpp::exception("Writing of compound datatypes is not yet supported.");
+    case T_DATETIME:
+      throw Rcpp::exception("Writing of date/time datatypes is not yet supported.");
     default: throw Rcpp::exception("Unknown data type.");
   }
 }
@@ -97,6 +101,11 @@ DTYPE GetTypechar(const DataType &dtype) {
 		 (dtype == VarLenType(&PredType::NATIVE_UINT16)) ) {
 	  return T_VLEN_INTEGER;
 	}
+    if (dtype.getClass() == H5T_COMPOUND) {
+        return T_COMPOUND;
+    } else if (dtype.getClass() == H5T_TIME) {
+        return T_DATETIME;
+    }
 
 	/*
 	if (dtype == GetDataType(T_VLEN_LOGICAL)) {
@@ -115,6 +124,8 @@ DTYPE GetTypechar(char typechar) {
 		case 'x': return T_VLEN_DOUBLE;
 		case 'y': return T_VLEN_INTEGER;
 		case 'z': return T_VLEN_LOGICAL;
+        case 't': return T_COMPOUND;
+        case 'm': return T_DATETIME;
 		default: throw new Exception("Typechar unknown");
 	}
 }
@@ -128,6 +139,8 @@ char GetTypechar(DTYPE typechar) {
 		case T_VLEN_DOUBLE: return 'x';
 		case T_VLEN_INTEGER: return 'y';
 		case T_VLEN_LOGICAL: return 'z';
+        case T_COMPOUND: return 't';
+        case T_DATETIME: return 'm';
 		default: throw new Exception("Typechar unknown");
 	}
 }
@@ -230,7 +243,8 @@ void *ConvertBuffer(const SEXP &mat, DTYPE datatype, int stsize) {
      }
 }
 
-SEXP AllocateRData(DTYPE tchar, NumericVector count) {
+SEXP AllocateRData(const DataType &dtype, NumericVector count) {
+    DTYPE tchar = GetTypechar(dtype);
 	int ndim = count.length();
 	SEXP data;
 
@@ -238,6 +252,10 @@ SEXP AllocateRData(DTYPE tchar, NumericVector count) {
 	std::reverse(count_rev.begin(), count_rev.end());
 
 	switch(tchar) {
+        case T_COMPOUND:
+          throw Rcpp::exception("Reading of compound datatypes is not yet supported.");
+        case T_DATETIME:
+          throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
 		case T_DOUBLE:
 			if (ndim == 1) {
 			data = PROTECT(Rf_allocVector(REALSXP, count[0]));
@@ -286,12 +304,17 @@ SEXP AllocateRData(DTYPE tchar, NumericVector count) {
 	return data; // Never reached
 }
 
-SEXP ReadRData(DTYPE tchar, SEXP data,
+SEXP ReadRData(const DataType &dtype, SEXP data,
 			XPtr<DataSet> dataset,
 			XPtr<DataSpace> memspace,
 			XPtr<DataSpace> dataspace ) {
 	try {
+        DTYPE tchar = GetTypechar(dtype);
 		switch(tchar) {
+            case T_COMPOUND:
+              throw Rcpp::exception("Reading of compound datatypes is not yet supported.");
+            case T_DATETIME:
+              throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
 			case T_DOUBLE:
 				dataset->read(REAL(data), PredType::NATIVE_DOUBLE, *memspace, *dataspace);
 				break;
@@ -390,10 +413,15 @@ SEXP ReadRData(DTYPE tchar, SEXP data,
   }
 }
 
-SEXP ReadRDataAttribute(DTYPE tchar, SEXP data,
+SEXP ReadRDataAttribute(const DataType &dtype, SEXP data,
 			XPtr<Attribute> attribute) {
 try {
+    DTYPE tchar = GetTypechar(dtype);
 	switch(tchar) {
+        case T_COMPOUND:
+          throw Rcpp::exception("Reading of compound datatypes is not yet supported.");
+        case T_DATETIME:
+          throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
 		case T_DOUBLE:
 			attribute->read(PredType::NATIVE_DOUBLE, REAL(data));
 			break;

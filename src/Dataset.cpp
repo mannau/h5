@@ -63,10 +63,9 @@ SEXP ReadDataset(XPtr<DataSet> dataset, XPtr<DataSpace> dataspace, NumericVector
     vector<hsize_t> count_t(count.begin(), count.end());
     Rcpp::XPtr<DataSpace> memspace(new DataSpace(count.length(), &count_t[0]));
     DataType dtype = dataset->getDataType();
-    DTYPE tchar = GetTypechar(dtype);
 
-    SEXP data = AllocateRData(tchar, count);
-	data = ReadRData(tchar, data, dataset, memspace, dataspace);
+    SEXP data = AllocateRData(dtype, count);
+	data = ReadRData(dtype, data, dataset, memspace, dataspace);
 	memspace->close();
 	return data;
   } catch(Exception& error) {

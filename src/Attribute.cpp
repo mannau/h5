@@ -72,13 +72,12 @@ bool WriteAttribute(XPtr<Attribute> attribute, SEXP mat,
 SEXP ReadAttribute(XPtr<Attribute> attribute, NumericVector count) {
   try {
     DataType dtype = attribute->getDataType();
-    DTYPE tchar = GetTypechar(dtype);
 
     NumericVector count_rev = clone<NumericVector>(count);
     std::reverse(count_rev.begin(), count_rev.end());
 
-    SEXP data = AllocateRData(tchar, count);
-    data = ReadRDataAttribute(tchar, data, attribute);
+    SEXP data = AllocateRData(dtype, count);
+    data = ReadRDataAttribute(dtype, data, attribute);
     return data;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
