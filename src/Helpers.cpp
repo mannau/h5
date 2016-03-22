@@ -48,6 +48,8 @@ DataType GetDataType(const DTYPE datatype, int size = -1) {
       throw Rcpp::exception("Writing of compound datatypes is not yet supported.");
     case T_DATETIME:
       throw Rcpp::exception("Writing of date/time datatypes is not yet supported.");
+    case T_ENUM:
+      throw Rcpp::exception("Writing of enum datatypes is not yet supported.");
     default: throw Rcpp::exception("Unknown data type.");
   }
 }
@@ -105,6 +107,8 @@ DTYPE GetTypechar(const DataType &dtype) {
         return T_COMPOUND;
     } else if (dtype.getClass() == H5T_TIME) {
         return T_DATETIME;
+    } else if (dtype.getClass() == H5T_ENUM) {
+        return T_ENUM;
     }
 
 	/*
@@ -126,6 +130,7 @@ DTYPE GetTypechar(char typechar) {
 		case 'z': return T_VLEN_LOGICAL;
         case 't': return T_COMPOUND;
         case 'm': return T_DATETIME;
+        case 'f': return T_ENUM;
 		default: throw new Exception("Typechar unknown");
 	}
 }
@@ -141,6 +146,7 @@ char GetTypechar(DTYPE typechar) {
 		case T_VLEN_LOGICAL: return 'z';
         case T_COMPOUND: return 't';
         case T_DATETIME: return 'm';
+        case T_ENUM: return 'f';
 		default: throw new Exception("Typechar unknown");
 	}
 }
@@ -256,6 +262,17 @@ SEXP AllocateRData(const DataType &dtype, NumericVector count) {
           throw Rcpp::exception("Reading of compound datatypes is not yet supported.");
         case T_DATETIME:
           throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
+        case T_ENUM:
+          // Enums are converted to factors, which are really just an integer with an additional
+          // "levels" attribute. So we allocate space for an integer.
+          if (ndim == 1) {
+              data = PROTECT(Rf_allocVector(INTSXP, count[0]));
+          } else if (ndim == 2) {
+              data = PROTECT(Rf_allocMatrix(INTSXP, count[1], count[0]));
+          } else {//(ndim > 2)
+              data = PROTECT(Rf_allocArray(INTSXP, (IntegerVector)count_rev));
+          }
+          break;
 		case T_DOUBLE:
 			if (ndim == 1) {
 			data = PROTECT(Rf_allocVector(REALSXP, count[0]));
@@ -315,6 +332,35 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
               throw Rcpp::exception("Reading of compound datatypes is not yet supported.");
             case T_DATETIME:
               throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
+            case T_ENUM: {
+              // To convert a HDF5 enum to an R factor, we pull out the raw integer data first.
+              dataset->read(INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
+              // Then we have to decrement each of them, since R indexes from 1.
+              hsize_t n = dataspace->getSelectNpoints();
+              for(hsize_t i = 0; i < n; i++) {
+                  INTEGER(data)[i] += 1;
+              }
+              // Then we add the levels, and label it as a factor. Note that R does not have
+              // first-class factor support:
+              // http://stackoverflow.com/questions/28723059/can-we-get-factor-matrices-in-r
+              if (dtype.getClass() == H5T_ENUM) {
+                  EnumType enumtype = (const EnumType&) dtype;
+                  int nlevels = enumtype.getNmembers();
+                  CharacterVector levels(nlevels);
+                  for (int i = 0; i < nlevels; i++) {
+                      // Use the C API, since EnumType does not have a getMemberName() equivalent.
+                      char* name = H5Tget_member_name(enumtype.getId(), i);
+                      levels[i] = name;
+                      delete []name;
+                  }
+                  RObject d = data;
+                  d.attr("levels") = levels;
+                  d.attr("class") = "factor";
+              } else {
+                  Rcpp::exception("internal error: tried to read non-enum as enum");
+              }
+              break;
+            }
 			case T_DOUBLE:
 				dataset->read(REAL(data), PredType::NATIVE_DOUBLE, *memspace, *dataspace);
 				break;
