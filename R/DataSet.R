@@ -104,6 +104,8 @@ setMethod("show", "DataSet",
                     x = "vlen-double",
                     y = "vlen-integer",
                     z = "vlen-logical",
+                    t = "compound",
+                    m = "datetime",
                     "unknown")
     maxdimstring <- ifelse(object@maxdim >= 1.844674e+19, "UNLIMITED", 
         sprintf("%.5g", object@maxdim))
