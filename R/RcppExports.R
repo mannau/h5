@@ -149,6 +149,10 @@ GetDataSetNames <- function(file, path, recursive) {
     .Call('h5_GetDataSetNames', PACKAGE = 'h5', file, path, recursive)
 }
 
+GetSoftLinks <- function(file, path) {
+    .Call('h5_GetSoftLinks', PACKAGE = 'h5', file, path)
+}
+
 Unlink <- function(file, path) {
     .Call('h5_Unlink', PACKAGE = 'h5', file, path)
 }

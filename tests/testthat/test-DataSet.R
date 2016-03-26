@@ -181,11 +181,31 @@ test_that("DataSet-list-dataset",{
   h5close(file)
   expect_that(file.remove(fname), is_true())
 
+})
+
+test_that("DataSet-list-dataset-link",{	
+  fname <- system.file("test-h5link.h5", package = "h5", mustWork = TRUE)
+  file <- h5file(fname, "r")
+  
+  expect_that(file["hardlink/test2"][], is_identical_to(as.numeric(1:3)))
+  expect_that(file["softlink/test3/test"][], is_identical_to(as.numeric(1:3)))
+  
+  expect_that(list.datasets(file["softlink"]), is_identical_to(character(0)))
+  
+  exp1 <- c("/softlink/test3/subgroup/test-sub", "/softlink/test3/test")
+  expect_that(list.datasets(file["softlink"], follow.link = TRUE), is_identical_to(exp1))
+  
+  exp2 <- c("/hardlink/test2", "/testgroup/subgroup/test-sub", "/testgroup/test")
+  expect_that(list.datasets(file), is_identical_to(exp2))
+  
+  exp3 <- "/softlink/test3/test"
+  expect_that(list.datasets(file["/softlink/test3"], recursive = FALSE), is_identical_to(exp3))
+
+  h5close(file)
 })  
 
 test_that("DataSet-Bug-F32-Issue10",{	
   fname <- system.file("test-f32.h5", package = "h5", mustWork = TRUE)
-  
   file <- h5file(fname, "r")
   expect_that(file["floats"][], is_identical_to(c(1, 2, 3)))
   h5close(file)

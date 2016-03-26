@@ -12,6 +12,8 @@ herr_t file_info(hid_t loc_id, const char *name, void *opdata);
 Rcpp::CharacterVector GetGroupNames(Rcpp::XPtr<H5::CommonFG> file, std::string path, bool recursive);
 herr_t group_info(hid_t g_id, const char *name, const H5L_info_t *info, void *op_data);
 Rcpp::CharacterVector GetDataSetNames(Rcpp::XPtr<H5::CommonFG> file, std::string path, bool recursive);
-herr_t dset_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *op_data);
+herr_t dset_info(hid_t loc_id, const char *name, const H5O_info_t *info, void *op_data);
+herr_t dset_info_link(hid_t loc_id, const char *name, const H5L_info_t *info, void *op_data);
+herr_t dset_info_nolink(hid_t loc_id, const char *name, const H5L_info_t *info, void *op_data);
 bool Unlink(Rcpp::XPtr<H5::CommonFG> file, std::string path);
 #endif // __File_h__

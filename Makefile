@@ -1,4 +1,3 @@
-R_HOME := $(shell R RHOME)
 Rscript := '$(R_HOME)/bin/Rscript' --vanilla -e
 R := "${R_HOME}/bin/R"
 

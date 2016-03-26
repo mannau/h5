@@ -454,6 +454,18 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// GetSoftLinks
+CharacterVector GetSoftLinks(XPtr<CommonFG> file, string path);
+RcppExport SEXP h5_GetSoftLinks(SEXP fileSEXP, SEXP pathSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< string >::type path(pathSEXP);
+    __result = Rcpp::wrap(GetSoftLinks(file, path));
+    return __result;
+END_RCPP
+}
 // Unlink
 bool Unlink(XPtr<CommonFG> file, string path);
 RcppExport SEXP h5_Unlink(SEXP fileSEXP, SEXP pathSEXP) {

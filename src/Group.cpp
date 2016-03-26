@@ -89,12 +89,11 @@ herr_t group_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *
 CharacterVector GetDataSetNames(XPtr<CommonFG> file, string path, bool recursive) {
   try {
 	CharacterVector(out);
-	hid_t object_loc = H5Oopen(file->getLocId(), path.c_str(), H5P_DEFAULT);
-	if(recursive) {
-		H5Lvisit(object_loc, H5_INDEX_NAME , H5_ITER_NATIVE, dset_info, &out);
+	if (recursive) {
+		H5Lvisit_by_name(file->getLocId(), path.c_str(), H5_INDEX_NAME, H5_ITER_INC, dset_info_nolink, &out, H5P_DEFAULT);
 	}
 	else {
-		H5Literate(object_loc, H5_INDEX_NAME , H5_ITER_NATIVE, NULL, dset_info, &out);
+		H5Literate_by_name(file->getLocId(), path.c_str(), H5_INDEX_NAME, H5_ITER_INC, NULL, dset_info_nolink, &out, H5P_DEFAULT);
 	}
 	return out;
   } catch (Exception& error) {
@@ -104,12 +103,44 @@ CharacterVector GetDataSetNames(XPtr<CommonFG> file, string path, bool recursive
 }
 
 herr_t dset_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *op_data) {
-	H5O_info_t object_info;
-	if(H5Oget_info_by_name(loc_id, name, &object_info, H5P_DEFAULT) >= 0 && object_info.type == H5O_TYPE_DATASET)
-	{
+  H5O_info_t infobuf;
+  H5Oget_info_by_name (loc_id, name, &infobuf, H5P_DEFAULT);
+  if(info->type == H5O_TYPE_DATASET) {
+    ((CharacterVector *) op_data)->push_back(name);
+  }
+  return 0;
+}
+
+// [[Rcpp::export]]
+CharacterVector GetSoftLinks(XPtr<CommonFG> file, string path) {
+  try {
+	CharacterVector(out);
+	H5Lvisit_by_name(file->getLocId(), path.c_str(), H5_INDEX_NAME, H5_ITER_INC, dset_info_link, &out, H5P_DEFAULT);
+	return out;
+  } catch (Exception& error) {
+	 string msg = error.getDetailMsg() + " in " + error.getFuncName();
+	 throw Rcpp::exception(msg.c_str());
+  }
+}
+
+herr_t dset_info(hid_t loc_id, const char *name, const H5O_info_t *info, void *op_data) {
+	if(info->type == H5O_TYPE_DATASET) {
 		((CharacterVector *) op_data)->push_back(name);
 	}
 	return 0;
+}
+
+herr_t dset_info_nolink(hid_t loc_id, const char *name, const H5L_info_t *info, void *op_data) {
+	H5O_info_t infobuf;
+	H5Oget_info_by_name (loc_id, name, &infobuf, H5P_DEFAULT);
+	return dset_info (loc_id, name, &infobuf, op_data);
+}
+
+herr_t dset_info_link(hid_t loc_id, const char *name, const H5L_info_t *info, void *op_data) {
+  if (info->type == H5L_TYPE_SOFT) {
+    ((CharacterVector *) op_data)->push_back(name);
+  }
+  return 0;
 }
 
 // [[Rcpp::export]]

@@ -34,10 +34,11 @@ openDataSet(.Object, datasetname, type)
 
 \S4method{openDataSet}{CommonFG,character}(.Object, datasetname, type)
 
-list.datasets(.Object, path = "/", full.names = TRUE, recursive = TRUE)
+list.datasets(.Object, path = "/", full.names = TRUE, recursive = TRUE,
+  follow.links = FALSE)
 
 \S4method{list.datasets}{CommonFG}(.Object, path = "/", full.names = TRUE,
-  recursive = TRUE)
+  recursive = TRUE, follow.links = FALSE)
 
 existsDataSet(.Object, datasetname)
 
@@ -82,6 +83,9 @@ returned.}
 
 \item{recursive}{logical; Specify DatSets should be retrieved recursively
 from .Object.}
+
+\item{follow.links}{logical; Specify if symbolic links should be followed
+(only applies if recursive = TRUE).}
 }
 \description{
 Although \code{\link{DataSet}} objects can implicitly be created using

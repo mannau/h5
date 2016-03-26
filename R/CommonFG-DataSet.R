@@ -31,7 +31,9 @@
 #' @param full.names character; Specify if absolute DataSet path names should be
 #' returned.
 #' @param recursive logical; Specify DatSets should be retrieved recursively
-#' from .Object.                                                      
+#' from .Object.  
+#' @param follow.links logical; Specify if symbolic links should be followed 
+#' (only applies if recursive = TRUE).                                              
 #' @name CommonFG-DataSet                                                         
 #' @rdname CommonFG-DataSet                                                             
 #' @include CommonFG.R
@@ -216,33 +218,41 @@ setMethod("openDataSet", signature(.Object="CommonFG",
 #' @rdname CommonFG-DataSet
 #' @export
 setGeneric("list.datasets", function(.Object, path = "/", 
-        full.names = TRUE, recursive = TRUE)
+        full.names = TRUE, recursive = TRUE, follow.links = FALSE)
       standardGeneric("list.datasets")
 )
 
 #' @rdname CommonFG-DataSet
 #' @export
 setMethod("list.datasets", signature(.Object="CommonFG"), 
-  function(.Object, path, full.names, recursive) {
+  function(.Object, path, full.names, recursive, follow.links) {
     if (!existsGroup(.Object, path)) {
       stop("Specified path does not exist")
     }
     # Set full path
     path.full <- path
     if(inherits(.Object, "H5Group")) {
-      path.full <- paste(path.full, .Object@location, sep = "/")
+      path.full <- paste(.Object@location, path.full, sep = "/")
       path.full <- gsub("/+", "/", path.full)
     }
+
+    dsets <- GetDataSetNames(.Object@pointer, path.full, recursive)
+    dsetnames <- rep(path.full, length(dsets))
     
-    dsets = GetDataSetNames(.Object@pointer, path.full, recursive)
-    if(length(dsets) > 0) {
-      if(full.names)
-      {
-        dsets=paste(path.full, dsets, sep="/")
+    if (follow.links) {
+      symlinks <- paste(path.full, GetSoftLinks(.Object@pointer, path.full), sep = "/")
+      symlinks <- gsub("/+", "/", symlinks)
+      dsetsymlinks <- lapply(symlinks, function(x) GetDataSetNames(.Object@pointer, x, recursive))
+      dsetnames <- c(dsetnames, rep(symlinks, sapply(dsetsymlinks, length)))
+      dsets <- c(dsets, do.call(c, dsetsymlinks))
+    }
+    
+    if (length(dsets) > 0) {
+      if (full.names) {
+        dsets <- paste(dsetnames, dsets, sep="/")
       }
-      else
-      {
-        dsets=gsub(".*/(.*)$", "\\1" , dsets)
+      else {
+        dsets <- gsub(".*/(.*)$", "\\1" , dsets)
       }
       dsets <- gsub("/+", "/", dsets) # just to make sure...
     } else {
