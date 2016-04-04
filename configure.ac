@@ -41,11 +41,26 @@ if test -z "${LIBS}"; then
 fi
 
 if test -z "${CPPFLAGS}"; then
-  CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-  dnl Fix for newer Debian versions
-  if test -d /usr/include/hdf5/serial; then
-    CPPFLAGS="${CPPFLAGS} -I/usr/include/hdf5/serial"
+  dnl prefer ggrep if installed
+  AC_CHECK_PROG(GREP,ggrep,`which ggrep`, `which grep`)
+
+  dnl check if $GREP supports option -o
+  AC_MSG_CHECKING([whether ${GREP} accepts -o])
+  if `echo '' | ${GREP} -o '' >/dev/null 2>&1`
+  then
+    AC_MSG_RESULT([yes])
+  else
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([${GREP} does not support option -o])
   fi
+
+  echo 'int main() { return; }' > myconftest.cpp
+
+  [
+  CPPFLAGS=`${H5CPP} -show -c myconftest.cpp | ${GREP} -o "\-I[^[:space:]]\+" | tr "\n" " "`
+  ]
+
+  rm -f myconftest.cpp
 fi
 
 dnl substitute CPPFLAGS and LIBS
