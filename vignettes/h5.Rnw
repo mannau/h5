@@ -48,7 +48,7 @@ prettyVersion <- packageDescription("h5")$Version
 prettyDate <- format(Sys.Date(), "%B %e, %Y")
 @
 
-\author{Mario Annau\\Raiffeisen Centrobank Vienna}
+\author{Mario Annau}
 \title{\pkg{h5} - An Object Oriented Interface to HDF5}
 \date{\Sexpr{prettyDate}}
 
