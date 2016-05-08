@@ -11,7 +11,7 @@ INC_HDF5=""
 if [ ! -e ${LIBWIN}/libhdf5_cpp.a ]; then
 	echo "  cannot find current hdf5 file(s) in ${LIBWIN}/libhdf5_cpp.a"
 	echo "  attempting to download them"
-	echo 'library(RCurl);f = CFILE("h5-libwin.zip", mode="wb");curlPerform(url = "https://github.com/mannau/h5-libwin/archive/master.zip", .opts = curlOptions(followlocation = TRUE, ssl.verifypeer = FALSE), writedata = f@ref);close(f)'| R --vanilla --slave
+	echo 'download.file("https://github.com/mannau/h5-libwin/archive/master.zip", destfile = "h5-libwin.zip")' | R --vanilla --slave
   if [ ! -e h5-libwin.zip ]; then
 	  allok=no
   else
