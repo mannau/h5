@@ -98,9 +98,7 @@ test_that("CommonFG-list-groups",{
   
   f <- function() list.groups(file, path = "a/be/bu")
   expect_that(f(), throws_error("Specified path does not exist"))
-  
   expect_that(list.groups(file), is_identical_to(character(0)))
-  
   
   g1 <- file["testgroup"]
   g1["testset"] <- 1:3
@@ -109,15 +107,9 @@ test_that("CommonFG-list-groups",{
   expect_that(list.groups(file, full.names = FALSE), is_identical_to(c("testgroup")))
   
   
-  g11 <- g1["testgroup1"]
-  g11["testset1"] <- 1:3
-  h5close(g11)
-  g12 <- g1["testgroup2"]
-  g12["testset2"] <- 1:3
-  h5close(g12)
-  g13 <- g1["testgroup3"]
-  g13["testset3"] <- 1:3
-  h5close(g13)
+  g1["testgroup1/testset1"] <- 1:3
+  g1["testgroup2/testset2"] <- 1:3
+  g1["testgroup3/testset3"] <- 1:3
   h5close(g1)
 
   group <- file["testgroupN"]
@@ -138,6 +130,7 @@ test_that("CommonFG-list-groups",{
   #expect_that(list.groups(file["testgroup"], full.names = TRUE), is_identical_to(ex))
   expect_that(list.groups(testgroup, full.names = TRUE), is_identical_to(ex))    
   h5close(testgroup)
+
   h5close(file)
   expect_that(file.remove(fname), is_true())
 })  
