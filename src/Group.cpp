@@ -61,12 +61,11 @@ bool ExistsGroup(XPtr<CommonFG> file, string groupname) {
 CharacterVector GetGroupNames(XPtr<CommonFG> file, string path, bool recursive) {
   try {
 	CharacterVector(out);
-	hid_t object_loc = H5Oopen(file->getLocId(), path.c_str(), H5P_DEFAULT);
 	if(recursive) {
-	  H5Lvisit(object_loc, H5_INDEX_NAME , H5_ITER_NATIVE, group_info, &out);
+	  H5Lvisit(file->getLocId(), H5_INDEX_NAME , H5_ITER_NATIVE, group_info, &out);
 	}
 	else {
-		H5Literate(object_loc, H5_INDEX_NAME , H5_ITER_NATIVE, NULL, group_info, &out);
+		H5Literate(file->getLocId(), H5_INDEX_NAME , H5_ITER_NATIVE, NULL, group_info, &out);
 	}
     return out;
   } catch (Exception& error) {
