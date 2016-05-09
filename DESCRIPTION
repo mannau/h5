@@ -25,7 +25,9 @@ Imports:
 LinkingTo: Rcpp
 Suggests:
     testthat,
-    roxygen2
+    roxygen2,
+    highlight
+VignetteBuilder: highlight
 Collate:
     'H5Location-Attribute.R'
     'Attribute.R'
