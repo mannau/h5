@@ -34,7 +34,7 @@ if [ ${allok} != yes ]; then
     echo ""
     echo " *** ERROR: unable to find HDF5 files"
     echo ""
-    echo " They must be in src/libwin and inst/include"
+    echo " They must be in src/lib and inst/include"
     echo ""
     echo " You can get the latest binary ball from"
     echo " https://github.com/mannau/h5-libwin"
