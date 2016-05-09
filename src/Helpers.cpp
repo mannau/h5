@@ -318,11 +318,24 @@ SEXP AllocateRData(const DataType &dtype, NumericVector count) {
 		default:
 		  throw Rcpp::exception("Datatype unknown.");
 	}
-	return data; // Never reached
+	return data;
 }
 
+
+void readCommonData(XPtr<IdComponent> obj, void *buf, PredType DataType, XPtr<DataSpace> memspace, XPtr<DataSpace> dataspace) {
+	H5I_type_t objtype = obj->getHDFObjType();
+	if(objtype == H5I_DATASET ) {
+		(DataSet *)obj->read(buf, PredType::NATIVE_INT32, *memspace, *dataspace);
+	} else if (objtype == H5I_ATTR) {
+		(Attribute *)obj->read(PredType::NATIVE_INT32, buf);
+	} else {
+		throw Rcpp::exception("Passed object type not valid to read data from.");
+	}
+}
+
+
 SEXP ReadRData(const DataType &dtype, SEXP data,
-			XPtr<DataSet> dataset,
+			XPtr<IdComponent> dataset,
 			XPtr<DataSpace> memspace,
 			XPtr<DataSpace> dataspace ) {
 	try {
@@ -334,7 +347,7 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
               throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
             case T_ENUM: {
               // To convert a HDF5 enum to an R factor, we pull out the raw integer data first.
-              dataset->read(INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
+              readCommonData(dataset, INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
               // Then we have to decrement each of them, since R indexes from 1.
               hsize_t n = dataspace->getSelectNpoints();
               for(hsize_t i = 0; i < n; i++) {
@@ -362,15 +375,15 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
               break;
             }
 			case T_DOUBLE:
-				dataset->read(REAL(data), PredType::NATIVE_DOUBLE, *memspace, *dataspace);
+				readCommonData(dataset, REAL(data), PredType::NATIVE_DOUBLE, *memspace, *dataspace);
 				break;
 			case T_INTEGER:
-				dataset->read(INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
+				readCommonData(dataset, INTEGER(data), PredType::NATIVE_INT32, *memspace, *dataspace);
 				break;
 			case T_LOGICAL: {
 				hsize_t n = dataspace->getSelectNpoints();
 				char *boolbuf = (char *)R_alloc(n, sizeof(char));
-				dataset->read(boolbuf, GetDataType(T_LOGICAL), *memspace, *dataspace);
+				readCommonData(dataset, boolbuf, GetDataType(T_LOGICAL), *memspace, *dataspace);
 				for(unsigned int i = 0; i < n; i++) {
 					if(boolbuf[i] == -1) {
 						LOGICAL(data)[i] = NA_LOGICAL;
@@ -387,7 +400,7 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
 
 				if(!H5Tis_variable_str(dtype.getId())) {
 					char *strbuf = (char *)R_alloc(n, stsize);
-					dataset->read(strbuf, dtype, *memspace, *dataspace);
+					readCommonData(dataset, strbuf, dtype, *memspace, *dataspace);
 					for(unsigned int i = 0; i < n; i++) {
 					  Rcpp::String readstr(std::string(strbuf, stsize));
 					  if(readstr == "NA") {
@@ -400,7 +413,7 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
 				} else { // Assume variable-length string
 					//char ** strbuf = new char *[n];
 					char ** strbuf = (char **)R_alloc(n, sizeof(char *));
-					dataset->read(strbuf, dtype, *memspace, *dataspace);
+					readCommonData(dataset, strbuf, dtype, *memspace, *dataspace);
 					for(unsigned int i = 0; i < n; i++) {
 					  Rcpp::String readstr(strbuf[i]);
 					  if(readstr == "NA") {
@@ -417,7 +430,7 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
 				 hsize_t n = dataspace->getSelectNpoints();
 				 DataType dtypein = GetDataType(tchar, -1);
 				 hvl_t * dbuf = (hvl_t *)R_alloc(n, dtypein.getSize());
-				 dataset->read(dbuf, dtypein, *memspace, *dataspace);
+				 readCommonData(dataset, dbuf, dtypein, *memspace, *dataspace);
 
 				 vector<vector<double> > datvec;
 				 double *ptr = (double *)NULL;
@@ -435,7 +448,7 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
 				 hsize_t n = dataspace->getSelectNpoints();
 				 DataType dtypein = GetDataType(tchar, -1);
 				 hvl_t * dbuf = (hvl_t *)R_alloc(n, dtypein.getSize());
-				 dataset->read(dbuf, dtypein, *memspace, *dataspace);
+				 readCommonData(dataset, dbuf, dtypein, *memspace, *dataspace);
 
 				 vector<vector<int> > datvec;
 				 int *ptr = (int *)NULL;
@@ -459,6 +472,7 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
   }
 }
 
+/*
 SEXP ReadRDataAttribute(const DataType &dtype, SEXP data,
 			XPtr<Attribute> attribute) {
 try {
@@ -552,3 +566,4 @@ try {
 	throw Rcpp::exception(msg.c_str());
   }
 }
+*/
