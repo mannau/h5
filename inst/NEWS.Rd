@@ -3,9 +3,24 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\fkt}{\code{#1()}}
 
-\section{Changes in h5 version 0.9.5 (2016-03-05)}{
+\section{Changes in h5 version 0.9.7 (2016-05-10)}{
   \itemize{
     \item Add package vignette with a focus on time series storage
+    \item Fix ASAN bug in test case DataSet-Enum-Matrix-open
+  }
+}
+
+\section{Changes in h5 version 0.9.6 (2016-05-08)}{
+  \itemize{
+    \item Fix issue \href{https://github.com/mannau/h5/issues/27}{#27}: Support HDF5 Links, include follow.links in list.datasets
+    \item Fix configure.ac script as suggested by Elias Pipping
+    \item PR\href{https://github.com/mannau/h5/pull/29}{#29}: Add support for inspecting of HDF5's compound datatypes (thanks to Aaron Jacobs)
+    \item PR\href{https://github.com/mannau/h5/pull/30}{#30}: Add support for inspecting of HDF5's Enum datatypes (thanks to Aaron Jacobs)
+  }
+}
+
+\section{Changes in h5 version 0.9.5 (2016-03-05)}{
+  \itemize{
     \item Fix issue \href{https://github.com/mannau/h5/issues/22}{#22}: Support non-null terminated ascii strings
     \item Fix issue \href{https://github.com/mannau/h5/issues/9}{#25}: Support Scalar Datasets
     \item Simplify dataset reading

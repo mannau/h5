@@ -467,6 +467,34 @@ try {
           throw Rcpp::exception("Reading of compound datatypes is not yet supported.");
         case T_DATETIME:
           throw Rcpp::exception("Reading of date/time datatypes is not yet supported.");
+        case T_ENUM: {
+		  // To convert a HDF5 enum to an R factor, we pull out the raw integer data first.
+          attribute->read(PredType::NATIVE_INT32, INTEGER(data));
+		  // Then we have to decrement each of them, since R indexes from 1.
+          hsize_t n = attribute->getSpace().getSelectNpoints();
+		  for(hsize_t i = 0; i < n; i++) {
+			  INTEGER(data)[i] += 1;
+		  }
+		  // Then we add the levels, and label it as a factor. Note that R does not have
+		  // first-class factor support:
+		  // http://stackoverflow.com/questions/28723059/can-we-get-factor-matrices-in-r
+		  if (dtype.getClass() == H5T_ENUM) {
+			  EnumType enumtype = (const EnumType&) dtype;
+			  int nlevels = enumtype.getNmembers();
+			  CharacterVector levels(nlevels);
+			  for (int i = 0; i < nlevels; i++) {
+				  // Use the C API, since EnumType does not have a getMemberName() equivalent.
+				  Rcpp::String name(H5Tget_member_name(enumtype.getId(), i));
+				  levels[i] = name;
+			  }
+			  RObject d = data;
+			  d.attr("levels") = levels;
+			  d.attr("class") = "factor";
+		  } else {
+			  Rcpp::exception("internal error: tried to read non-enum as enum");
+		  }
+		  break;
+		}
 		case T_DOUBLE:
 			attribute->read(PredType::NATIVE_DOUBLE, REAL(data));
 			break;
@@ -475,34 +503,48 @@ try {
 			break;
 		case T_LOGICAL: {
 			hsize_t n = attribute->getSpace().getSelectNpoints();
-			bool *boolbuf = (bool *)R_alloc(n, sizeof(bool));
+			char *boolbuf = (char *)R_alloc(n, sizeof(char));
 			attribute->read(GetDataType(T_LOGICAL), boolbuf);
 			for(unsigned int i = 0; i < n; i++) {
-			  LOGICAL(data)[i] = boolbuf[i];
+				if(boolbuf[i] == -1) {
+					LOGICAL(data)[i] = NA_LOGICAL;
+				} else {
+					LOGICAL(data)[i] = boolbuf[i];
+				}
 			}
 			break;
 		}
 		case T_CHARACTER: {
+			hsize_t n = attribute->getSpace().getSelectNpoints();
 			DataType dtype = attribute->getDataType();
 			size_t stsize = dtype.getSize();
-			hsize_t n = attribute->getSpace().getSelectNpoints();
 
 			if(!H5Tis_variable_str(dtype.getId())) {
 				char *strbuf = (char *)R_alloc(n, stsize);
 				attribute->read(dtype, strbuf);
 				for(unsigned int i = 0; i < n; i++) {
-				  SET_STRING_ELT(data, i, Rf_mkChar(strbuf));
+				  Rcpp::String readstr(std::string(strbuf, stsize));
+				  if(readstr == "NA") {
+					  SET_STRING_ELT(data, i, NA_STRING);
+				  } else {
+					  SET_STRING_ELT(data, i, readstr.get_sexp());
+				  }
 				  strbuf += stsize;
 				}
 			} else { // Assume variable-length string
-				char ** strbuf = new char *[n];
+				//char ** strbuf = new char *[n];
+				char ** strbuf = (char **)R_alloc(n, sizeof(char *));
 				attribute->read(dtype, strbuf);
 				for(unsigned int i = 0; i < n; i++) {
 				  Rcpp::String readstr(strbuf[i]);
-				  SET_STRING_ELT(data, i, readstr.get_sexp());
+				  if(readstr == "NA") {
+					  SET_STRING_ELT(data, i, NA_STRING);
+				  } else {
+					  SET_STRING_ELT(data, i, readstr.get_sexp());
+				  }
 				}
-				delete [] strbuf;
 			}
+			dtype.close();
 			break;
 		}
 		case T_VLEN_DOUBLE: {
