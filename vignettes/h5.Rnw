@@ -1,5 +1,5 @@
 % !Rnw driver = highlight::HighlightWeaveLatex()
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 %\VignetteIndexEntry{h5-paper}
 %\VignetteEngine{highlight::highlight}
 %\VignetteKeywords{h5, HDF5}
@@ -26,7 +26,8 @@
 
 \usepackage{microtype} %% cf http://www.khirevich.com/latex/microtype/
 \usepackage[T1]{fontenc} %% cf http://www.khirevich.com/latex/font/
-\usepackage[bitstream-charter]{mathdesign} %% cf http://www.khirevich.com/latex/font/
+%\usepackage[bitstream-charter]{mathdesign} %% cf
+% http://www.khirevich.com/latex/font/
 
 \newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
@@ -46,11 +47,13 @@
 <<echo=FALSE,print=FALSE>>=
 prettyVersion <- packageDescription("h5")$Version
 prettyDate <- format(Sys.Date(), "%B %e, %Y")
+require(h5)
+require(highlight)
 @
 
 \author{Mario Annau}
 \title{\pkg{h5} - An Object Oriented Interface to HDF5}
-\date{\Sexpr{prettyDate}}
+\date{\pkg{h5} version \Sexpr{prettyVersion} as of \Sexpr{prettyDate}}
 
 \begin{document}
 \maketitle
@@ -67,6 +70,7 @@ prettyDate <- format(Sys.Date(), "%B %e, %Y")
   \proglang{Python} (\pkg{PyTables}) can be read using \pkg{h5}.}
 
 \section{Introduction}
+
 The Hierarchical Data Format 5 (HDF5) is a binary data format and API
 created by the \cite{hdf5} to better meet ever--increasing data storage demands
 of the scientific computing community. HDF5 files store homogeneous,

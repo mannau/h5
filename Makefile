@@ -73,7 +73,7 @@ check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	$(shell boot2docker shellinit)
 	@docker run -v "$(CURRENT_DIR):/mnt" rocker/r-devel-san /bin/bash -c \
 		"cd /mnt; apt-get update; apt-get install -y libhdf5-dev; \
-		R -e \"install.packages(c('Rcpp', 'testthat', 'roxygen2', 'RCurl', 'highlight'))\"; \
+		R -e \"install.packages(c('Rcpp', 'testthat', 'roxygen2', 'highlight', 'zoo', 'microbenchmark'))\"; \
 		R CMD check $(PKG_NAME)_$(PKG_VERSION).tar.gz"
 
 00check.log: check
