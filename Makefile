@@ -71,10 +71,11 @@ check-cran:
 check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	@boot2docker up
 	$(shell boot2docker shellinit)
-	@docker run -v "$(CURRENT_DIR):/mnt" rocker/r-devel-san /bin/bash -c \
-		"cd /mnt; apt-get update; apt-get install -y libhdf5-dev; \
+	@docker run -v "$(CURRENT_DIR):/mnt" mannau/r-devel-san /bin/bash -c \
+		"cd /mnt; apt-get update; apt-get clean; apt-get install -y libhdf5-dev; \
 		R -e \"install.packages(c('Rcpp', 'testthat', 'roxygen2', 'highlight', 'zoo', 'microbenchmark'))\"; \
-		R CMD check $(PKG_NAME)_$(PKG_VERSION).tar.gz"
+		R CMD check $(PKG_NAME)_$(PKG_VERSION).tar.gz; \
+		cat /mnt/h5.Rcheck/00install.out"
 
 00check.log: check
 	@mv $(CHECKPATH)\\00check.log .

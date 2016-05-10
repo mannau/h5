@@ -349,9 +349,8 @@ SEXP ReadRData(const DataType &dtype, SEXP data,
                   CharacterVector levels(nlevels);
                   for (int i = 0; i < nlevels; i++) {
                       // Use the C API, since EnumType does not have a getMemberName() equivalent.
-                      char* name = H5Tget_member_name(enumtype.getId(), i);
-                      levels[i] = name;
-                      delete []name;
+                	  Rcpp::String name(H5Tget_member_name(enumtype.getId(), i));
+                	  levels[i] = name;
                   }
                   RObject d = data;
                   d.attr("levels") = levels;
