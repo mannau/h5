@@ -14,12 +14,12 @@ test_that("H5Group-param",{
   h5close(group2)
   
   f <- function() grouproot <- createGroup(file, "/")
-  expect_that(f(), throws_error("H5Gcreate failed"))
+  expect_that(f(), throws_error("H5Gcreate failed in createGroup"))
   
   f <- function() grouproot <- createGroup(file, "/")
-  expect_that(f(), throws_error("H5Gcreate failed"))
+  expect_that(f(), throws_error("H5Gcreate failed in createGroup"))
    
-      # Test very long groupname
+  # Test very long groupname
   gname <- paste(rep(LETTERS, 1000), collapse = "")
   groupn <- createGroup(file, gname)
   expect_that(group1, is_a("H5Group"))
@@ -34,7 +34,7 @@ test_that("H5Group-createGroup",{
   
   # Fail for nested (non-existent) group name
   f <- function() group1 <- createGroup(file, "/testgroup/test")
-  expect_that(f(), throws_error("H5Gcreate failed"))
+  expect_that(f(), throws_error("H5Gcreate failed in createGroup"))
   
   group3 <- createGroup(file, "/testgroup3")
   expect_that(group3, is_a("H5Group"))
@@ -53,7 +53,7 @@ test_that("H5Group-openGroup",{
   file <- h5file(fname, "r")
   # Fail for nested (non-existent) group name
   f <- function() group1 <- openGroup(file, "/testgroup/test")
-  expect_that(f(), throws_error("H5Gopen failed"))
+  expect_that(f(), throws_error("H5Gopen failed in openGroup"))
   
   group3 <- openGroup(file, "/testgroup3")
   expect_that(group3, is_a("H5Group"))

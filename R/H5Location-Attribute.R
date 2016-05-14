@@ -34,7 +34,7 @@ setClass( "H5Location", representation( pointer = "externalptr" ) )
 #' Default value of -1 creates variable-length strings.
 #' @export
 setGeneric("createAttribute", function(.Object, attributename, data, size = -1)
-			standardGeneric("createAttribute")
+      standardGeneric("createAttribute")
 )
 
 #' @rdname H5Location-Attribute
@@ -42,24 +42,24 @@ setGeneric("createAttribute", function(.Object, attributename, data, size = -1)
 #' @export
 setMethod("createAttribute", signature(.Object="H5Location", 
         attributename = "character", data = "ANY", size = "ANY"), 
-  function(.Object, attributename, data, size) {
-    dspace <- GetDataSpace(data)
-    FUN <- NULL
-    if (inherits(.Object, "DataSet")) {
-      FUN <- CreateAttribute_DataSet
-    } else if (inherits(.Object, "CommonFG")) {
-      FUN <- CreateAttribute_CommonFG
-    } else {
-      stop("Object type unknown.")
-    }
-    attrptr <- FUN(.Object@pointer, attributename, dspace$typechar, dspace$dim, 
-        size)
-    
-    attrib <- new("Attribute", attrptr, attributename, dspace$typechar, dspace$dim)
-    writeAttribute(attrib, data)
-    CloseAttribute(attrib@pointer)
-    invisible(TRUE)
-  })
+    function(.Object, attributename, data, size) {
+      dspace <- GetDataSpace(data)
+      FUN <- NULL
+      if (inherits(.Object, "DataSet")) {
+        FUN <- CreateAttribute_DataSet
+      } else if (inherits(.Object, "CommonFG")) {
+        FUN <- CreateAttribute_CommonFG
+      } else {
+        stop("Object type unknown.")
+      }
+      attrptr <- FUN(.Object@pointer, attributename, dspace$typechar, dspace$dim, 
+          size)
+      
+      attrib <- new("Attribute", attrptr, attributename, dspace$typechar, dspace$dim)
+      writeAttribute(attrib, data)
+      CloseAttribute(attrib@pointer)
+      invisible(TRUE)
+    })
 
 
 
@@ -73,19 +73,19 @@ setGeneric("openAttribute", function(.Object, attributename)
 #' @importFrom methods new
 #' @export
 setMethod("openAttribute", signature(.Object="H5Location", attributename = "character"), 
-  function(.Object, attributename) {
-    FUN <- NULL
-    if (inherits(.Object, "DataSet")) {
-      FUN <- OpenAttribute_DataSet
-    } else if (inherits(.Object, "CommonFG")) {
-      FUN <- OpenAttribute_CommonFG
-    } else {
-      stop("Object type unknown.")
-    }
-    pointer <- FUN(.Object@pointer, attributename)
-    new("Attribute", pointer, attributename, 
-        GetAttributeType(pointer), GetAttributeDimensions(pointer))
-  })
+    function(.Object, attributename) {
+      FUN <- NULL
+      if (inherits(.Object, "DataSet")) {
+        FUN <- OpenAttribute_DataSet
+      } else if (inherits(.Object, "CommonFG")) {
+        FUN <- OpenAttribute_CommonFG
+      } else {
+        stop("Object type unknown.")
+      }
+      pointer <- FUN(.Object@pointer, attributename)
+      new("Attribute", pointer, attributename, 
+          GetAttributeType(pointer), GetAttributeDimensions(pointer))
+    })
 
 #' @rdname H5Location-Attribute
 #' @export                                                                      
@@ -96,12 +96,12 @@ setGeneric("h5attr", function(.Object, attributename)
 #' @rdname H5Location-Attribute
 #' @export
 setMethod("h5attr", signature(.Object="H5Location", attributename = "character"),
-  function(.Object, attributename) {
-    attribute <- openAttribute(.Object, attributename)
-    res <- readAttribute(attribute)
-    CloseAttribute(attribute@pointer)
-    res
-  })
+    function(.Object, attributename) {
+      attribute <- openAttribute(.Object, attributename)
+      res <- readAttribute(attribute)
+      CloseAttribute(attribute@pointer)
+      res
+    })
 
 #' @rdname H5Location-Attribute
 #' @param value object; Object to be stored in HDF5 Attribute, can be either of 
@@ -116,10 +116,10 @@ setGeneric("h5attr<-", function(.Object, attributename, ..., value)
 #' @export
 setMethod("h5attr<-", signature(.Object="H5Location", attributename = "character", 
         value = "ANY"),
-  function(.Object, attributename, ..., value) {
-    createAttribute(.Object, attributename, value, ...)
-    .Object
-  })
+    function(.Object, attributename, ..., value) {
+      createAttribute(.Object, attributename, value, ...)
+      .Object
+    })
 
 #' @rdname H5Location-Attribute
 #' @export
@@ -130,15 +130,15 @@ setGeneric("list.attributes", function(.Object)
 #' @rdname H5Location-Attribute
 #' @export
 setMethod( "list.attributes", c("H5Location"), 
-  function(.Object) {
-    if (inherits(.Object, "CommonFG")) {
-      res <- GetAttributeNames_CommonFG(.Object@pointer)
-    } else if (inherits(.Object, "DataSet")) {
-      res <- GetAttributeNames_DataSet(.Object@pointer)
-    } else {
-      stop("Object does not inherit H5File, H5Group or DataSet.")
-    }
-    res
-  })    
+    function(.Object) {
+      if (inherits(.Object, "CommonFG")) {
+        res <- GetAttributeNames_CommonFG(.Object@pointer)
+      } else if (inherits(.Object, "DataSet")) {
+        res <- GetAttributeNames_DataSet(.Object@pointer)
+      } else {
+        stop("Object does not inherit H5File, H5Group or DataSet.")
+      }
+      res
+    })    
 
 

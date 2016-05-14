@@ -1,4 +1,5 @@
 #include "Group.h"
+#include "H5IdComponent.h"
 
 using namespace Rcpp;
 using namespace H5;
@@ -11,8 +12,9 @@ XPtr<Group> CreateGroup(XPtr<CommonFG> file, string groupname) {
     if (group_id < 0) {
       throw Exception("createGroup", "H5Gcreate failed");
     }
-    Group* group = new Group(group_id);
-    return XPtr<Group>(group);
+    Group *groupptr = new Group(group_id);
+    groupptr->decRefCount(group_id);
+    return XPtr<Group>(groupptr);
   } catch (Exception& error) {
      string msg = error.getDetailMsg() + " in " + error.getFuncName();
      throw Rcpp::exception(msg.c_str());
@@ -26,8 +28,9 @@ XPtr<Group> OpenGroup(XPtr<CommonFG> file, string groupname) {
     if (group_id < 0) {
       throw Exception("openGroup", "H5Gopen failed");
     }
-    Group* group = new Group( group_id );
-    return XPtr<Group>(group);
+    Group *groupptr = new Group(group_id);
+    groupptr->decRefCount(group_id);
+    return XPtr<Group>(groupptr);
   } catch (Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
     throw Rcpp::exception(msg.c_str());
@@ -61,11 +64,12 @@ bool ExistsGroup(XPtr<CommonFG> file, string groupname) {
 CharacterVector GetGroupNames(XPtr<CommonFG> file, string path, bool recursive) {
   try {
 	CharacterVector(out);
+	hid_t object_loc = H5Oopen(file->getLocId(), path.c_str(), H5P_DEFAULT);
 	if(recursive) {
-	  H5Lvisit(file->getLocId(), H5_INDEX_NAME , H5_ITER_NATIVE, group_info, &out);
+	  H5Lvisit(object_loc, H5_INDEX_NAME , H5_ITER_NATIVE, group_info, &out);
 	}
 	else {
-		H5Literate(file->getLocId(), H5_INDEX_NAME , H5_ITER_NATIVE, NULL, group_info, &out);
+		H5Literate(object_loc, H5_INDEX_NAME , H5_ITER_NATIVE, NULL, group_info, &out);
 	}
     return out;
   } catch (Exception& error) {

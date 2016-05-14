@@ -39,10 +39,15 @@ XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
 
 	if (attrid == -1) {
 		H5Aclose(attrid);
+		dtype.close();
 		dataspace.close();
 		throw Rcpp::exception("Creation of Attribute failed. Maybe attribute with same name is already existing at location.");
 	}
-	return XPtr<Attribute>(new Attribute(attrid));
+	dtype.close();
+
+	Attribute *attr = new Attribute(attrid);
+	attr->decRefCount(attrid);
+	return XPtr<Attribute>(attr);
   } catch (Exception& error) {
 	  string msg = error.getDetailMsg() + " in " + error.getFuncName();
       throw Rcpp::exception(msg.c_str());

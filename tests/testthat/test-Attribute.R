@@ -39,17 +39,19 @@ test_that("Attribute-Errors", {
   
   f <- function() h5attr(file, "test") <- c("a", "be", "bu")
   expect_that(f(), throws_error("Creation of Attribute failed"))    
+
+  group <- createGroup(file, "testgroup")
   
-  group <- file["testgroup"]
   f <- function() h5attr(group, "test")
-  expect_that(f(), throws_error("Opening Attribute failed"))    
+  expect_that(f(), throws_error("Opening Attribute failed"))   
   h5attr(group, "test") <- c("A", "BE", "BU")
-  
+
   group["testset"] <- 1:10
   dset <- group["testset"] 
   f <- function() h5attr(dset, "test")
   expect_that(f(), throws_error("Opening Attribute failed"))    
   h5attr(dset, "test") <- c("A", "BE", "BU")
+  
   h5close(dset)
   h5close(group)
   h5close(file)

@@ -45,3 +45,4 @@ Collate:
     'Helpers.R'
     'RcppExports.R'
     'h5-package.R'
+RoxygenNote: 5.0.1
