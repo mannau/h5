@@ -2,7 +2,7 @@ Package: h5
 Type: Package
 Title: Interface to the 'HDF5' Library
 Version: 0.9.8
-Date: 2016-05-15
+Date: 2016-07-16
 Authors@R: c(person("Mario", "Annau", role = c("aut", "cre"),
          email = "mario.annau@gmail.com"))
 Copyright: See COPYRIGHTS file.
@@ -26,10 +26,10 @@ LinkingTo: Rcpp
 Suggests:
     testthat,
     roxygen2,
-    highlight,
     zoo,
-    microbenchmark
-VignetteBuilder: highlight
+    microbenchmark,
+    knitr
+VignetteBuilder: knitr
 Collate:
     'H5Location-Attribute.R'
     'Attribute.R'
