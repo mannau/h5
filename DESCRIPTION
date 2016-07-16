@@ -28,7 +28,7 @@ Suggests:
     roxygen2,
     zoo,
     microbenchmark,
-    knitr
+    rmarkdown
 VignetteBuilder: knitr
 Collate:
     'H5Location-Attribute.R'
