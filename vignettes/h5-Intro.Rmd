@@ -3,8 +3,10 @@ title: "h5 - An Object Oriented Interface to HDF5"
 author: "Mario Annau"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-vignette: |
-  %\VignetteIndexEntry{h5 Introduction} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+vignette: >
+  %\VignetteIndexEntry{h5 Introduction} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
 nocite: |
   @CRAN:h5r, @CRAN:ncdf4, @CRAN:rgdal, @CRAN:hdf5, @BIOC:rhdf5, @IEEE754wiki, @pytables, @mckinney-proc-scipy-2010
 bibliography: h5.bib

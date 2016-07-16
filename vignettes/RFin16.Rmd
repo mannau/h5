@@ -9,8 +9,10 @@ institution: R/Finance 2016
 subtitle: An Object Oriented Interface to HDF5
 theme: metropolis
 highlight: tango
-vignette: |
-  %\VignetteIndexEntry{RFin2016 Slides} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+vignette: >
+  %\VignetteIndexEntry{RFin2016 Slides} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
