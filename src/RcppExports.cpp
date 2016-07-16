@@ -6,18 +6,33 @@
 
 using namespace Rcpp;
 
-// CreateAttribute_CommonFG
-XPtr<Attribute> CreateAttribute_CommonFG(XPtr<CommonFG> loc, string attributename, char datatype, NumericVector dimensions, int size);
-RcppExport SEXP h5_CreateAttribute_CommonFG(SEXP locSEXP, SEXP attributenameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP sizeSEXP) {
+// CreateAttribute_H5File
+XPtr<Attribute> CreateAttribute_H5File(XPtr<H5File> loc, string attributename, char datatype, NumericVector dimensions, int size);
+RcppExport SEXP h5_CreateAttribute_H5File(SEXP locSEXP, SEXP attributenameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< XPtr<H5File> >::type loc(locSEXP);
     Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
     Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP);
     Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
-    __result = Rcpp::wrap(CreateAttribute_CommonFG(loc, attributename, datatype, dimensions, size));
+    __result = Rcpp::wrap(CreateAttribute_H5File(loc, attributename, datatype, dimensions, size));
+    return __result;
+END_RCPP
+}
+// CreateAttribute_Group
+XPtr<Attribute> CreateAttribute_Group(XPtr<Group> loc, string attributename, char datatype, NumericVector dimensions, int size);
+RcppExport SEXP h5_CreateAttribute_Group(SEXP locSEXP, SEXP attributenameSEXP, SEXP datatypeSEXP, SEXP dimensionsSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Group> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
+    Rcpp::traits::input_parameter< char >::type datatype(datatypeSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dimensions(dimensionsSEXP);
+    Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
+    __result = Rcpp::wrap(CreateAttribute_Group(loc, attributename, datatype, dimensions, size));
     return __result;
 END_RCPP
 }
@@ -73,15 +88,27 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// OpenAttribute_CommonFG
-XPtr<Attribute> OpenAttribute_CommonFG(XPtr<CommonFG> loc, string attributename);
-RcppExport SEXP h5_OpenAttribute_CommonFG(SEXP locSEXP, SEXP attributenameSEXP) {
+// OpenAttribute_H5File
+XPtr<Attribute> OpenAttribute_H5File(XPtr<H5File> loc, string attributename);
+RcppExport SEXP h5_OpenAttribute_H5File(SEXP locSEXP, SEXP attributenameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< XPtr<CommonFG> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< XPtr<H5File> >::type loc(locSEXP);
     Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
-    __result = Rcpp::wrap(OpenAttribute_CommonFG(loc, attributename));
+    __result = Rcpp::wrap(OpenAttribute_H5File(loc, attributename));
+    return __result;
+END_RCPP
+}
+// OpenAttribute_Group
+XPtr<Attribute> OpenAttribute_Group(XPtr<Group> loc, string attributename);
+RcppExport SEXP h5_OpenAttribute_Group(SEXP locSEXP, SEXP attributenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< XPtr<Group> >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< string >::type attributename(attributenameSEXP);
+    __result = Rcpp::wrap(OpenAttribute_Group(loc, attributename));
     return __result;
 END_RCPP
 }

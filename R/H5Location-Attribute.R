@@ -47,8 +47,10 @@ setMethod("createAttribute", signature(.Object="H5Location",
     FUN <- NULL
     if (inherits(.Object, "DataSet")) {
       FUN <- CreateAttribute_DataSet
-    } else if (inherits(.Object, "CommonFG")) {
-      FUN <- CreateAttribute_CommonFG
+    } else if (inherits(.Object, "H5Group")) {
+      FUN <- CreateAttribute_Group
+    } else if (inherits(.Object, "H5File")) {
+      FUN <- CreateAttribute_H5File
     } else {
       stop("Object type unknown.")
     }
@@ -77,8 +79,10 @@ setMethod("openAttribute", signature(.Object="H5Location", attributename = "char
     FUN <- NULL
     if (inherits(.Object, "DataSet")) {
       FUN <- OpenAttribute_DataSet
-    } else if (inherits(.Object, "CommonFG")) {
-      FUN <- OpenAttribute_CommonFG
+    } else if (inherits(.Object, "H5Group")) {
+      FUN <- OpenAttribute_Group
+    } else if (inherits(.Object, "H5File")) {
+      FUN <- OpenAttribute_H5File
     } else {
       stop("Object type unknown.")
     }

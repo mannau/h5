@@ -6,47 +6,66 @@ using namespace H5;
 using namespace std;
 
 // [[Rcpp::export]]
-XPtr<Attribute> CreateAttribute_CommonFG(XPtr<CommonFG> loc, string attributename,
+XPtr<Attribute> CreateAttribute_H5File(XPtr<H5File> loc, string attributename,
 		char datatype, NumericVector dimensions, int size) {
 
-	return CreateAttribute_internal(loc->getLocId(), attributename,
-			datatype, dimensions, size);
+	try {
+		vector<hsize_t> dims(dimensions.begin(), dimensions.end());
+		DataSpace dataspace (dimensions.length(), &dims[0]);
+
+		if(size > 0) { // Adjust for null-termination character
+		  size += 1;
+		}
+
+		DataType dtype = GetDataType(GetTypechar(datatype), size);
+
+		Attribute attr =  loc->createAttribute(attributename, dtype, dataspace, H5P_DEFAULT);
+		return XPtr<Attribute>(new Attribute(attr));
+	  } catch (Exception& error) {
+		  throw Rcpp::exception("Creation of Attribute failed. Maybe attribute with same name is already existing at location.");
+	  }
+}
+
+// [[Rcpp::export]]
+XPtr<Attribute> CreateAttribute_Group(XPtr<Group> loc, string attributename,
+		char datatype, NumericVector dimensions, int size) {
+
+	try {
+		vector<hsize_t> dims(dimensions.begin(), dimensions.end());
+		DataSpace dataspace (dimensions.length(), &dims[0]);
+
+		if(size > 0) { // Adjust for null-termination character
+		  size += 1;
+		}
+
+		DataType dtype = GetDataType(GetTypechar(datatype), size);
+
+		Attribute attr =  loc->createAttribute(attributename, dtype, dataspace, H5P_DEFAULT);
+		return XPtr<Attribute>(new Attribute(attr));
+	  } catch (Exception& error) {
+		  throw Rcpp::exception("Creation of Attribute failed. Maybe attribute with same name is already existing at location.");
+	  }
 }
 
 // [[Rcpp::export]]
 XPtr<Attribute> CreateAttribute_DataSet(XPtr<DataSet> loc, string attributename,
 		char datatype, NumericVector dimensions, int size) {
 
-	return CreateAttribute_internal(loc->getId(), attributename,
-				datatype, dimensions, size);
-}
+	try {
+		vector<hsize_t> dims(dimensions.begin(), dimensions.end());
+		DataSpace dataspace (dimensions.length(), &dims[0]);
 
+		if(size > 0) { // Adjust for null-termination character
+		  size += 1;
+		}
 
-XPtr<Attribute> CreateAttribute_internal(int id, string attributename,
-		char datatype, NumericVector dimensions, int size) {
-  try {
-	vector<hsize_t> dims(dimensions.begin(), dimensions.end());
-	DataSpace dataspace (dimensions.length(), &dims[0]);
+		DataType dtype = GetDataType(GetTypechar(datatype), size);
 
-	if(size > 0) { // Adjust for null-termination character
-	  size += 1;
-	}
-
-	DataType dtype = GetDataType(GetTypechar(datatype), size);
-
-	hid_t attrid = H5Acreate(id, attributename.c_str(), dtype.getId(),
-			dataspace.getId(), H5P_DEFAULT, H5P_DEFAULT);
-
-	if (attrid == -1) {
-		H5Aclose(attrid);
-		dataspace.close();
-		throw Rcpp::exception("Creation of Attribute failed. Maybe attribute with same name is already existing at location.");
-	}
-	return XPtr<Attribute>(new Attribute(attrid));
-  } catch (Exception& error) {
-	  string msg = error.getDetailMsg() + " in " + error.getFuncName();
-      throw Rcpp::exception(msg.c_str());
-  }
+		Attribute attr =  loc->createAttribute(attributename, dtype, dataspace, H5P_DEFAULT);
+		return XPtr<Attribute>(new Attribute(attr));
+	  } catch (Exception& error) {
+		  throw Rcpp::exception("Creation of Attribute failed. Maybe attribute with same name is already existing at location.");
+	  }
 }
 
 // [[Rcpp::export]]
@@ -92,27 +111,33 @@ bool CloseAttribute(XPtr<Attribute> attribute) {
 }
 
 // [[Rcpp::export]]
-XPtr<Attribute> OpenAttribute_CommonFG(XPtr<CommonFG> loc, string attributename) {
-	return OpenAttribute_internal(loc->getLocId(), attributename);
+XPtr<Attribute> OpenAttribute_H5File(XPtr<H5File> loc, string attributename) {
+	try {
+		Attribute attr = loc->openAttribute(attributename);
+		return XPtr<Attribute>(new Attribute(attr));
+	} catch (Exception& error) {
+	    throw Rcpp::exception("Opening Attribute failed.");
+	}
+}
+
+// [[Rcpp::export]]
+XPtr<Attribute> OpenAttribute_Group(XPtr<Group> loc, string attributename) {
+	try {
+			Attribute attr = loc->openAttribute(attributename);
+			return XPtr<Attribute>(new Attribute(attr));
+		} catch (Exception& error) {
+		    throw Rcpp::exception("Opening Attribute failed.");
+		}
 }
 
 // [[Rcpp::export]]
 XPtr<Attribute> OpenAttribute_DataSet(XPtr<DataSet> loc, string attributename) {
-	return OpenAttribute_internal(loc->getId(), attributename);
-}
-
-XPtr<Attribute> OpenAttribute_internal(int id, string attributename) {
-  try {
-	hid_t attrid = H5Aopen(id, attributename.c_str(), H5P_DEFAULT);
-	if (attrid == -1) {
-		H5Aclose(attrid);
-		throw Rcpp::exception("Opening Attribute failed.");
-	}
-	return XPtr<Attribute>(new Attribute(attrid));
-  } catch (Exception& error) {
-	  string msg = error.getDetailMsg() + " in " + error.getFuncName();
-      throw Rcpp::exception(msg.c_str());
-  }
+	try {
+			Attribute attr = loc->openAttribute(attributename);
+			return XPtr<Attribute>(new Attribute(attr));
+		} catch (Exception& error) {
+		    throw Rcpp::exception("Opening Attribute failed.");
+		}
 }
 
 // [[Rcpp::export]]
