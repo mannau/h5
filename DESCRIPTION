@@ -28,6 +28,7 @@ Suggests:
     roxygen2,
     zoo,
     microbenchmark,
+    knitr,
     rmarkdown
 VignetteBuilder: knitr
 Collate:
