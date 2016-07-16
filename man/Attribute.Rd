@@ -47,7 +47,7 @@ matrices and arrays. However, there are two important differences compared to
 }
 }
 \references{
-\url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-OAttributes}
+\url{http://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-OAttributes}
 }
 \seealso{
 \code{\link{H5Location-Attribute}}
