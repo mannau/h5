@@ -32,18 +32,6 @@ before_deploy:
   "inst/web/css")'
 - R -e 'file.copy(list.files("inst/staticdocs", pattern = "*.js", full.names = TRUE),
   "inst/web/js")'
-deploy:
-  provider: s3
-  access_key_id: AKIAIBC6RSTRCE2FLHXA
-  secret_access_key:
-    secure: aSh+Qgv/u/A/B5T4FTuH2fjJPwjzIi5cIpQ5Rpa8eLyLEocsr/tidCDDQJ0KCkoQ370ffeTarKP1ZnF/ZNihuNmA8VQGXExv9KLYAMxb1ihQLIWw7oarQLQdJascNBUlZXUGxqDVcNd8VBE00xQj5pYuySXnOuYe2AmKGmo8RGE=
-  bucket: h5.predictingdaemon.com
-  region: eu-central-1
-  skip_cleanup: true
-  local-dir: inst/web
-  acl: public_read
-  on:
-    repo: mannau/h5
 notifications:
   email:
     - mario.annau@gmail.com
