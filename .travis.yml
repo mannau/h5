@@ -1,4 +1,5 @@
 language: r
+sudo: required
 dist: trusty
 env:
   global:
@@ -7,8 +8,17 @@ env:
   - ASAN="-fsanitize=address -fno-omit-frame-pointer"
 warnings_are_errors: true
 cran: http://cran.us.r-project.org
-apt_packages:
-- libhdf5-serial-dev libhdf5-dev libhdf5-7
+before_install:
+- sudo apt-get install subversion autoconf build-essential libtool
+- cd ..
+- svn checkout http://svn.hdfgroup.uiuc.edu/hdf5/trunk hdf5-src
+- cd hdf5-src
+- ./autogen.sh
+- autoconf
+- ./configure --prefix=/usr/local --enable-cxx --enable-build-mode=production
+- sudo make install
+- cd ../h5
+
 r_github_packages:
 - jimhester/covr
 - hadley/staticdocs

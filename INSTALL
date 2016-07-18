@@ -6,11 +6,16 @@ library including its C++ API and header files.
 
 1. LINUX 
 1.1 DEBIAN-BASED, e.g. UBUNTU
-	With Debian-based Linux systems the following commands can be used to 
-	install the dependencies:
+	For newer Debian-based Linux systems (e.g. Debian >= 8.0, Ubuntu >= 15.04) the 
+	following commands can be used to install the dependencies:
 	$ sudo apt-get install libhdf5-dev
-	On older platforms (squeeze, precise) it might be required to install using
-	$ sudo apt-get install libhdf5-serial-dev
+	On older platforms (e.g. Debian < 8.0, Ubuntu < 15.04) it is required to install
+	from source using the following steps (for HDF5 ver 1.10patch1):
+	$ wget https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.0-patch1/src/hdf5-1.10.0-patch1.tar.gz
+	$ tar -xzf hdf5-1.10.0-patch1.tar.gz
+	$ cd hdf5-1.10.0-patch1
+	$ ./configure --prefix=/usr/local --enable-cxx --enable-build-mode=production 
+	$ sudo make install
 1.2 RPM-BASED, e.g. FEDORA
 	For RPM-BASED platforms the following command can be used:
 	$ sudo yum install hdf5-devel
