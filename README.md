@@ -151,6 +151,8 @@ outmat <- dataset_testmat[]
 row.names(outmat) <- h5attr(dataset_testmat, "rownames")
 colnames(outmat) <- h5attr(dataset_testmat, "colnames")
 identical(outmat, testmat)
+
+h5close(dataset_testmat)
 ```
 
 ```
