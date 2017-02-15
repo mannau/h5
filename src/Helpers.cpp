@@ -79,7 +79,9 @@ DTYPE GetTypechar(const DataType &dtype) {
 		(dtype == PredType::NATIVE_INT16) ||
 		(dtype == PredType::NATIVE_INT32) ||
 		(dtype == PredType::NATIVE_UINT8) ||
-		(dtype == PredType::NATIVE_UINT16) ) {
+		(dtype == PredType::NATIVE_UINT16) ||
+		(dtype == PredType::STD_U8BE) ||
+		(dtype == PredType::STD_U8LE)) {
 	  return T_INTEGER;
 	}
 	if (dtype == PredType::C_S1 || dtype.getClass() == H5T_STRING) {
