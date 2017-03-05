@@ -32,7 +32,7 @@ The most recent development version can be installed from [Github](https://githu
 library(devtools)
 install_github("mannau/h5")
 ```
-Please note that this version has been tested with the current hdf5 library 1.10.0patch1 (and 1.8.16 for OS X) - you should therefore install the most current hdf5 library including its C++ API for your platform. The minimum version HDF5 version required is 1.8.12.
+Please note that this version has been tested with the current hdf5 library 1.8.14 (and 1.8.13 for OS X) - you should therefore install the most current hdf5 library including its C++ API for your platform. 
 
 ## Requirements
 
@@ -46,21 +46,22 @@ Using OS X and [Homebrew](http://brew.sh) you can use the following command to i
 brew install homebrew/science/hdf5 --enable-cxx
 ```
 
-### Linux (e.g. Debian >= 8.0, Ubuntu >= 15.04)
+### Linux (e.g. Debian, Ubuntu)
 With Debian-based Linux systems you can use the following command to install the dependencies:
 ```shell
 sudo apt-get install libhdf5-dev
 ```
 
-### Linux (e.g. Debian < 8.0, Ubuntu < 15.04)
-For older versions (or to use the latest version) it is required to install the library from source using the following steps (e.g for HDF5 ver 1.10patch1):
+For older versions (Debian Squeeze, Ubuntu Precise) it is required to install **libhdf5-serial-dev**:
 ```shell
-wget https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.0-patch1/src/hdf5-1.10.0-patch1.tar.gz
-tar -xzf hdf5-1.10.0-patch1.tar.gz
-cd hdf5-1.10.0-patch1
-./configure --prefix=/usr/local --enable-cxx --enable-build-mode=production 
-sudo make install
+sudo apt-get install libhdf5-serial-dev
 ```
+
+Since **h5** requires the 'new' v18 API version which does not seem to be installed on e.g. Precise it might be necessary to install
+the dependency libhdf5-serial-dev through the 
+[ppa:marutter/rrutter](https://launchpad.net/~marutter/+archive/ubuntu/rrutter) 
+repository (Ubuntu) or soon directly the **h5** package via 
+[cran2deb](http://debian-r.debian.net) (Debian).
 
 ## Custom Install Parameters
 If the hdf5 library is not located in a standard directory recognized by the configure script the parameters CPPFLAGS and LIBS may need to be set manually. 
@@ -77,7 +78,7 @@ install_github("mannau/h5", args = "--configure-vars='LIBS=<LIBS> CPPFLAGS=<CPPF
 
 A concrete OS X example setting could look like this:
 ```shell
-R CMD INSTALL h5_0.9.2.tar.gz --configure-vars='LIBS=-L/usr/local/Cellar/hdf5/1.8.13/lib -L/usr/local/opt/szip/lib  -L. -lhdf5_cpp -lhdf5 -lz -lm CPPFLAGS=-I/usr/local/include -I/usr/local/include/freetype2 -I/opt/X11/include'
+R CMD check h5_0.9.8.tar.gz --configure-vars="LIBS='-L/usr/local/Cellar/hdf5/1.10.0/lib  -L. -lhdf5_cpp -lhdf5 -lz -lm' CPPFLAGS='-I/usr/local/include'"
 ```
 
 # Quick Start
@@ -151,8 +152,6 @@ outmat <- dataset_testmat[]
 row.names(outmat) <- h5attr(dataset_testmat, "rownames")
 colnames(outmat) <- h5attr(dataset_testmat, "colnames")
 identical(outmat, testmat)
-
-h5close(dataset_testmat)
 ```
 
 ```

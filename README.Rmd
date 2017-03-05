@@ -78,7 +78,7 @@ install_github("mannau/h5", args = "--configure-vars='LIBS=<LIBS> CPPFLAGS=<CPPF
 
 A concrete OS X example setting could look like this:
 ```shell
-R CMD INSTALL h5_0.9.2.tar.gz --configure-vars='LIBS=-L/usr/local/Cellar/hdf5/1.8.13/lib -L/usr/local/opt/szip/lib  -L. -lhdf5_cpp -lhdf5 -lz -lm CPPFLAGS=-I/usr/local/include -I/usr/local/include/freetype2 -I/opt/X11/include'
+R CMD check h5_0.9.8.tar.gz --configure-vars="LIBS='-L/usr/local/Cellar/hdf5/1.10.0/lib  -L. -lhdf5_cpp -lhdf5 -lz -lm' CPPFLAGS='-I/usr/local/include'"
 ```
 
 # Quick Start
