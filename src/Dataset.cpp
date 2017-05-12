@@ -118,18 +118,20 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
 	}
     DataType dsettype = GetDataType(GetTypechar(datatype), size);
 
-    DataSet dataset = file->createDataSet(datasetname.c_str(),
-    		dsettype, dataspace, prop);
-
+    hid_t dsid = H5Dcreate2(file->getLocId(), datasetname.c_str(), dsettype.getId(),
+               dataspace.getId(), H5P_DEFAULT, prop.getId(), H5P_DEFAULT);
+    
+    XPtr<DataSet> dataset = XPtr<DataSet>(new DataSet(dsid));
+    
     dsettype.close();
     prop.close();
     dataspace.close();
 
-    if (dataset.getId() == -1) {
-      dataset.close();
+    if (dataset->getId() == -1) {
+      dataset->close();
       throw Rcpp::exception("Creation of DataSet failed.");
     }
-    return XPtr<DataSet>(new DataSet(dataset));
+    return dataset;
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();
     throw Rcpp::exception(msg.c_str());
@@ -139,7 +141,7 @@ XPtr<DataSet> CreateDataset(XPtr<CommonFG> file, string datasetname, char dataty
 // [[Rcpp::export]]
 XPtr<DataSet> OpenDataset(XPtr<CommonFG> file, string datasetname) {
   try {
-    DataSet *dataset = new DataSet(file->openDataSet(datasetname.c_str()));
+    DataSet* dataset = new DataSet(H5Dopen2(file->getLocId(), datasetname.c_str(), H5P_DEFAULT));
     return XPtr<DataSet>(dataset);
   } catch(Exception& error) {
     string msg = error.getDetailMsg() + " in " + error.getFuncName();

@@ -143,12 +143,9 @@ herr_t dset_info_link(hid_t loc_id, const char *name, const H5L_info_t *info, vo
 
 // [[Rcpp::export]]
 bool Unlink(XPtr<CommonFG> file, string path) {
-  try {
-	  file->unlink(path.c_str());
-  } catch (Exception& error) {
-    Function warning("warning");
-    warning(error.getDetailMsg());
-    return false;
-  }
-  return true;
+    herr_t status = H5Ldelete( file->getLocId(), path.c_str(), H5P_DEFAULT);
+    if (status < 0) {
+      return false;
+    }
+    return true;
 }
