@@ -16,3 +16,5 @@ src/.cproject
 src/.project
 src/.externalToolBuilders
 inst/web
+.Rproj.user
+.Rhistory
