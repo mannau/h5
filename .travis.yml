@@ -20,7 +20,7 @@ env:
     #- HDF5_VERSION=1.8.15-patch1
     - HDF5_VERSION=1.8.16
     #- HDF5_VERSION=1.8.17
-    - HDF5_VERSION=1.10.0-patch1
+    - HDF5_VERSION=1.10.1
 
 matrix:
   exclude:

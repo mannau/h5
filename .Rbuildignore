@@ -28,3 +28,5 @@ tests/testthat/test-DataSet-scalar
 inst/test-scalar
 .Rhistory
 h5.Rproj
+^.*\.Rproj$
+^\.Rproj\.user$
