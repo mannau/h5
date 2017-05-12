@@ -11,7 +11,7 @@ else # install from source
   fi
   tar -xzf "hdf5-$HDF5_VERSION.tar.gz"
   cd "hdf5-$HDF5_VERSION"
-  ./configure --prefix=/usr/local
+  ./configure --prefix=/usr/local --enable-cxx --enable-build-mode=production
   sudo make install
   cd ../h5
 fi
