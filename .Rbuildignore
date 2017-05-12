@@ -30,3 +30,4 @@ inst/test-scalar
 h5.Rproj
 ^.*\.Rproj$
 ^\.Rproj\.user$
+travis_setup.sh
