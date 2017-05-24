@@ -43,7 +43,7 @@ This package already ships the library for windows operating systems through [h5
 ### OS X
 Using OS X and [Homebrew](http://brew.sh) you can use the following command to install HDF5 library dependencies and headers:
 ```shell
-brew install homebrew/science/hdf5 --enable-cxx
+brew install hdf5
 ```
 
 ### Linux (e.g. Debian, Ubuntu)

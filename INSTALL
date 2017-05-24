@@ -23,7 +23,7 @@ library including its C++ API and header files.
 2. MACOSX
 	Using MacOSX and Homebrew (http://brew.sh) the following command can be used 
 	to install the HDF5 library dependencies and headers:
-	$ brew install homebrew/science/hdf5 --enable-cxx
+	$ brew install hdf5
 
 3. WINDOWS
 	The h5 package already ships with the compiled version of the HDF library 

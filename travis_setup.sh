@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$TRAVIS_OS_NAME" == "osx" ]; then # use homebrew version
-  brew install homebrew/science/hdf5
+  brew install hdf5
 else # install from source
   cd ..
   if [ "$HDF5_VERSION" == "1.10.1" ]; then
