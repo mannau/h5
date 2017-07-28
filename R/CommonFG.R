@@ -12,11 +12,11 @@
 #' specifies the group to be created/accesses and the second the dataset name.
 #' 
 #' Groups can be created/accessed by simply using one character parameter, e.g.
-#' \code{group <- obj["groupname"]}.
+#' \code{group <- obj[["groupname"]]}.
 #' 
 #' DataSets can be either accessed by using  
-#' \code{dset <- obj["groupname", "datasetname"]} if existing or initialized by
-#' using \code{obj["groupname", "datasetname"] <- value}.
+#' \code{dset <- obj[["groupname", "datasetname"]]} if existing or initialized by
+#' using \code{obj[["groupname", "datasetname"]] <- value}.
 #' 
 #' All created objects e.g. \code{group} or \code{dset} should be closed in the
 #' end using \code{h5close}.
@@ -36,13 +36,13 @@
 #' @examples
 #' file <- h5file("test.h5")
 #' # Create new DataSet 'testset' in H5Group 'testgroup'
-#' file["testgroup/testset"] <- matrix(1:9, nrow = 3)
+#' file[["testgroup/testset"]] <- matrix(1:9, nrow = 3)
 #' # Create new DataSet 'testset2' in file root
-#' file["testset2"] <- 1:10
+#' file[["testset2"]] <- 1:10
 #' # Retrieve H5Group 'testgroup'
-#' group <- file["testgroup"]
+#' group <- file[["testgroup"]]
 #' # Retrieve DataSet 'testset'
-#' dset <- group["testset"]
+#' dset <- group[["testset"]]
 #' h5close(dset)
 #' h5close(group)
 #' h5close(file)
@@ -59,7 +59,7 @@ setGeneric("h5close", function(.Object)
 
 #' @rdname CommonFG
 #' @export
-setMethod("[", c("CommonFG", "character", "ANY"),
+setMethod("[[", c("CommonFG", "character", "ANY"),
   function(x, i, ..., drop=TRUE) { 
     if(length(i) > 1) {
       stop("Only one path can be specified.")
@@ -84,7 +84,7 @@ setMethod("[", c("CommonFG", "character", "ANY"),
 #' @param value vector/matrix/array; Value to be assigend to dataset
 #' @rdname CommonFG
 #' @export
-setMethod("[<-", c("CommonFG", "character", "ANY"),
+setMethod("[[<-", c("CommonFG", "character", "ANY"),
   function(x, i, ..., value) {
     if(length(i) > 1) {
       stop("Only one path can be specified.")
@@ -129,3 +129,32 @@ setMethod( "h5unlink", signature(.Object="CommonFG", path="character"),
     }, USE.NAMES = FALSE)
 })
 
+#' Deprecated CommonFG methods
+#' 
+#' Since \code{obj[name]} is commonly used to get and set multiple elements,
+#' \code{obj[[name]]} is the better fit for setting or retrieving a single dataset or groups.
+#' 
+#' @param x,i,j,drop,value,...  See \code{\link{CommonFG}}
+#' 
+#' @name h5-deprecated
+#' @rdname h5-deprecated
+#' @export
+setMethod("[", c("CommonFG", "character", "ANY"),
+  function(x, i, ..., drop=TRUE) {
+    var <- deparse(substitute(x))
+    key <- deparse(substitute(i))
+    .Deprecated("[[", msg = sprintf("Use %s[[%s]] instead of %s[%s]", var, key, var, key))
+    x[[i, ..., drop = drop]]
+  })
+
+#' @rdname h5-deprecated
+#' @export
+setMethod("[<-", c("CommonFG", "character", "ANY"),
+  function(x, i, ..., value) {
+    # deparse(substitute(x)) sadly returns '*tmp*'
+    key <- deparse(substitute(i))
+    val <- deparse(substitute(value))
+    .Deprecated("[[<-", msg = sprintf("Use x[[%s]] <- %s instead of x[%s] <- %s", key, val, key, val))
+    x[[i, ...]] <- value
+    x
+  })

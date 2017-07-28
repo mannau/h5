@@ -75,13 +75,13 @@
 #' mat <- matrix(1:9, nrow = 3)
 #' rownames(mat) <- LETTERS[1:3]
 #' colnames(mat) <- c("A", "BE", "BUU")
-#' file["test/testmat/testmat"] <- mat
+#' file[["test/testmat/testmat"]] <- mat
 #' # Store numeric array in group '/test' and dataset 'testarray'
-#' file["test/testarray"] <- array(as.numeric(1:45), dim = c(3, 3, 5))
+#' file[["test/testarray"]] <- array(as.numeric(1:45), dim = c(3, 3, 5))
 #' 
 #' # 3. Store rownames and column names of matrix as attributes
 #' # Get created data set as object
-#' dset <- file["test/testmat/testmat"]
+#' dset <- file[["test/testmat/testmat"]]
 #' # Store rownames in attribute 'dimnames_1'
 #' h5attr(dset, "dimnames_1") <- rownames(mat)
 #' # Store columnnames in attribute 'dimnames_2'

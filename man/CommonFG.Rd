@@ -4,18 +4,18 @@
 \name{CommonFG}
 \alias{CommonFG}
 \alias{CommonFG-class}
-\alias{[,CommonFG,character,ANY-method}
-\alias{[<-,CommonFG,character,ANY-method}
 \alias{h5close}
+\alias{[[,CommonFG,character-method}
+\alias{[[<-,CommonFG,character-method}
 \alias{h5unlink}
 \alias{h5unlink,CommonFG,character-method}
 \title{The CommonFG Class}
 \usage{
 h5close(.Object)
 
-\S4method{[}{CommonFG,character,ANY}(x, i, j, ..., drop = TRUE)
+\S4method{[[}{CommonFG,character}(x, i, ..., drop = TRUE)
 
-\S4method{[}{CommonFG,character,ANY}(x, i, j, ...) <- value
+\S4method{[[}{CommonFG,character}(x, i, j, ...) <- value
 
 h5unlink(.Object, path)
 
@@ -28,13 +28,13 @@ h5unlink(.Object, path)
 
 \item{i}{character; Name of \code{\link{H5Group}}}
 
-\item{j}{character; Name of \code{\link{DataSet}}}
-
 \item{...}{Additional arguments passed to \code{\link{createDataSet}}; only 
 relevant for assignment operator.}
 
 \item{drop}{logical; specify if class of result set should be dropped (not 
 implemented yet).}
+
+\item{j}{character; Name of \code{\link{DataSet}}}
 
 \item{value}{vector/matrix/array; Value to be assigend to dataset}
 
@@ -54,11 +54,11 @@ Currently, only character arguments are supported whereas the first argument
 specifies the group to be created/accesses and the second the dataset name.
 
 Groups can be created/accessed by simply using one character parameter, e.g.
-\code{group <- obj["groupname"]}.
+\code{group <- obj[["groupname"]]}.
 
 DataSets can be either accessed by using  
-\code{dset <- obj["groupname", "datasetname"]} if existing or initialized by
-using \code{obj["groupname", "datasetname"] <- value}.
+\code{dset <- obj[["groupname", "datasetname"]]} if existing or initialized by
+using \code{obj[["groupname", "datasetname"]] <- value}.
 
 All created objects e.g. \code{group} or \code{dset} should be closed in the
 end using \code{h5close}.
@@ -66,13 +66,13 @@ end using \code{h5close}.
 \examples{
 file <- h5file("test.h5")
 # Create new DataSet 'testset' in H5Group 'testgroup'
-file["testgroup/testset"] <- matrix(1:9, nrow = 3)
+file[["testgroup/testset"]] <- matrix(1:9, nrow = 3)
 # Create new DataSet 'testset2' in file root
-file["testset2"] <- 1:10
+file[["testset2"]] <- 1:10
 # Retrieve H5Group 'testgroup'
-group <- file["testgroup"]
+group <- file[["testgroup"]]
 # Retrieve DataSet 'testset'
-dset <- group["testset"]
+dset <- group[["testset"]]
 h5close(dset)
 h5close(group)
 h5close(file)
