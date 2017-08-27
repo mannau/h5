@@ -69,8 +69,11 @@ DTYPE GetTypechar(const DataType &dtype) {
 		 (dtype == PredType::IEEE_F32BE) ||
 		 (dtype == PredType::IEEE_F32LE) ||
 		 (dtype == PredType::IEEE_F64BE) ||
-		 (dtype == PredType::IEEE_F64LE)
-	) {
+		 (dtype == PredType::IEEE_F64LE) ||
+     (dtype == PredType::STD_U32BE) ||
+     (dtype == PredType::STD_U32LE) ||
+     (dtype == PredType::STD_U64BE) ||
+     (dtype == PredType::STD_U64LE)) {
 	  return T_DOUBLE;
 	}
 
@@ -81,7 +84,17 @@ DTYPE GetTypechar(const DataType &dtype) {
 		(dtype == PredType::NATIVE_UINT8) ||
 		(dtype == PredType::NATIVE_UINT16) ||
 		(dtype == PredType::STD_U8BE) ||
-		(dtype == PredType::STD_U8LE)) {
+		(dtype == PredType::STD_U8LE) ||
+		(dtype == PredType::STD_I8LE) ||
+		(dtype == PredType::STD_I8BE) ||
+		(dtype == PredType::STD_U8LE) ||
+		(dtype == PredType::STD_U8BE) ||
+		(dtype == PredType::STD_I16LE) ||
+		(dtype == PredType::STD_I16BE) ||
+		(dtype == PredType::STD_U16LE) ||
+		(dtype == PredType::STD_U16BE) ||
+		(dtype == PredType::STD_I32LE) ||
+		(dtype == PredType::STD_I32BE)) {
 	  return T_INTEGER;
 	}
 	if (dtype == PredType::C_S1 || dtype.getClass() == H5T_STRING) {
