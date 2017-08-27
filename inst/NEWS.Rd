@@ -3,6 +3,21 @@
 \newcommand{\cpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\fkt}{\code{#1()}}
 
+\section{Changes in h5 version 0.9.9 (2017-08-27)}{
+  \itemize{
+   \item \href{https://github.com/mannau/h5/issues/48}{#48}: Add support for hdf5 1.10.1
+   \item \href{https://github.com/mannau/h5/issues/54}{#54}: Support for big endian integers
+  }
+}
+
+\section{Changes in h5 version 0.9.8 (2016-07-27)}{
+  \itemize{
+    \item Update documentation
+    \item Include RFin2016 conference slides
+    \item Add support for C++11
+  }
+}
+
 \section{Changes in h5 version 0.9.7 (2016-05-10)}{
   \itemize{
     \item Add package vignette with a focus on time series storage
