@@ -20,14 +20,14 @@ env:
     #- HDF5_VERSION=1.8.15-patch1
     - HDF5_VERSION=1.8.16
     #- HDF5_VERSION=1.8.17
-    - HDF5_VERSION=1.10.1
+    - HDF5_VERSION=1.10.0-patch1
 
 matrix:
   exclude:
     - os: osx
   include:
     - os: osx
-      env: HDF5_VERSION=1.10.1
+      env: HDF5_VERSION=1.8.16
   allow_failures:
     - os: osx
   fast_finish: true
@@ -52,15 +52,6 @@ r_github_packages:
 after_success:
 - R --slave --vanilla -e 'library(covr); pc <- package_coverage(); pc; codecov(coverage
   = pc)'
-  
-before_deploy:
-- R -e "staticdocs::build_site(examples = TRUE)"
-- R -e 'file.copy(list.files("inst/staticdocs", pattern = "*.css", full.names = TRUE),
-  "inst/web/css")'
-- R -e 'file.copy(list.files("inst/staticdocs", pattern = "*.js", full.names = TRUE),
-  "inst/web/js")'
-  
 notifications:
   email:
     - mario.annau@gmail.com
-
