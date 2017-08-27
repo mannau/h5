@@ -4,10 +4,10 @@
 \name{Attribute}
 \alias{Attribute}
 \alias{Attribute-class}
-\alias{readAttribute}
-\alias{readAttribute,Attribute-method}
 \alias{writeAttribute}
 \alias{writeAttribute,Attribute-method}
+\alias{readAttribute}
+\alias{readAttribute,Attribute-method}
 \title{The Attribute Class}
 \usage{
 writeAttribute(.Object, data = GetDimensions(data), transpose = TRUE)
@@ -52,4 +52,3 @@ matrices and arrays. However, there are two important differences compared to
 \seealso{
 \code{\link{H5Location-Attribute}}
 }
-

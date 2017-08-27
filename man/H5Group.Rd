@@ -24,4 +24,3 @@ shares common functionality with H5File through the CommonFG base class.
 \references{
 \url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-OGroups}
 }
-

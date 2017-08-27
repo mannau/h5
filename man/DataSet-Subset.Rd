@@ -5,12 +5,12 @@
 \alias{DataSet-Subset}
 \alias{[,DataSet,ANY,ANY-method}
 \alias{[,DataSet,missing,missing-method}
-\alias{[,DataSet,missing,numeric-method}
 \alias{[,DataSet,numeric,missing-method}
-\alias{[<-,DataSet,ANY,ANY-method}
+\alias{[,DataSet,missing,numeric-method}
 \alias{[<-,DataSet,missing,missing-method}
-\alias{[<-,DataSet,missing,numeric-method}
 \alias{[<-,DataSet,numeric,missing-method}
+\alias{[<-,DataSet,missing,numeric-method}
+\alias{[<-,DataSet,ANY,ANY-method}
 \title{Operators to Subset DataSet Objects}
 \usage{
 \S4method{[}{DataSet,ANY,ANY}(x, i, j, ..., drop = TRUE)
@@ -69,4 +69,3 @@ h5close(dset2)
 h5close(file)
 file.remove("test.h5")
 }
-

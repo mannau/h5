@@ -2,19 +2,19 @@
 % Please edit documentation in R/H5Location-Attribute.R
 \docType{class}
 \name{H5Location-Attribute}
-\alias{H5Location}
 \alias{H5Location-Attribute}
+\alias{H5Location}
 \alias{H5Location-class}
 \alias{createAttribute}
 \alias{createAttribute,H5Location,character-method}
+\alias{openAttribute}
+\alias{openAttribute,H5Location,character-method}
 \alias{h5attr}
 \alias{h5attr,H5Location,character-method}
 \alias{h5attr<-}
 \alias{h5attr<-,H5Location,character-method}
 \alias{list.attributes}
 \alias{list.attributes,H5Location-method}
-\alias{openAttribute}
-\alias{openAttribute,H5Location,character-method}
 \title{Read and Create Attributes for H5Location Objects}
 \usage{
 createAttribute(.Object, attributename, data, size = -1)
@@ -78,4 +78,3 @@ file.remove("test.h5")
 \code{\link{Attribute}} \code{\link{H5File}} \code{\link{H5Group}}
 \code{\link{DataSet}}
 }
-

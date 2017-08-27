@@ -6,9 +6,9 @@
 \alias{DataSpace-class}
 \alias{h5close,DataSpace-method}
 \alias{selectDataSpace}
+\alias{selectDataSpace,DataSet,missing,missing,missing-method}
 \alias{selectDataSpace,DataSet,ANY,ANY,missing-method}
 \alias{selectDataSpace,DataSet,missing,missing,matrix-method}
-\alias{selectDataSpace,DataSet,missing,missing,missing-method}
 \title{The DataSpace Class}
 \usage{
 \S4method{h5close}{DataSpace}(.Object)
@@ -48,4 +48,3 @@ objects. DataSpace objects can be generated using the S4--method
     data points.}
 }
 }
-

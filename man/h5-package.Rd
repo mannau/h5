@@ -113,4 +113,3 @@ h5close(testvec)
 h5close(testmat)
 h5close(file)
 }
-

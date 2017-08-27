@@ -4,9 +4,9 @@
 \name{CommonFG}
 \alias{CommonFG}
 \alias{CommonFG-class}
+\alias{h5close}
 \alias{[,CommonFG,character,ANY-method}
 \alias{[<-,CommonFG,character,ANY-method}
-\alias{h5close}
 \alias{h5unlink}
 \alias{h5unlink,CommonFG,character-method}
 \title{The CommonFG Class}
@@ -82,4 +82,3 @@ file.remove("test.h5")
 \code{\link{CommonFG-Group}} \code{\link{CommonFG-DataSet}} 
 \code{\link{H5Location-Attribute}}
 }
-

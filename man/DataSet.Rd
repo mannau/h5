@@ -4,11 +4,11 @@
 \name{DataSet}
 \alias{DataSet}
 \alias{DataSet-class}
-\alias{h5close,DataSet-method}
-\alias{readDataSet}
-\alias{readDataSet,DataSet-method}
 \alias{writeDataSet}
 \alias{writeDataSet,DataSet-method}
+\alias{readDataSet}
+\alias{readDataSet,DataSet-method}
+\alias{h5close,DataSet-method}
 \title{The DataSet Class}
 \usage{
 writeDataSet(.Object, data, dspace = selectDataSpace(.Object, rep(NA_integer_,
@@ -51,4 +51,3 @@ for big \code{DataSet}s it can be advantageous to use these methods with
 \references{
 \url{https://www.hdfgroup.org/HDF5/doc/H5.intro.html#Intro-ODatasets}
 }
-

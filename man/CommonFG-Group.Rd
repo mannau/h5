@@ -5,14 +5,14 @@
 \alias{CommonFG-Group}
 \alias{createGroup}
 \alias{createGroup,CommonFG,character-method}
+\alias{openGroup}
+\alias{openGroup,CommonFG,character-method}
 \alias{existsGroup}
 \alias{existsGroup,CommonFG,character-method}
 \alias{getH5Group}
 \alias{getH5Group,CommonFG,character-method}
 \alias{list.groups}
 \alias{list.groups,CommonFG-method}
-\alias{openGroup}
-\alias{openGroup,CommonFG,character-method}
 \title{Functions to Create/Open Groups in \code{\link{CommonFG}} objects}
 \usage{
 createGroup(.Object, groupname)
@@ -55,4 +55,3 @@ subsetting operators (see \code{\link{CommonFG}}) \pkg{h5} implements more
 explicit functions (used by subsetting operators under the hood) to create 
 and open \code{\link{H5Group}s}.
 }
-

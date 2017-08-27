@@ -3,9 +3,9 @@
 \docType{methods}
 \name{DataSet-Extend}
 \alias{DataSet-Extend}
-\alias{c,DataSet-method}
 \alias{extendDataSet}
 \alias{extendDataSet,DataSet,numeric-method}
+\alias{c,DataSet-method}
 \title{Functions to Extend a DataSet}
 \usage{
 extendDataSet(.Object, dims)
@@ -38,4 +38,3 @@ matrices (\code{rbind}, \code{cbind}). Also the lower--level S4--method
 \code{extendDataSet} can be used to extend existing \code{\link{DataSet}} 
 objects.
 }
-

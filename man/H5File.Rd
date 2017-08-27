@@ -4,10 +4,11 @@
 \name{H5File}
 \alias{H5File}
 \alias{H5File-class}
-\alias{h5close,H5File-method}
 \alias{h5file}
+\alias{H5File}
 \alias{h5flush}
 \alias{h5flush,H5File-method}
+\alias{h5close,H5File-method}
 \alias{is.h5file}
 \title{HDF5 File Objects}
 \usage{
@@ -102,6 +103,7 @@ The following functions are defined to extract HDF5 file contents:
   \item{list.attributes}{List Attributes of HDF5 object (file, group or dataset).}
 }
 }
+
 \examples{
 # The following examples generates a HDF5 file with the different HDF5 
 # Objects and shows its contents:
@@ -134,4 +136,3 @@ h5close(file)
 \code{\link{CommonFG}} \code{\link{CommonFG-Group}} 
   \code{\link{CommonFG-DataSet}} \code{\link{H5Location-Attribute}}
 }
-

@@ -4,15 +4,15 @@
 \name{CommonFG-DataSet}
 \alias{CommonFG-DataSet}
 \alias{createDataSet}
-\alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
-\alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,numeric-method}
 \alias{createDataSet,CommonFG,character,missing,character,ANY,ANY,ANY,ANY,ANY-method}
-\alias{existsDataSet}
-\alias{existsDataSet,CommonFG,character-method}
-\alias{list.datasets}
-\alias{list.datasets,CommonFG-method}
+\alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,numeric-method}
+\alias{createDataSet,CommonFG,character,ANY,missing,missing,ANY,ANY,ANY,missing-method}
 \alias{openDataSet}
 \alias{openDataSet,CommonFG,character-method}
+\alias{list.datasets}
+\alias{list.datasets,CommonFG-method}
+\alias{existsDataSet}
+\alias{existsDataSet,CommonFG,character-method}
 \title{Functions to Create/Open DataSets in \code{\link{CommonFG}} objects                               
                                                                              
 Although \code{\link{DataSet}} objects can implicitly be created using 
@@ -100,4 +100,3 @@ subsetting operators (see \code{\link{CommonFG}}) \pkg{h5} implements more
 explicit functions (used by subsetting operators under the hood) to create 
 and open \code{\link{DataSet}s}.
 }
-
