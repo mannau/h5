@@ -108,7 +108,7 @@
 #' h5close(file)
 #' @docType package
 #' @name h5-package
-#' @useDynLib h5
+#' @useDynLib h5, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @importFrom methods setClass setGeneric setMethod
 NULL
