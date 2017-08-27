@@ -14,22 +14,17 @@ env:
     - HDF5_RELEASE_URL="https://support.hdfgroup.org/ftp/HDF5/releases"
     - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
   matrix:
-    - HDF5_VERSION=1.8.12
-    #- HDF5_VERSION=1.8.13
     - HDF5_VERSION=1.8.14
-    #- HDF5_VERSION=1.8.15-patch1
     - HDF5_VERSION=1.8.16
-    #- HDF5_VERSION=1.8.17
     - HDF5_VERSION=1.10.0-patch1
-
+    - HDF5_VERSION=1.10.1
+    
 matrix:
   exclude:
     - os: osx
   include:
     - os: osx
-      env: HDF5_VERSION=1.8.16
-  allow_failures:
-    - os: osx
+      env: HDF5_VERSION=1.10.1
   fast_finish: true
   
 warnings_are_errors: true
