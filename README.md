@@ -5,7 +5,6 @@
 
 **[h5](http://cran.r-project.org/web/packages/h5/index.html)** is an R 
 interface to the [HDF5](https://www.hdfgroup.org/HDF5) library under active development. It is available on [Github](https://github.com/mannau/h5) and already released on [CRAN](https://cran.r-project.org/web/packages/h5/index.html) for all major platforms (Windows, OS X, Linux). 
-Online documentation for the package is available at http://h5.predictingdaemon.com.
 
 [HDF5](https://www.hdfgroup.org/HDF5/) is an excellent library and data model to 
 store huge amounts of data in a binary file format. Supporting most major 
