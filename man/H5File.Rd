@@ -5,7 +5,6 @@
 \alias{H5File}
 \alias{H5File-class}
 \alias{h5file}
-\alias{H5File}
 \alias{h5flush}
 \alias{h5flush,H5File-method}
 \alias{h5close,H5File-method}

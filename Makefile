@@ -47,7 +47,7 @@ build-cran:
 	@rm src/Makevars.win.temp
 
 roxygen: $(R_FILES)
-	$(Rscript) 'library(roxygen2); roxygenize(clean = TRUE)'
+#	$(Rscript) 'library(roxygen2); roxygenize(clean = TRUE)'
 	
 $(RCPPEXPORTS): compileAttributes
 	

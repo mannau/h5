@@ -46,4 +46,4 @@ Collate:
     'Helpers.R'
     'RcppExports.R'
     'h5-package.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
