@@ -1,5 +1,4 @@
-Rscript := '$(R_HOME)/bin/Rscript' --vanilla -e
-R := "${R_HOME}/bin/R"
+Rscript := 'Rscript' --vanilla -e
 
 PKG_VERSION := $(shell grep -i ^version DESCRIPTION | cut -d : -d \  -f 2)
 PKG_NAME := $(shell grep -i ^package DESCRIPTION | cut -d : -d \  -f 2)
@@ -31,7 +30,7 @@ build: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	
 $(PKG_NAME)_$(PKG_VERSION).tar.gz: $(PKG_FILES)
 	@make roxygen
-	$(R) CMD build --resave-data .
+	R CMD build --resave-data .
 
 build-cran:
 	@make clean
@@ -40,7 +39,7 @@ build-cran:
 	@cp src/Makevars.win src/Makevars.win.temp
 	@cp configure.win.cran configure.win
 	@cp src/Makevars.win.cran src/Makevars.win
-	$(R) CMD build --resave-data .
+	R CMD build --resave-data .
 	@cp configure.win.temp configure.win 
 	@cp src/Makevars.win.temp src/Makevars.win
 	@rm configure.win.temp
@@ -57,16 +56,16 @@ compileAttributes: $(SRC_FILES)
 	
 check: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	R CMD check --no-clean $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 check-valgrind: $(PKG_NAME)_$(PKG_VERSION).tar.gz 
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-clean --use-valgrind $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	R CMD check --no-clean --use-valgrind $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 check-cran: 
 	@make build-cran
 	@rm -rf $(CHECKPATH)
-	$(R) CMD check --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	R CMD check --no-clean --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 	@boot2docker up
@@ -84,10 +83,10 @@ check-asan-gcc: $(PKG_NAME)_$(PKG_VERSION).tar.gz
 manual: $(PKG_NAME)-manual.pdf
 
 $(PKG_NAME)-manual.pdf: $(ROXYGENFILES)
-	$(R) CMD Rd2pdf --no-preview -o $(PKG_NAME)-manual.pdf .
+	R CMD Rd2pdf --no-preview -o $(PKG_NAME)-manual.pdf .
 	
 install: $(PKG_NAME)_$(PKG_VERSION).tar.gz
-	$(R) CMD INSTALL --byte-compile $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	R CMD INSTALL --byte-compile $(PKG_NAME)_$(PKG_VERSION).tar.gz
 
 clean:
 	@rm -f $(OBJECTS)
@@ -98,9 +97,9 @@ clean:
 	@echo '*** PACKAGE CLEANUP COMPLETE ***'
 
 doc: $(MD_FILES)
-  $(R) -e 'staticdocs::build_site(examples = TRUE)'
+	R -e 'staticdocs::build_site(examples = TRUE)'
 	$(Rscript) 'file.copy(list.files("inst/staticdocs", pattern = "*.css", full.names = TRUE), "inst/web/css")'
 	$(Rscript) 'file.copy(list.files("inst/staticdocs", pattern = "*.js", full.names = TRUE), "inst/web/js")'
 
 $(MD_FILES): $(RMD_FILES)
-	echo "library(knitr); library(h5); sapply(list.files(pattern = '*.Rmd'), knit);if(file.exists('test.h5')) file.remove('test.h5')" | $(R) --slave --vanilla
+	echo "library(knitr); library(h5); sapply(list.files(pattern = '*.Rmd'), knit);if(file.exists('test.h5')) file.remove('test.h5')" | R --slave --vanilla
