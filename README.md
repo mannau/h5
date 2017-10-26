@@ -3,6 +3,21 @@
 [![codecov.io](http://codecov.io/github/mannau/h5/coverage.svg?branch=master)](http://codecov.io/github/mannau/h5?branch=master) 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/h5)](http://cran.r-project.org/package=h5)
 
+# DEPRECATION NOTICE
+
+> Dear **h5** Users,
+>
+>as of October 25th the **h5** package is officially deprecated in favor of the **hdf5r** package. **hdf5r** is more feature complete than **h5** while having less design flaws (e.g. no C++ API). **hdf5r** also includes most of **h5**'s API which should make the transition for existing **h5** users easier. We would therefore strongly suggest to switch to **hdf5r** ASAP.
+
+The **hdf5r** package can be obtained as follows:
+
+| Source | Version | Link
+|--------|---------|--------------|
+| CRAN   | stable  | https://cran.r-project.org/package=hdf5r
+| Github | development | https://github.com/hhoeflin/hdf5r
+
+# Introduction
+
 **[h5](http://cran.r-project.org/web/packages/h5/index.html)** is an R 
 interface to the [HDF5](https://www.hdfgroup.org/HDF5) library under active development. It is available on [Github](https://github.com/mannau/h5) and already released on [CRAN](https://cran.r-project.org/web/packages/h5/index.html) for all major platforms (Windows, OS X, Linux). 
 
